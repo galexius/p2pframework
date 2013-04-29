@@ -1,0 +1,63 @@
+package com.example.simple;
+
+import org.alljoyn.bus.BusAttachment;
+import org.alljoyn.bus.BusObject;
+import org.alljoyn.bus.Status;
+
+/**
+ * Service is an implementation of a simple AllJoyn service that acquires the
+ * well-known name org.alljoyn.bus.samples.simple and exports one object
+ * (/testservice) that implements the org.alljoyn.bus.samples.simple.SimpleInteface
+ * interface.
+ */
+public class Service implements SimpleInterface, BusObject {
+    static {
+        System.loadLibrary("alljoyn_java");
+    }
+    /**
+     * Main entry point for org.alljoyn.bus.samples.simple.Service
+     */
+    public static void main(String[] args) {
+
+        try {
+            /* Create a bus connection */
+            BusAttachment bus = new BusAttachment(Service.class.getName());
+            
+            /* connect to the bus */
+            Status status = bus.connect();
+            if (Status.OK != status) {
+                System.out.println("BusAttachment.connect() failed with " + status.toString());
+                return;
+            }
+            
+            /* Register the service */
+            Service service = new Service();
+            status = bus.registerBusObject(service, "/testobject");
+            if (Status.OK != status) {
+                System.out.println("BusAttachment.registerBusObject() failed: " + status.toString());
+                return;
+            }
+
+            /* Request a well-known name */
+            int flag = 0;
+            status = bus.requestName("org.alljoyn.bus.samples.simple", flag);
+            if (status != Status.OK) {
+            	System.out.println("Failed to obtain a well-known bus name.");
+            }
+
+            /* Wait forever (or until control-c) */
+            while (true) {
+                Thread.currentThread().sleep(10000);
+            }
+        } catch (InterruptedException ex) {
+            System.out.println("Interrupted");
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public String Ping(String inStr) {
+        return inStr;
+    }
+}

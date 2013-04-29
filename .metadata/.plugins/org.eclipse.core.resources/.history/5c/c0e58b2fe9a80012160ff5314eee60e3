@@ -1,0 +1,7 @@
+package com.example.prototypedesktop;
+
+import com.example.bus.MyInterface;
+
+public class MyBusObject implements MyInterface{
+
+}

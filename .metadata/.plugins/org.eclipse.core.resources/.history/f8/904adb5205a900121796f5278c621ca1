@@ -1,0 +1,14 @@
+package com.example.simple;
+
+@BusInterface
+public interface SimpleInterface {
+
+    /**
+     * Echo a string.
+     *
+     * @param inStr   The string to be echoed by the service.
+     * @return  The echoed string.
+     */
+    @BusMethod(signature="s", replySignature="s")
+    public String Ping(String inStr) throws BusException;
+}

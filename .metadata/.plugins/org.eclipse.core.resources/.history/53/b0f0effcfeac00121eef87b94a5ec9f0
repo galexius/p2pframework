@@ -1,0 +1,80 @@
+package com.example.firstapp;
+
+import java.util.ArrayList;
+
+import org.alljoyn.bus.BusException;
+import org.alljoyn.bus.BusObject;
+import org.alljoyn.bus.annotation.BusSignal;
+
+import android.util.Log;
+
+class Graph implements GraphInterface, BusObject, Observable {
+	ArrayList<Node> nodes = new ArrayList<Node>();
+    ArrayList<Edge> edges = new ArrayList<Edge>();
+    
+    public void setupPoints() {
+    	Log.d("Graph", "setupPoints()");
+		Node node1 = new Node(0.1f,0.1f,1);
+		Node node2 = new Node(0.1f,0.9f,2);
+		Node node3 = new Node(0.6f,0.6f,3);
+		Node node4 = new Node(0.9f,0.1f,4);
+		Node node5 = new Node(0.9f,0.9f,5);
+		nodes.add(node1);
+		nodes.add(node2);
+		nodes.add(node3);
+		nodes.add(node4);
+		nodes.add(node5);
+		
+		edges.add(new Edge(node1, node3));
+		edges.add(new Edge(node1, node4));
+		edges.add(new Edge(node1, node5));
+		edges.add(new Edge(node2, node3));
+		edges.add(new Edge(node2, node4));
+		edges.add(new Edge(node3, node5));
+		edges.add(new Edge(node4, node5));
+		
+	}
+    
+	@Override
+	@BusSignal
+	public synchronized void MoveNode(int id, double x, double y) throws BusException {
+		for (Node point : nodes) {
+			if(point.getId()==id){
+				point.x = (float) x;
+				point.y = (float) y;
+			}
+		}
+	}
+
+	public ArrayList<Node> getAllNodes() throws BusException {
+		return nodes;
+	}
+
+	public ArrayList<Edge> getAllEdge() throws BusException {
+		return edges;
+	}
+
+	@Override
+	@BusSignal
+	public void ChangeOwnerOfNode(int id, String owner) throws BusException {
+		for (Node node : nodes) {
+			if(node.getId() == id){
+				node.setOwner(owner);
+			}
+		}
+	}
+
+	@Override
+	public void addObserver(Observer obs) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void deleteObserver(Observer obs) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+}

@@ -1,0 +1,7 @@
+package com.example.firstapp;
+
+import android.app.Service;
+
+public class ServiceWrapper extends Service {
+
+}

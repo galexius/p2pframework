@@ -1,0 +1,13 @@
+package com.example.firstapp;
+
+public class Node {
+	public float x;
+	public float y;
+	private boolean occupied = false;
+	
+	
+    @Override
+    public String toString() {
+        return x + ", " + y;
+    }
+}

@@ -1,0 +1,17 @@
+INDEX VERSION 1.126+G:\Bachelor\workspace\.metadata\.plugins\org.eclipse.jdt.core
+379668179.index
+1044072686.index
+123916842.index
+3744094047.index
+568840361.index
+1445616205.index
+946384033.index
+2124513510.index
+1488013495.index
+566170969.index
+1198615245.index
+3396976902.index
+2283446116.index
+1184505829.index
+2268119641.index
+3153358603.index

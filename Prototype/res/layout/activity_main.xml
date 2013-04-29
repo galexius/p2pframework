@@ -1,0 +1,44 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp" 
+    tools:context=".MainActivity" >
+    
+    <EditText
+        android:id="@+id/connect_channel_name"
+        android:layout_width="0dip"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/create_channel_name"
+        android:layout_alignParentLeft="true"
+        android:layout_toLeftOf="@+id/connect_button"
+        android:hint="@string/channel_name" />
+
+	<Button android:id="@+id/connect_button"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_alignParentRight="true"
+	    android:layout_alignParentTop="true"
+	    android:onClick="connect"
+	    android:text="@string/button_connect" />
+	
+    <EditText
+        android:id="@+id/create_channel_name"
+        android:layout_width="0dip"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/create_button"
+        android:layout_alignParentLeft="true"
+        android:layout_alignTop="@+id/create_button"
+        android:layout_toLeftOf="@+id/create_button"
+        android:hint="@string/channel_name" />
+
+	<Button android:id="@+id/create_button"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_alignParentRight="true"
+	    android:onClick="create"
+	    android:layout_below="@+id/connect_button"
+	    android:text="@string/button_create" />
+    
+</RelativeLayout>

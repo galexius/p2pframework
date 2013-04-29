@@ -1,0 +1,12 @@
+package com.example.bus;
+
+import org.alljoyn.bus.BusException;
+import org.alljoyn.bus.annotation.BusInterface;
+import org.alljoyn.bus.annotation.BusSignal;
+
+@BusInterface (name = "com.example.bus.MyInterface")
+public interface MyInterface {
+
+	 @BusSignal
+    public String MyMethod(double x,double y) throws BusException;
+}

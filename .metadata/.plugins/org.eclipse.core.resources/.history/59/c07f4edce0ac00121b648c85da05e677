@@ -1,0 +1,22 @@
+package com.example.firstapp;
+
+import java.util.ArrayList;
+
+import org.alljoyn.bus.BusException;
+import org.alljoyn.bus.annotation.BusInterface;
+import org.alljoyn.bus.annotation.BusProperty;
+import org.alljoyn.bus.annotation.BusSignal;
+
+@BusInterface (name = "com.example.firstapp.GraphInterface")
+public interface GraphInterface {
+
+    @BusSignal
+    public boolean moveNode(double x,double y) throws BusException;
+	 
+	@BusProperty
+    public ArrayList<Node> getAllNodes() throws BusException;
+	
+    @BusProperty
+    public ArrayList<Edge> getAllEdge() throws BusException;
+	 
+}

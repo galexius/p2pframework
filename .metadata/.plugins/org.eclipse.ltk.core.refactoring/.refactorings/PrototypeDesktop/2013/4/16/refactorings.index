@@ -1,0 +1,6 @@
+1366287825548	Rename type 'DestopServiceWrapper'
+1366372559830	Rename type 'DesktopServiceWrapper'
+1366372984093	Rename local variable 'desktopApp'
+1366372993016	Delete element
+1366373690529	Extract constant 'COM_EXAMPLE_FIRSTAPP_PROTOTYPE'
+1366373832645	Convert local variable 'myBusObject' to field

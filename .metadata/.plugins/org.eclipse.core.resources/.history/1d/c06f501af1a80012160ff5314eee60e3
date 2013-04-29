@@ -1,0 +1,19 @@
+package com.example.prototypedesktop;
+
+import org.alljoyn.bus.BusException;
+import org.alljoyn.bus.BusObject;
+import org.alljoyn.bus.annotation.BusSignal;
+
+import com.example.bus.MyInterface;
+
+public class MyBusObject implements MyInterface,BusObject{
+
+	@Override
+	@BusSignal
+	public String MyMethod(double x, double y) throws BusException {
+		System.out.println("received: x="+x+" y="+y);
+		
+		return null;
+	}
+
+}

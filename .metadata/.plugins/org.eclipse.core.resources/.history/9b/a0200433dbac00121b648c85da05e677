@@ -1,0 +1,149 @@
+package com.example.firstapp;
+
+import java.util.ArrayList;
+
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.util.Log;
+import android.view.Display;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.View.OnTouchListener;
+import android.view.WindowManager;
+
+@SuppressLint("NewApi")
+public class DrawView extends View implements OnTouchListener,Observer {
+    private static float TOUCH_SIZE;
+
+	private static final String TAG = "DrawView";
+
+    ArrayList<Node> points = new ArrayList<Node>();
+    ArrayList<Edge> edges = new ArrayList<Edge>();
+    
+    Paint paint = new Paint();
+    boolean pointHit = false;
+    Node redPoint = new Node();
+    Node bluePoint = new Node();
+    
+
+	private Bitmap redButton;
+	private Bitmap blueButton;
+
+	private MainApplication application;
+
+	private int displayWidth;
+	private int displayHeight;
+
+	private int offset;
+
+	private Node hitPoint;
+    
+    @SuppressWarnings("deprecation")
+	public DrawView(Context context, MainApplication application) {
+        super(context);
+		this.application = application;
+		application.addObserver(this);
+        setFocusable(true);
+        setFocusableInTouchMode(true);
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
+        
+        
+        displayWidth = display.getWidth();
+        displayHeight = display.getHeight();
+               
+        TOUCH_SIZE = displayWidth * 0.2f;
+        setupPoints();
+        
+        paint.setColor(Color.RED);
+        this.setOnTouchListener(this);
+
+        redButton = BitmapFactory.decodeResource(getResources(),
+                R.drawable.red_button);
+        blueButton = BitmapFactory.decodeResource(getResources(),
+        		R.drawable.blue_button);
+        offset = redButton.getWidth()/2;
+    }
+    
+
+    private void setupPoints() {
+		Node node1 = new Node(0.1f,0.1f);
+		Node node2 = new Node(0.1f,0.9f);
+		Node node3 = new Node(0.6f,0.6f);
+		Node node4 = new Node(0.9f,0.1f);
+		Node node5 = new Node(0.9f,0.9f);
+		points.add(node1);
+		points.add(node2);
+		points.add(node3);
+		points.add(node4);
+		points.add(node5);
+		
+		edges.add(new Edge(node1, node3));
+		edges.add(new Edge(node1, node4));
+		edges.add(new Edge(node1, node5));
+		edges.add(new Edge(node2, node3));
+		edges.add(new Edge(node2, node4));
+		edges.add(new Edge(node3, node5));
+		edges.add(new Edge(node4, node5));
+		
+	}
+
+
+	@Override
+    public void onDraw(Canvas canvas) {
+		for (Edge edge : edges) {
+			canvas.drawLine(edge.getFrom().x*displayWidth, edge.getFrom().y*displayHeight, edge.getTo().x*displayWidth, edge.getTo().y*displayHeight, paint);
+		}
+		for (Node point : points) {
+			if(point.isOccupied()){				
+				canvas.drawBitmap(redButton, (point.x*displayWidth)-offset, (point.y*displayHeight)-offset, null);	
+			}else{
+				canvas.drawBitmap(blueButton, (point.x*displayWidth)-offset, (point.y*displayHeight)-offset, null);
+			}
+			
+		}
+    }
+    
+
+    public boolean onTouch(View view, MotionEvent event) {
+    	 hitPoint = null;
+         if(event.getAction() == MotionEvent.ACTION_DOWN){
+        	 for (Node point : points) {
+        		 if(Math.abs(point.x*displayWidth - event.getX()) < TOUCH_SIZE && Math.abs(point.y* displayHeight - event.getY()) < TOUCH_SIZE){
+            		 pointHit = true;
+            		 hitPoint = point;
+            		 Log.d(TAG, "hit");
+            	 }
+			}
+        	 
+         }
+         if(event.getAction() == MotionEvent.ACTION_UP){
+        	 pointHit = false;
+        	 return false;
+         }
+         if(pointHit && hitPoint != null){
+	        hitPoint.x = event.getX()/displayWidth;
+	        hitPoint.y = event.getY()/displayHeight;
+	        invalidate();
+	        application.setLocalPoint(hitPoint);
+         }
+        return true;
+    }
+
+	@Override
+	public void update(Observable o, Object arg) {
+		String qualifier = (String) arg;
+
+		if (qualifier.equals(MainApplication.REMOTE_POINT_CHANGED_EVENT)) {
+			bluePoint = application.getRemotePoint();
+			postInvalidate();
+			Log.d(TAG, "remote point set with: x=" + bluePoint.x + " y=" +bluePoint.y);
+		}
+		
+	}
+}

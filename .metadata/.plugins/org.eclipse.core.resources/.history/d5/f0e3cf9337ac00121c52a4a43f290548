@@ -1,0 +1,11 @@
+package com.example.firstapp;
+
+public class Node {
+	public float x;
+	public float y;
+	
+    @Override
+    public String toString() {
+        return x + ", " + y;
+    }
+}

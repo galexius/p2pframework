@@ -1,0 +1,54 @@
+1366639326436	Delete element
+1366719884805	Move type 'PrototypeService' to new file
+1366729340847	Delete element
+1366729370722	Delete elements
+1366729433777	Delete element
+1366729483606	Copy files
+1366731635934	Extract local variable 'p'
+1366731709612	Rename method 'setPoint'
+1366733101299	Copy file
+1366733244002	Copy file
+1366733272074	Rename field 'button'
+1366733327008	Rename field 'point'
+1366733333569	Rename field 'point'
+1366735725303	Extract local variable 'width'
+1366735741503	Extract local variable 'height'
+1366735752391	Convert local variable 'displayWidth' to field
+1366735760568	Convert local variable 'displayHeight' to field
+1366736104914	Rename type 'Point'
+1366736167810	Rename field 'nodes'
+1366736466289	Rename type 'Graph'
+1366736497214	Encapsulate field 'to'
+1366736500095	Encapsulate field 'from'
+1366736550803	Encapsulate field 'occupied'
+1366736751295	Extract local variable 'node'
+1366799935407	Extract local variable 'i'
+1366799957798	Convert local variable 'buttonSize' to field
+1366799996257	Rename field 'buttonSize'
+1366800247066	Rename field 'hitPoint'
+1366800327594	Rename local variable 'iterable_element'
+1366800384244	Extract constant '_50_0F'
+1366806810330	Convert local variable 'hitPoint' to field
+1366808799089	Rename type 'MyInterface'
+1366808887479	Rename type 'GraphState'
+1366809225600	Rename method 'MySignal'
+1366809293966	Rename type 'PrototypeService'
+1366809339246	Rename method 'getPoint'
+1366810043652	Rename local variable 'iterable_element'
+1366810262677	Rename field 'points'
+1366810694248	Rename local variable 'owner'
+1366810919887	Encapsulate field 'userId'
+1366811665217	Extract local variable 'graph2'
+1366812865317	Rename method 'sendMessages'
+1366812929925	Rename field 'SEND_MESSAGES'
+1366813251410	Rename local variable 'iterable_element'
+1366814213878	Rename field 'mService'
+1366816177758	Rename method 'changeOwnerOfNode'
+1366816184420	Rename method 'moveNode'
+1366822512329	Rename field 'OUTBOUND_CHANGED_EVENT'
+1366822643620	Rename field 'HANDLE_OUTBOUND_CHANGED_EVENT'
+1366822821353	Encapsulate field 'idOfChangedPoint'
+1366823787690	Extract local variable 'graph'
+1366826197522	Rename method 'setIdOfChangedPoint'
+1366826607463	Rename method 'getIdOfChangedPoint'
+1366897156707	Copy compilation unit

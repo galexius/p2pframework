@@ -1,0 +1,18 @@
+package com.example.prototypedesktop;
+
+import org.alljoyn.bus.BusException;
+import org.alljoyn.bus.BusObject;
+import org.alljoyn.bus.annotation.BusSignal;
+
+import com.example.firstapp.MyInterface;
+
+public class MyBusObject implements MyInterface,BusObject{
+
+	@Override
+	@BusSignal
+	public String MySignal(double x, double y) throws BusException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

@@ -1,0 +1,9 @@
+package com.example.firstapp;
+
+import java.util.ArrayList;
+
+public class Edge {
+	public Edge(Node from, Node to){
+		
+	}
+}

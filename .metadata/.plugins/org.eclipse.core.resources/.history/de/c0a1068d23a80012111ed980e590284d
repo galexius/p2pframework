@@ -1,0 +1,42 @@
+package com.example.prototypedesktop;
+
+import com.example.bus.MainService;
+import com.example.firstapp.Point;
+
+public class DesktopServiceWrapper extends MainService{
+
+	public DesktopServiceWrapper(DesktopApp app){
+		
+	}
+	
+	@Override
+	protected String getHostChannelName() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	protected String getChannelName() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	protected Point getPoint() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	protected void deleteObserver(MainService mainService) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void addObserver(MainService mainService) {
+		// TODO Auto-generated method stub
+		
+	}
+
+}
