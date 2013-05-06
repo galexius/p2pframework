@@ -9,9 +9,6 @@ import org.alljoyn.bus.SessionOpts;
 import org.alljoyn.bus.SessionPortListener;
 import org.alljoyn.bus.SignalEmitter;
 import org.alljoyn.bus.Status;
-import org.alljoyn.bus.annotation.BusSignalHandler;
-
-import com.example.firstapp.Graph.IdChange;
 
 import android.annotation.SuppressLint;
 import android.app.Notification;
@@ -25,8 +22,10 @@ import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 
+import com.example.firstapp.Graph.IdChange;
+
 @SuppressLint("HandlerLeak")
-public class MainService extends Service implements Observer {
+public class MainService extends Service {
 
 	private static final int EXIT = 1;
 	private static final int CONNECT = 2;
@@ -54,8 +53,8 @@ public class MainService extends Service implements Observer {
         Log.i(TAG, "onCreate()");
         startBusThread();
         app = (MainApplication)getApplication();
-        app.addObserver(this);      
-        app.getGraph().addObserver(this);
+//        app.addObserver(this);      
+//        app.getGraph().addObserver(this);
         
         CharSequence title = "AllJoyn";
         CharSequence message = "Prototype Hosting Service.";
@@ -287,57 +286,57 @@ public class MainService extends Service implements Observer {
 
 	private BusAttachment mBus = new BusAttachment(MainApplication.PACKAGE_NAME, BusAttachment.RemoteMessage.Receive);
 
-	public synchronized void update(Observable o, Object arg) {
-		Log.i(TAG, "update(" + arg + ")");
-		String qualifier = (String) arg;
-
-		if (qualifier.equals(MainApplication.APPLICATION_QUIT_EVENT)) {
-			Message message = mHandler
-					.obtainMessage(HANDLE_APPLICATION_QUIT_EVENT);
-			mHandler.sendMessage(message);
-		}
-
-		if (qualifier.equals(MainApplication.USE_JOIN_CHANNEL_EVENT)) {
-			Message message = mHandler
-					.obtainMessage(HANDLE_USE_JOIN_CHANNEL_EVENT);
-			mHandler.sendMessage(message);
-		}
-
-		if (qualifier.equals(MainApplication.USE_LEAVE_CHANNEL_EVENT)) {
-			Message message = mHandler
-					.obtainMessage(HANDLE_USE_LEAVE_CHANNEL_EVENT);
-			mHandler.sendMessage(message);
-		}
-
-		if (qualifier.equals(MainApplication.HOST_INIT_CHANNEL_EVENT)) {
-			Message message = mHandler
-					.obtainMessage(HANDLE_HOST_INIT_CHANNEL_EVENT);
-			mHandler.sendMessage(message);
-		}
-
-		if (qualifier.equals(MainApplication.HOST_START_CHANNEL_EVENT)) {
-			Message message = mHandler
-					.obtainMessage(HANDLE_HOST_START_CHANNEL_EVENT);
-			mHandler.sendMessage(message);
-		}
-
-		if (qualifier.equals(MainApplication.HOST_STOP_CHANNEL_EVENT)) {
-			Message message = mHandler
-					.obtainMessage(HANDLE_HOST_STOP_CHANNEL_EVENT);
-			mHandler.sendMessage(message);
-		}
-
-		if (qualifier.equals(Graph.NODE_POSITION_CHANGED)) {
-			Message message = mHandler
-					.obtainMessage(NODE_POSITION_CHANGED_EVENT);
-			mHandler.sendMessage(message);
-		}
-		if (qualifier.equals(Graph.POINT_OWNERSHIP_CHANGED)) {
-			Message message = mHandler
-					.obtainMessage(HANDLE_POINT_OWNERSHIP_CHANGED);
-			mHandler.sendMessage(message);
-		}
-	}
+//	public synchronized void update(Observable o, Object arg) {
+//		Log.i(TAG, "update(" + arg + ")");
+//		String qualifier = (String) arg;
+//
+//		if (qualifier.equals(MainApplication.APPLICATION_QUIT_EVENT)) {
+//			Message message = mHandler
+//					.obtainMessage(HANDLE_APPLICATION_QUIT_EVENT);
+//			mHandler.sendMessage(message);
+//		}
+//
+//		if (qualifier.equals(MainApplication.USE_JOIN_CHANNEL_EVENT)) {
+//			Message message = mHandler
+//					.obtainMessage(HANDLE_USE_JOIN_CHANNEL_EVENT);
+//			mHandler.sendMessage(message);
+//		}
+//
+//		if (qualifier.equals(MainApplication.USE_LEAVE_CHANNEL_EVENT)) {
+//			Message message = mHandler
+//					.obtainMessage(HANDLE_USE_LEAVE_CHANNEL_EVENT);
+//			mHandler.sendMessage(message);
+//		}
+//
+//		if (qualifier.equals(MainApplication.HOST_INIT_CHANNEL_EVENT)) {
+//			Message message = mHandler
+//					.obtainMessage(HANDLE_HOST_INIT_CHANNEL_EVENT);
+//			mHandler.sendMessage(message);
+//		}
+//
+//		if (qualifier.equals(MainApplication.HOST_START_CHANNEL_EVENT)) {
+//			Message message = mHandler
+//					.obtainMessage(HANDLE_HOST_START_CHANNEL_EVENT);
+//			mHandler.sendMessage(message);
+//		}
+//
+//		if (qualifier.equals(MainApplication.HOST_STOP_CHANNEL_EVENT)) {
+//			Message message = mHandler
+//					.obtainMessage(HANDLE_HOST_STOP_CHANNEL_EVENT);
+//			mHandler.sendMessage(message);
+//		}
+//
+//		if (qualifier.equals(Graph.NODE_POSITION_CHANGED)) {
+//			Message message = mHandler
+//					.obtainMessage(NODE_POSITION_CHANGED_EVENT);
+//			mHandler.sendMessage(message);
+//		}
+//		if (qualifier.equals(Graph.POINT_OWNERSHIP_CHANGED)) {
+//			Message message = mHandler
+//					.obtainMessage(HANDLE_POINT_OWNERSHIP_CHANGED);
+//			mHandler.sendMessage(message);
+//		}
+//	}
 
 	public static final short CONTACT_PORT = 27;
 
@@ -357,26 +356,26 @@ public class MainService extends Service implements Observer {
 	}
 	private PrototypeBusListener mBusListener = new PrototypeBusListener();
 
-	@BusSignalHandler(iface = NAME_PREFIX+".GraphInterface", signal = "MoveNode")
-    public void MoveNode(int id,double x,double y) throws BusException{
-		Log.d(TAG, "SignalHandler MoveNode" + x + ", " + y);
-		
-    	Graph graph = app.getGraph();
-    	graph.deleteObserver(MainService.this);
-		graph.MoveNode(id, x, y);
-    	app.remotePointChanged();
-    	graph.addObserver(MainService.this);
-    }
-    
-	@BusSignalHandler(iface = NAME_PREFIX+".GraphInterface", signal = "ChangeOwnerOfNode")
-    public void ChangeOwnerOfNode(int id,String owner) throws BusException	{
-		Log.d(TAG, "SignalHandler ChangeOwner" + id  + " , owner: " + owner);
-		Graph graph = app.getGraph();
-		graph.deleteObserver(MainService.this);
-    	app.getGraph().ChangeOwnerOfNode(id, owner);
-    	app.remotePointChanged();
-    	graph.addObserver(MainService.this);
-    }
+//	@BusSignalHandler(iface = NAME_PREFIX+".GraphInterface", signal = "MoveNode")
+//    public void MoveNode(int id,double x,double y) throws BusException{
+//		Log.d(TAG, "SignalHandler MoveNode" + x + ", " + y);
+//		
+//    	Graph graph = app.getGraph();
+//    	graph.deleteObserver(MainService.this);
+//		graph.MoveNode(id, x, y);
+//    	app.remotePointChanged();
+//    	graph.addObserver(MainService.this);
+//    }
+//    
+//	@BusSignalHandler(iface = NAME_PREFIX+".GraphInterface", signal = "ChangeOwnerOfNode")
+//    public void ChangeOwnerOfNode(int id,String owner) throws BusException	{
+//		Log.d(TAG, "SignalHandler ChangeOwner" + id  + " , owner: " + owner);
+//		Graph graph = app.getGraph();
+//		graph.deleteObserver(MainService.this);
+//    	app.getGraph().ChangeOwnerOfNode(id, owner);
+//    	app.remotePointChanged();
+//    	graph.addObserver(MainService.this);
+//    }
 
 
 
@@ -427,7 +426,7 @@ public class MainService extends Service implements Observer {
 			Log.e(TAG, "Cannot connect");
 			return;
 		}
-		app.setUserId(mBus.getUniqueName());
+		app.setUniqueID(mBus.getUniqueName());
 		app.getGraph().setupPoints();
 
 		status = mBus.registerSignalHandlers(this);
@@ -480,6 +479,7 @@ public class MainService extends Service implements Observer {
 		mBus.releaseName(wellKnownName);
 		mHostChannelState = HostChannelState.IDLE;
 	}
+	
     private void doAdvertise() {
         Log.i(TAG, "doAdvertise()");
      
@@ -625,10 +625,10 @@ public class MainService extends Service implements Observer {
 			try {
 				if(!mJoinedToSelf){
 					Log.i(TAG, "sending out");
-					mMyInterface.MoveNode(message.getId(),message.x, message.y);
+					mMyInterface.MoveNode(message.getId(),message.x, message.y, null);
 				}else{
 					if(mHostInterface!= null){
-						mHostInterface.MoveNode(message.getId(),message.x, message.y);
+						mHostInterface.MoveNode(message.getId(),message.x, message.y, null);
 					}
 
 				}
@@ -642,22 +642,22 @@ public class MainService extends Service implements Observer {
 	private void doSendNewOwner() {
 		Log.i(TAG, "doSendNewOwner()");
 		IdChange message;
-		while ((message = app.getGraph().getIdChange()) != null) {
-			Log.i(TAG, "doSendMessages(): sending message id to change: \"" + message + "\"");
-			
-			try {
-				if(!mJoinedToSelf){
-					Log.i(TAG, "sending out");
-					mMyInterface.ChangeOwnerOfNode(message.id, message.owner);
-				}else{
-					if(mHostInterface!= null){
-						mHostInterface.ChangeOwnerOfNode(message.id, message.owner);
-					}
-				}
-			} catch (BusException ex) {
-				Log.e(TAG, "Bus exception while sending message: (" + ex + ")");
-			}
-		}
+//		while ((message = app.getGraph().getIdChange()) != null) {
+//			Log.i(TAG, "doSendMessages(): sending message id to change: \"" + message + "\"");
+//			
+//			try {
+//				if(!mJoinedToSelf){
+//					Log.i(TAG, "sending out");
+//					mMyInterface.ChangeOwnerOfNode(message.id, message.owner);
+//				}else{
+//					if(mHostInterface!= null){
+//						mHostInterface.ChangeOwnerOfNode(message.id, message.owner);
+//					}
+//				}
+//			} catch (BusException ex) {
+//				Log.e(TAG, "Bus exception while sending message: (" + ex + ")");
+//			}
+//		}
 		
 	}
 
@@ -716,7 +716,7 @@ public class MainService extends Service implements Observer {
 		Log.i(TAG, "onDestroy()");
 		mBackgroundHandler.disconnect();
 		stopBusThread();
-		app.deleteObserver(this);
+		//app.deleteObserver(this);
 	}
 
 	@Override

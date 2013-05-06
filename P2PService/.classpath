@@ -3,6 +3,11 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
+	<classpathentry exported="true" kind="lib" path="G:/Bachelor/alljoyn-3.2.0-android-sdk-dbg/java/jar/alljoyn.jar" sourcepath="G:/Bachelor/alljoyn-3.2.0-src/alljoyn_java/src">
+		<attributes>
+			<attribute name="javadoc_location" value="file:/G:/Bachelor/alljoyn-3.2.0-android-sdk-dbg/java/docs/org/"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

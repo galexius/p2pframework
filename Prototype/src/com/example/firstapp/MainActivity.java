@@ -10,6 +10,7 @@ import android.widget.EditText;
 public class MainActivity extends Activity {
 
     public static final String EXTRA_MESSAGE = "com.example.firstapp.MESSAGE";
+	private MainApplication application;
 
     
      
@@ -17,6 +18,7 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);       
         setContentView(R.layout.activity_main);
+        application = (MainApplication) getApplication();
     }
 
 
@@ -28,24 +30,27 @@ public class MainActivity extends Activity {
     }
     
     public void connect(View view){
-    	MainApplication application = (MainApplication) getApplication();
-    	EditText edit   = (EditText)findViewById(R.id.connect_channel_name);
+    	EditText edit = (EditText)findViewById(R.id.connect_channel_name);
     	application.setChannelName(edit.getText().toString());
-    	application.useJoinChannel();
+    	application.joinChannel();
     	Intent intent = new Intent(this, Draw.class);
     	startActivity(intent);    	
     }
     
     public void create(View view){
-    	MainApplication application = (MainApplication) getApplication();
-    	EditText edit   = (EditText)findViewById(R.id.create_channel_name);
+    	EditText edit = (EditText)findViewById(R.id.create_channel_name);
     	application.setChannelName(edit.getText().toString());
     	application.setHostChannelName(edit.getText().toString());
     	application.hostInitChannel();    	
     	application.hostStartChannel();
-    	application.useJoinChannel();
     	Intent intent = new Intent(this, Draw.class);
     	startActivity(intent);  
+    }
+    
+    public void disconnect(View view){
+    	MainApplication application = (MainApplication) getApplication();
+    	application.leaveChannel();
+    	application.hostStopChannel();
     }
     
 }

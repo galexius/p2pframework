@@ -17,7 +17,7 @@ import android.view.View.OnTouchListener;
 import android.view.WindowManager;
 
 @SuppressLint("NewApi")
-public class DrawView extends View implements OnTouchListener,Observer {
+public class DrawView extends View implements OnTouchListener, GraphObserver {
     private static float TOUCH_SIZE;
 
 	private static final String TAG = "DrawView";
@@ -39,12 +39,18 @@ public class DrawView extends View implements OnTouchListener,Observer {
 	private int offset;
 
 	private Node hitPoint;
+
+	private Graph graph;
+
+	private boolean isWaitingForConnection;
     
     @SuppressWarnings("deprecation")
 	public DrawView(Context context, MainApplication application) {
         super(context);
 		this.application = application;
-		application.addObserver(this);
+		graph = application.getGraph();
+		graph.setupPoints();
+		graph.addObserver(this);
         setFocusable(true);
         setFocusableInTouchMode(true);
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
@@ -69,20 +75,24 @@ public class DrawView extends View implements OnTouchListener,Observer {
 
 	@Override
     public void onDraw(Canvas canvas) {
+		if(!application.isRemoteObjectSet()){
+			canvas.drawText("Waiting for connection!", displayWidth/2, displayHeight/2, paint);
+			isWaitingForConnection = true;
+			return;
+		}
+		isWaitingForConnection = false;
 		Graph graph = application.getGraph();
-		Log.d(TAG, "onDraw()");
 		try {
 			for (Edge edge : graph.getAllEdge()) {
-				canvas.drawLine(edge.getFrom().x*displayWidth, edge.getFrom().y*displayHeight, edge.getTo().x*displayWidth, edge.getTo().y*displayHeight, paint);
+				canvas.drawLine((float)edge.getFrom().x*displayWidth,(float) edge.getFrom().y*displayHeight,(float) edge.getTo().x*displayWidth,(float) edge.getTo().y*displayHeight, paint);
 			}
 		
 			for (Node point : graph.getAllNodes()) {
-				if(!point.getOwner().isEmpty() && !application.getUserId().equals(point.getOwner())){				
-					canvas.drawBitmap(redButton, (point.x*displayWidth)-offset, (point.y*displayHeight)-offset, null);	
+				if(!point.getOwner().isEmpty() && !application.getUniqueID().equals(point.getOwner())){				
+					canvas.drawBitmap(redButton,(float) (point.x*displayWidth)-offset,(float) (point.y*displayHeight)-offset, null);	
 				}else{
-					canvas.drawBitmap(blueButton, (point.x*displayWidth)-offset, (point.y*displayHeight)-offset, null);
-				}
-				
+					canvas.drawBitmap(blueButton,(float) (point.x*displayWidth)-offset,(float) (point.y*displayHeight)-offset, null);
+				}				
 			}
 		} catch (BusException e) {
 			e.printStackTrace();
@@ -91,30 +101,34 @@ public class DrawView extends View implements OnTouchListener,Observer {
     
 
     public boolean onTouch(View view, MotionEvent event) {
+		if(isWaitingForConnection){
+			invalidate();
+			return false;
+		}
 		Graph graph = application.getGraph();
 		try {
 	         if(event.getAction() == MotionEvent.ACTION_DOWN){
 				for (Node point : graph.getAllNodes()) {
-					 if(Math.abs(point.x*displayWidth - event.getX()) < TOUCH_SIZE && Math.abs(point.y* displayHeight - event.getY()) < TOUCH_SIZE){
-						 if(point.getOwner().equals(application.getUserId()) || point.getOwner().isEmpty()){
+					 if(Math.abs(point.x*displayWidth - event.getX(0)) < TOUCH_SIZE && Math.abs(point.y* displayHeight - event.getY(0)) < TOUCH_SIZE){
+						 if(point.getOwner().equals(application.getUniqueID()) || point.getOwner().isEmpty()){
 							 pointHit = true;
 							 hitPoint = point;
-							 graph.ChangeOwnerOfNode(hitPoint.getId(), application.getUserId());
+							 graph.ChangeOwnerOfNode(hitPoint.getId(), application.getUniqueID(), application.getUniqueID());
 							 Log.d(TAG, "hit");	 
-						 }
-						 
+						 }						 
 					 }
 				}	        	 
 	         }
 	         if(event.getAction() == MotionEvent.ACTION_UP && pointHit){
-	        	 graph.ChangeOwnerOfNode(hitPoint.getId(), "");
+	        	 graph.ChangeOwnerOfNode(hitPoint.getId(), "", application.getUniqueID());
 	        	 pointHit = false;
 	        	 return false;
 	         }
 	         if(pointHit && hitPoint != null){
-		        hitPoint.x = event.getX()/displayWidth;
-		        hitPoint.y = event.getY()/displayHeight;
-		        graph.MoveNode(hitPoint.getId(), hitPoint.x, hitPoint.y);
+	        	 Node nodeMove = new Node();
+		        nodeMove.x = event.getX()/displayWidth - hitPoint.x;
+		        nodeMove.y = event.getY()/displayHeight - hitPoint.y;
+		        graph.MoveNode(hitPoint.getId(), nodeMove.x, nodeMove.y, application.getUniqueID());
 		        invalidate();
 	         }
 		} catch (BusException e) {
@@ -122,15 +136,12 @@ public class DrawView extends View implements OnTouchListener,Observer {
 		}
         return true;
     }
+    
 
 	@Override
-	public void update(Observable o, Object arg) {
-		String qualifier = (String) arg;
-
-		if (qualifier.equals(MainApplication.REMOTE_POINT_CHANGED_EVENT)) {
-			Log.d(TAG, "Point changed notified");
+	public void update(int args) {
+		if(Graph.GRAPH_CHANGED == args)
 			postInvalidate();
-		}
 		
 	}
 }

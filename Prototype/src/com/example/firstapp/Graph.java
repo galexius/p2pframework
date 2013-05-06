@@ -1,17 +1,17 @@
 package com.example.firstapp;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.alljoyn.bus.BusException;
 import org.alljoyn.bus.BusObject;
-import org.alljoyn.bus.annotation.BusSignal;
+import org.alljoyn.bus.annotation.BusSignalHandler;
 
 import android.util.Log;
 
-class Graph implements GraphInterface, BusObject, Observable {
+class Graph implements GraphInterface, BusObject {
+	private MainApplication app;
+
 	public class IdChange{
 		public IdChange(int id2, String owner2) {
 			id = id2;
@@ -21,16 +21,21 @@ class Graph implements GraphInterface, BusObject, Observable {
 		public String owner;
 	}
 	
-	public static final String NODE_POSITION_CHANGED = "OUTBOUND_CHANGED_EVENT";
-	public static final String POINT_OWNERSHIP_CHANGED = "POINT_OWNERSHIP_CHANGED";
+	public Graph(MainApplication app){
+		this.app = app;	
+		addObserver(app);
+	}
 	
-	private int idOfChangedPoint = -1;
+	public static final int NODE_POSITION_CHANGED = 1;
+	public static final int POINT_OWNERSHIP_CHANGED = 2;
+	public static final int GRAPH_CHANGED = 3;
+	
 	private static final String TAG = "Graph";
 	ArrayList<Node> nodes = new ArrayList<Node>();
 	ArrayList<Node> changedNodes = new ArrayList<Node>();
     ArrayList<Edge> edges = new ArrayList<Edge>();
     ArrayList<IdChange> idChanges = new ArrayList<Graph.IdChange>();
-    private List<Observer> mObservers = new ArrayList<Observer>();
+    private List<GraphObserver> mObservers = new ArrayList<GraphObserver>();
     
     public void setupPoints() {
     	Log.d("Graph", "setupPoints()");
@@ -39,6 +44,7 @@ class Graph implements GraphInterface, BusObject, Observable {
 		Node node3 = new Node(0.6f,0.6f,3);
 		Node node4 = new Node(0.9f,0.1f,4);
 		Node node5 = new Node(0.9f,0.9f,5);
+		
 		nodes.add(node1);
 		nodes.add(node2);
 		nodes.add(node3);
@@ -56,14 +62,20 @@ class Graph implements GraphInterface, BusObject, Observable {
 	}
     
 	@Override
-	@BusSignal
-	public synchronized void MoveNode(int id, double x, double y) throws BusException {
+	@BusSignalHandler(iface = "com.example.firstapp.GraphInterface", signal = "MoveNode")
+	public synchronized void MoveNode(int id, double x, double y, String uniqueName) throws BusException {
+		
 		for (Node point : nodes) {
 			if(point.getId()==id){
-				notifyObservers(NODE_POSITION_CHANGED);
-				point.x = (float) x;
-				point.y = (float) y;
-				changedNodes.add(point);
+				point.x += x;
+				point.y += y;
+				if(uniqueName.equals(app.getUniqueID())){
+					Node changedNode = new Node(x,y,id);
+					changedNodes.add(changedNode);
+					notifyObservers(NODE_POSITION_CHANGED);
+					return;
+				}
+				notifyObservers(GRAPH_CHANGED);
 				return;
 			}
 		}
@@ -75,39 +87,44 @@ class Graph implements GraphInterface, BusObject, Observable {
 
 	public ArrayList<Edge> getAllEdge() throws BusException {
 		return edges;
+		
 	}
 
 	@Override
-	@BusSignal
-	public void ChangeOwnerOfNode(int id, String owner) throws BusException {
+	@BusSignalHandler(iface = "com.example.firstapp.GraphInterface", signal = "ChangeOwnerOfNode")
+	public synchronized void ChangeOwnerOfNode(int id, String owner, String uniqueID) throws BusException {
 		for (Node node : nodes) {
 			if(node.getId() == id){
 				node.setOwner(owner);
-				addIdOfChangedPoint(new IdChange(id,owner));
-				notifyObservers(POINT_OWNERSHIP_CHANGED);
+				if(uniqueID.equals(app.getUniqueID())){
+					addIdOfChangedPoint(new IdChange(id,owner));
+					notifyObservers(POINT_OWNERSHIP_CHANGED);
+					return;
+				}
+				notifyObservers(GRAPH_CHANGED);
 				return;
 			}
 		}
 	}
 
-	public synchronized void addObserver(Observer obs) {
+	public synchronized void addObserver(GraphObserver obs) {
         Log.i(TAG, "addObserver(" + obs + ")");
 		if (mObservers.indexOf(obs) < 0) {
 			mObservers.add(obs);
 		}
 	}
 	
-	public synchronized void deleteObserver(Observer obs) {
+	public synchronized void deleteObserver(GraphObserver obs) {
         Log.i(TAG, "deleteObserver(" + obs + ")");
 		mObservers.remove(obs);
 	}
 	
 
-	private void notifyObservers(Object arg) {
+	private void notifyObservers(int arg) {
         Log.i(TAG, "notifyObservers(" + arg + ")");
-        for (Observer obs : mObservers) {
+        for (GraphObserver obs : mObservers) {
             Log.i(TAG, "notify observer = " + obs);
-            obs.update(this, arg);
+            obs.update(arg);
         }
 	}
 

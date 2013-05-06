@@ -1,20 +1,15 @@
 package com.example.firstapp;
 
-import org.alljoyn.bus.annotation.Position;
 
 public class Node {
-	@Position(0)
-	public float x;
-	@Position(1)
-	public float y;
-	@Position(2)
+	public double x;
+	public double y;
 	private int id;
-	@Position(3)
 	private String owner ="";
 	
 	public Node(){};
 	
-    public Node(float x, float y,int id) {
+    public Node(double x, double y,int id) {
 		this.x = x;
 		this.y = y;
 		this.id = id;

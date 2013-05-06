@@ -8,8 +8,8 @@ import org.alljoyn.bus.annotation.BusSignal;
 public interface GraphInterface {
 
     @BusSignal
-    public void MoveNode(int id,double x,double y) throws BusException;
+    public void MoveNode(int id,double x,double y, String uniqueName) throws BusException;
     
     @BusSignal
-    public void ChangeOwnerOfNode(int id,String owner) throws BusException;	 
+    public void ChangeOwnerOfNode(int id,String owner, String uniqueID) throws BusException;	 
 }
