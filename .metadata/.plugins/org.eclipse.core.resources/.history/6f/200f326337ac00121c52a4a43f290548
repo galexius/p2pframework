@@ -1,7 +1,0 @@
-package com.example.firstapp;
-
-import java.util.ArrayList;
-
-public class Graph {
-	ArrayList<Node> edges = new ArrayList<Node>();
-}

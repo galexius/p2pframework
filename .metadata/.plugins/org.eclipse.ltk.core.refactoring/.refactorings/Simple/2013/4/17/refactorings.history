@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<session version="1.0">
-<refactoring comment="Copy 2 elements to &apos;res&apos;&#x0D;&#x0A;- Original project: &apos;Simple&apos;&#x0D;&#x0A;- Destination element: &apos;res&apos;&#x0D;&#x0A;- Original elements:&#x0D;&#x0A;     values-v14&#x0D;&#x0A;     values-v11" description="Copy folders" element1="res/values-v14" element2="res/values-v11" files="0" flags="589830" folders="2" id="org.eclipse.jdt.ui.copy" policy="org.eclipse.jdt.ui.copyResources" stamp="1366729628640" target="/Prototype/res" units="0" version="1.0"/>
-</session>
