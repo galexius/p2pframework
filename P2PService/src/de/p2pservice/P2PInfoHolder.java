@@ -16,4 +16,6 @@ public interface P2PInfoHolder {
 	public void removeObserver(Observer obs);
 	public String getUniqueID();
 	public void setUniqueID(String id);
+	public void addAdvertisedName(String name);
+	public void removeAdvertisedName(String name);
 }

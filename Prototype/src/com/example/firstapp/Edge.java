@@ -1,12 +1,9 @@
 package com.example.firstapp;
 
-import org.alljoyn.bus.annotation.Position;
 
 
 public class Edge {
-	@Position(0)
 	private Node from;
-	@Position(1)
 	private Node to;
 
 	public Edge(Node from, Node to){

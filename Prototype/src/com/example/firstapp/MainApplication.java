@@ -31,8 +31,8 @@ public class MainApplication extends Application implements P2PInfoHolder, Graph
 	
 	public static String PACKAGE_NAME;
 	private ComponentName mRunningService;
-	private String hostChannelName;
-	private String channelName;
+	private String hostChannelName = "";
+	private String channelName = "";
 	
 	public void onCreate() {
 		Log.i("MainApp", "onCreate");
@@ -46,7 +46,7 @@ public class MainApplication extends Application implements P2PInfoHolder, Graph
         if (mRunningService == null) {
             Log.e("", "onCreate(): failed to startService()");
         }
-        new Intent(this,MainActivity.class);
+        new Intent(this,LobbyActivity.class);
         
         Log.i("MainApp", "onCreate finished");
 	}
@@ -156,6 +156,7 @@ public class MainApplication extends Application implements P2PInfoHolder, Graph
         }
 	}
 	private List<Observer> mObservers = new ArrayList<Observer>();
+	private List<String> foundChannels = new ArrayList<String>();
 	private Graph graph = null;
 	private GraphInterface remoteGraph = null;
 
@@ -181,6 +182,8 @@ public class MainApplication extends Application implements P2PInfoHolder, Graph
 	}
 
 	public synchronized void hostInitChannel() {
+		notifyObservers(P2PService.UNBIND_SESSION);
+		notifyObservers(P2PService.RELEASE_NAME);
 		notifyObservers(P2PService.BIND_SESSION);
 		
 	}
@@ -243,6 +246,33 @@ public class MainApplication extends Application implements P2PInfoHolder, Graph
 	
 	public boolean isRemoteObjectSet(){
 		return remoteObjectSet;
+	}
+
+	@Override
+	public void addAdvertisedName(String name) {
+		foundChannels.add(name);
+	}
+
+	@Override
+	public void removeAdvertisedName(String name) {
+		if(foundChannels.contains(name)){
+			foundChannels.remove(name);
+		}
+	}
+	
+	public List<String> getFoundChannels(){
+		return foundChannels;
+	}
+
+	@TargetApi(Build.VERSION_CODES.GINGERBREAD)
+	public void returnToLobby() {
+		if(!hostChannelName.isEmpty()){
+			notifyObservers(P2PService.CANCEL_ADVERTISE);
+			notifyObservers(P2PService.LEAVE_SESSION);
+		}else{
+			notifyObservers(P2PService.LEAVE_SESSION);
+		}
+		
 	}
 	
 }

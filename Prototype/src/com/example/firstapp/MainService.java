@@ -58,7 +58,7 @@ public class MainService extends Service {
         
         CharSequence title = "AllJoyn";
         CharSequence message = "Prototype Hosting Service.";
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, LobbyActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 		Notification notification = new Notification(R.drawable.red_button, null, System.currentTimeMillis());
         notification.setLatestEventInfo(this, title, message, pendingIntent);

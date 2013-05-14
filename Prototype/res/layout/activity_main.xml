@@ -3,26 +3,19 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:paddingLeft="16dp"
-    android:paddingRight="16dp" 
-    tools:context=".MainActivity" >
-    
+    android:paddingRight="16dp"
+    tools:context=".LobbyActivity" >
+
     <EditText
-        android:id="@+id/connect_channel_name"
+        android:id="@+id/player_name"
         android:layout_width="0dip"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/create_channel_name"
         android:layout_alignParentLeft="true"
-        android:layout_toLeftOf="@+id/connect_button"
-        android:hint="@string/channel_name" />
-
-	<Button android:id="@+id/connect_button"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:layout_alignParentRight="true"
-	    android:layout_alignParentTop="true"
-	    android:onClick="connect"
-	    android:text="@string/button_connect" />
-	
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:hint="@string/player_name"
+        android:text="@string/default_player_name" />
+    
     <EditText
         android:id="@+id/create_channel_name"
         android:layout_width="0dip"
@@ -31,22 +24,44 @@
         android:layout_alignParentLeft="true"
         android:layout_alignTop="@+id/create_button"
         android:layout_toLeftOf="@+id/create_button"
+        android:layout_below= "@+id/player_name"
         android:hint="@string/channel_name" />
 
-	<Button android:id="@+id/create_button"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:layout_alignParentRight="true"
-	    android:onClick="create"
-	    android:layout_below="@+id/connect_button"
-	    android:text="@string/button_create" />
-	
-	<Button android:id="@+id/disconnect"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:layout_alignParentRight="true"
-	    android:layout_below="@+id/create_button"
-	    android:onClick="disconnect"
-	    android:text="@string/button_disconnect" />
-    
+    <Button
+        android:id="@+id/create_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below= "@+id/player_name"
+        android:onClick="create"
+        android:text="@string/button_create" />
+
+    <ListView
+        android:id="@+id/join_channel_list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/create_channel_name"
+        android:layout_alignTop="@+id/refresh_button"
+        android:layout_toLeftOf="@+id/refresh_button"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
+        android:background="#00202020"
+        android:choiceMode="singleChoice"
+        android:divider="#ff505050"
+        android:dividerHeight="1dp"
+        android:drawSelectorOnTop="true"
+        android:transcriptMode="alwaysScroll" />
+
+    <Button
+        android:id="@+id/refresh_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/create_channel_name"
+        android:onClick="refresh"
+        android:text="@string/button_refresh" />
+
 </RelativeLayout>

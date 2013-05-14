@@ -49,11 +49,8 @@ public abstract class P2PService<T> extends Service implements Observer {
 	
 	private BusAttachment bus;
 	
-	protected String channelName = "Channel";
-	
 	protected short contactPort = 100;
 	protected String objectPath = "/ObjectPath";
-
 	
 	public void onCreate() {
 
@@ -255,7 +252,28 @@ public abstract class P2PService<T> extends Service implements Observer {
 		assert (busAttachmentState == BusAttachmentState.DISCONNECTED);
 		bus.useOSLogging(true);
 		bus.setDebugLevel("ALLJOYN_JAVA", 7);
-		busListener = new BusListener();
+		busListener = new BusListener(){
+			@Override
+			public void foundAdvertisedName(String fullName, short transport, String namePrefix) {
+				//Notify only about own channels
+				if(namePrefix.equals(packageName)){
+					p2pInfoHolder.addAdvertisedName(getSimpleName(fullName));
+				}	
+			};
+			
+			@Override
+			public void lostAdvertisedName(String fullName, short transport, String namePrefix) {
+				//Notify only about own channels
+				if(namePrefix.equals(packageName))
+					p2pInfoHolder.removeAdvertisedName(getSimpleName(fullName));
+			}
+			
+			private String getSimpleName(String fullName){
+				int lastDotIndex = fullName.lastIndexOf(".");
+				String simpleName = fullName.substring(lastDotIndex+1);
+				return simpleName;
+			}
+		};
 		bus.registerBusListener(busListener);
 		BusObject busObject =p2pInfoHolder.getBusObject(); 
 		Status status;
@@ -297,7 +315,7 @@ public abstract class P2PService<T> extends Service implements Observer {
 				.compareTo(BusAttachmentState.DISCONNECTED);
 		assert (stateRelation >= 0);
 
-		Status status = bus.requestName(packageName + "." +channelName,
+		Status status = bus.requestName(packageName + "." +p2pInfoHolder.getHostChannelName(),
 				BusAttachment.ALLJOYN_REQUESTNAME_FLAG_DO_NOT_QUEUE);
 		if (status == Status.OK) {
 			hostChannelState = HostChannelState.NAMED;
@@ -317,15 +335,15 @@ public abstract class P2PService<T> extends Service implements Observer {
 
 		assert (hostChannelState == HostChannelState.NAMED);
 
-		bus.releaseName(channelName);
+		bus.releaseName(p2pInfoHolder.getHostChannelName());
 		hostChannelState = HostChannelState.IDLE;
 	}
 	
     private void doAdvertise() {
         Log.i(TAG, "doAdvertise()");
      
-    	Log.i(TAG, "Advertised name: " + channelName );
-        Status status = bus.advertiseName(packageName+"."+channelName, SessionOpts.TRANSPORT_WLAN);
+    	Log.i(TAG, "Advertised name: " + p2pInfoHolder.getHostChannelName() );
+        Status status = bus.advertiseName(packageName+"."+p2pInfoHolder.getHostChannelName(), SessionOpts.TRANSPORT_WLAN);
         
         if (status == Status.OK) {
         	hostChannelState = HostChannelState.ADVERTISED;
@@ -339,7 +357,7 @@ public abstract class P2PService<T> extends Service implements Observer {
     private void doCancelAdvertise() {
         Log.i(TAG, "doCancelAdvertise()");
        
-    	String wellKnownName = packageName + "." + channelName;
+    	String wellKnownName = packageName + "." + p2pInfoHolder.getHostChannelName();
         Status status = bus.cancelAdvertiseName(wellKnownName, SessionOpts.TRANSPORT_ANY);
         
         if (status != Status.OK) {
@@ -405,7 +423,7 @@ public abstract class P2PService<T> extends Service implements Observer {
 			}
 		}
 
-		String wellKnownName = packageName + "." + channelName;
+		String wellKnownName = packageName + "." + p2pInfoHolder.getChannelName();
 
 		SessionOpts sessionOpts = new SessionOpts(SessionOpts.TRAFFIC_MESSAGES,
 				true, SessionOpts.PROXIMITY_ANY, SessionOpts.TRANSPORT_WLAN);

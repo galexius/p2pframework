@@ -23,7 +23,7 @@
         android:theme="@style/AppTheme" 
         android:name=".MainApplication">
         <activity
-            android:name="com.example.firstapp.MainActivity"
+            android:name="com.example.firstapp.LobbyActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -34,7 +34,7 @@
         <activity
             android:name="com.example.firstapp.DisplayMessageActivity"
             android:label="@string/title_activity_display_message"
-            android:parentActivityName="com.example.firstapp.MainActivity" >
+            android:parentActivityName="com.example.firstapp.LobbyActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.firstapp.MainActivity" />
@@ -42,7 +42,7 @@
         <activity
             android:name="com.example.firstapp.Draw"
             android:label="@string/title_activity_display_message"
-            android:parentActivityName="com.example.firstapp.MainActivity" >
+            android:parentActivityName="com.example.firstapp.LobbyActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.firstapp.MainActivity" />

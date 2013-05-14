@@ -4,26 +4,33 @@ import org.alljoyn.bus.BusException;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.Log;
+import android.util.SparseIntArray;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 @SuppressLint("NewApi")
 public class DrawView extends View implements OnTouchListener, GraphObserver {
+	
+	SparseIntArray colorMap = new SparseIntArray ();
+	
     private static float TOUCH_SIZE;
 
 	private static final String TAG = "DrawView";
 
        
     Paint paint = new Paint();
+    Paint numbersPaint = new Paint();
     boolean pointHit = false;
     Node redPoint = new Node();
     Node bluePoint = new Node();   
@@ -43,11 +50,14 @@ public class DrawView extends View implements OnTouchListener, GraphObserver {
 	private Graph graph;
 
 	private boolean isWaitingForConnection;
+
+	private boolean isFinished = false;
     
     @SuppressWarnings("deprecation")
 	public DrawView(Context context, MainApplication application) {
         super(context);
 		this.application = application;
+		setupColorMap();
 		graph = application.getGraph();
 		graph.setupPoints();
 		graph.addObserver(this);
@@ -62,6 +72,9 @@ public class DrawView extends View implements OnTouchListener, GraphObserver {
         TOUCH_SIZE = displayWidth * 0.2f;
         
         paint.setColor(Color.RED);
+        paint.setStrokeWidth(displayWidth/50);
+        numbersPaint.setColor(Color.WHITE);
+        numbersPaint.setTextSize(0.05f*displayWidth);
         this.setOnTouchListener(this);
 
         redButton = BitmapFactory.decodeResource(getResources(),
@@ -71,10 +84,19 @@ public class DrawView extends View implements OnTouchListener, GraphObserver {
         offset = redButton.getWidth()/2;
     }
     
-
+	private void setupColorMap() {
+		colorMap.append(0, Color.BLUE);
+		colorMap.append(1, Color.CYAN);
+		colorMap.append(2, Color.GREEN);
+		colorMap.append(3, Color.MAGENTA);
+		colorMap.append(4, Color.RED);
+		colorMap.append(5, Color.YELLOW);
+	}
 
 	@Override
     public void onDraw(Canvas canvas) {
+		if(isFinished) return;
+		
 		if(!application.isRemoteObjectSet()){
 			canvas.drawText("Waiting for connection!", displayWidth/2, displayHeight/2, paint);
 			isWaitingForConnection = true;
@@ -82,8 +104,12 @@ public class DrawView extends View implements OnTouchListener, GraphObserver {
 		}
 		isWaitingForConnection = false;
 		Graph graph = application.getGraph();
+		
 		try {
+			int colorIndex = 0;
 			for (Edge edge : graph.getAllEdge()) {
+				paint.setColor(colorMap.get(colorIndex % colorMap.size()));
+				colorIndex++;
 				canvas.drawLine((float)edge.getFrom().x*displayWidth,(float) edge.getFrom().y*displayHeight,(float) edge.getTo().x*displayWidth,(float) edge.getTo().y*displayHeight, paint);
 			}
 		
@@ -93,14 +119,32 @@ public class DrawView extends View implements OnTouchListener, GraphObserver {
 				}else{
 					canvas.drawBitmap(blueButton,(float) (point.x*displayWidth)-offset,(float) (point.y*displayHeight)-offset, null);
 				}				
+				canvas.drawText(""+point.getId(),(float) point.x*displayWidth - offset/4,(float) point.y*displayHeight + offset/3, numbersPaint);
 			}
 		} catch (BusException e) {
 			e.printStackTrace();
+		}
+		if(graph.isGraphFinished()){
+			isFinished = true;
+			Log.i(TAG, "YOU WIN");
+			Context context = getContext();
+	    	CharSequence text = "YOU WIN, touch to return";
+	    	int duration = Toast.LENGTH_SHORT;
+
+	    	Toast toast = Toast.makeText(context, text, duration);
+	    	toast.show();
 		}
     }
     
 
     public boolean onTouch(View view, MotionEvent event) {
+    	if(isFinished){
+    		application.returnToLobby();
+    		Intent intent = new Intent(getContext(), LobbyActivity.class);
+    		getContext().startActivity(intent);
+    		return true;
+    	}
+    	
 		if(isWaitingForConnection){
 			invalidate();
 			return false;
@@ -110,7 +154,7 @@ public class DrawView extends View implements OnTouchListener, GraphObserver {
 	         if(event.getAction() == MotionEvent.ACTION_DOWN){
 				for (Node point : graph.getAllNodes()) {
 					 if(Math.abs(point.x*displayWidth - event.getX(0)) < TOUCH_SIZE && Math.abs(point.y* displayHeight - event.getY(0)) < TOUCH_SIZE){
-						 if(point.getOwner().equals(application.getUniqueID()) || point.getOwner().isEmpty()){
+						 if(!pointHit && (point.getOwner().equals(application.getUniqueID()) || point.getOwner().isEmpty())){
 							 pointHit = true;
 							 hitPoint = point;
 							 graph.ChangeOwnerOfNode(hitPoint.getId(), application.getUniqueID(), application.getUniqueID());
@@ -125,7 +169,7 @@ public class DrawView extends View implements OnTouchListener, GraphObserver {
 	        	 return false;
 	         }
 	         if(pointHit && hitPoint != null){
-	        	 Node nodeMove = new Node();
+	        	Node nodeMove = new Node();
 		        nodeMove.x = event.getX()/displayWidth - hitPoint.x;
 		        nodeMove.y = event.getY()/displayHeight - hitPoint.y;
 		        graph.MoveNode(hitPoint.getId(), nodeMove.x, nodeMove.y, application.getUniqueID());
