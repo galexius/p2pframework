@@ -57,12 +57,12 @@ public abstract class P2PService<T> extends Service implements Observer {
 		Log.i(TAG, "onCreate()");
 		packageName = this.getPackageName();
 		Context applicationContext = getApplicationContext();		
-		p2pInfoHolder = (P2PInfoHolder) applicationContext;
-		if(p2pInfoHolder== null){
-			Log.e(TAG, "Context must implement " + P2PInfoHolder.class.getSimpleName());
+		p2pApplication = (P2PApplication) applicationContext;
+		if(p2pApplication== null){
+			Log.e(TAG, "Context must implement " + P2PApplication.class.getSimpleName());
 			return;
 		}
-		p2pInfoHolder.addObserver(this);
+		p2pApplication.addObserver(this);
 		org.alljoyn.bus.alljoyn.DaemonInit.PrepareDaemon(getApplicationContext());
 		bus = new BusAttachment(packageName,  BusAttachment.RemoteMessage.Receive);
         startBusThread();
@@ -87,12 +87,15 @@ public abstract class P2PService<T> extends Service implements Observer {
 				case CANCEL_ADVERTISE: backgroundHandler.cancelAdvertise();break;
 				case JOIN_SESSION: backgroundHandler.joinSession();break;
 				case LEAVE_SESSION: backgroundHandler.leaveSession();break;
+				case EXIT: backgroundHandler.exit();break;
 			    default: break;
 			}
 	}
 	
 	@SuppressLint("HandlerLeak")
 	private final class BackgroundHandler extends Handler {
+		
+
 		public BackgroundHandler(Looper looper) {
 			super(looper);
 		}
@@ -173,6 +176,7 @@ public abstract class P2PService<T> extends Service implements Observer {
 			backgroundHandler.sendMessage(msg);
 		}
 		
+		
 
 		/**
 		 * The message handler for the worker thread that handles background
@@ -218,6 +222,7 @@ public abstract class P2PService<T> extends Service implements Observer {
 		        break;
 	        case EXIT:
                 getLooper().quit();
+                destroy();
                 break;
 			default:
 				break;
@@ -257,7 +262,7 @@ public abstract class P2PService<T> extends Service implements Observer {
 			public void foundAdvertisedName(String fullName, short transport, String namePrefix) {
 				//Notify only about own channels
 				if(namePrefix.equals(packageName)){
-					p2pInfoHolder.addAdvertisedName(getSimpleName(fullName));
+					p2pApplication.addAdvertisedName(getSimpleName(fullName));
 				}	
 			};
 			
@@ -265,7 +270,7 @@ public abstract class P2PService<T> extends Service implements Observer {
 			public void lostAdvertisedName(String fullName, short transport, String namePrefix) {
 				//Notify only about own channels
 				if(namePrefix.equals(packageName))
-					p2pInfoHolder.removeAdvertisedName(getSimpleName(fullName));
+					p2pApplication.removeAdvertisedName(getSimpleName(fullName));
 			}
 			
 			private String getSimpleName(String fullName){
@@ -275,10 +280,10 @@ public abstract class P2PService<T> extends Service implements Observer {
 			}
 		};
 		bus.registerBusListener(busListener);
-		BusObject busObject =p2pInfoHolder.getBusObject(); 
+		BusObject busObject =p2pApplication.getBusObject(); 
 		Status status;
 		if(busObject != null){
-			status = bus.registerBusObject(p2pInfoHolder.getBusObject(), objectPath);
+			status = bus.registerBusObject(p2pApplication.getBusObject(), objectPath);
 			if (Status.OK != status) {			
 				Log.e(TAG, "Cannot register : " + status);
 				return;
@@ -291,13 +296,13 @@ public abstract class P2PService<T> extends Service implements Observer {
 			return;
 		}
 
-		status = bus.registerSignalHandlers(p2pInfoHolder.getSignalHandler());
+		status = bus.registerSignalHandlers(p2pApplication.getSignalHandler());
 		if (status != Status.OK) {
-			Log.e(TAG, "Cannot register signalHandler");
+			Log.e(TAG, "Cannot register signalHandler: " + status);
 			return;
 		}
 		busAttachmentState = BusAttachmentState.CONNECTED;
-		p2pInfoHolder.setUniqueID(bus.getUniqueName());
+		p2pApplication.setUniqueID(bus.getUniqueName());
 	}
 
 	private boolean doDisconnect() {
@@ -315,7 +320,7 @@ public abstract class P2PService<T> extends Service implements Observer {
 				.compareTo(BusAttachmentState.DISCONNECTED);
 		assert (stateRelation >= 0);
 
-		Status status = bus.requestName(packageName + "." +p2pInfoHolder.getHostChannelName(),
+		Status status = bus.requestName(packageName + "." +p2pApplication.getHostChannelName(),
 				BusAttachment.ALLJOYN_REQUESTNAME_FLAG_DO_NOT_QUEUE);
 		if (status == Status.OK) {
 			hostChannelState = HostChannelState.NAMED;
@@ -335,15 +340,15 @@ public abstract class P2PService<T> extends Service implements Observer {
 
 		assert (hostChannelState == HostChannelState.NAMED);
 
-		bus.releaseName(p2pInfoHolder.getHostChannelName());
+		bus.releaseName(p2pApplication.getHostChannelName());
 		hostChannelState = HostChannelState.IDLE;
 	}
 	
     private void doAdvertise() {
         Log.i(TAG, "doAdvertise()");
      
-    	Log.i(TAG, "Advertised name: " + p2pInfoHolder.getHostChannelName() );
-        Status status = bus.advertiseName(packageName+"."+p2pInfoHolder.getHostChannelName(), SessionOpts.TRANSPORT_WLAN);
+    	Log.i(TAG, "Advertised name: " + p2pApplication.getHostChannelName() );
+        Status status = bus.advertiseName(packageName+"."+p2pApplication.getHostChannelName(), SessionOpts.TRANSPORT_WLAN);
         
         if (status == Status.OK) {
         	hostChannelState = HostChannelState.ADVERTISED;
@@ -357,7 +362,7 @@ public abstract class P2PService<T> extends Service implements Observer {
     private void doCancelAdvertise() {
         Log.i(TAG, "doCancelAdvertise()");
        
-    	String wellKnownName = packageName + "." + p2pInfoHolder.getHostChannelName();
+    	String wellKnownName = packageName + "." + p2pApplication.getHostChannelName();
         Status status = bus.cancelAdvertiseName(wellKnownName, SessionOpts.TRANSPORT_ANY);
         
         if (status != Status.OK) {
@@ -374,6 +379,7 @@ public abstract class P2PService<T> extends Service implements Observer {
 		SessionOpts sessionOpts = new SessionOpts(SessionOpts.TRAFFIC_MESSAGES,
 				true, SessionOpts.PROXIMITY_ANY, SessionOpts.TRANSPORT_WLAN);
 
+		
 		sessionPortListener = new SessionPortListener(){
 			public boolean acceptSessionJoiner(short sessionPort,
 								String joiner, SessionOpts sessionOpts) {
@@ -390,14 +396,13 @@ public abstract class P2PService<T> extends Service implements Observer {
 							+ sessionPort + ", " + id + ", " + joiner + ")");
 					hostSessionId = id;
 					
-					SignalEmitter emitter = new SignalEmitter(p2pInfoHolder.getBusObject(), id,
+					SignalEmitter emitter = new SignalEmitter(p2pApplication.getBusObject(), id,
 							SignalEmitter.GlobalBroadcast.Off);
 					hostInterface = emitter
 							.getInterface(getBusObjectInterface());
-					p2pInfoHolder.setSignalEmiter(hostInterface);
+					p2pApplication.setSignalEmiter(hostInterface);
 			}
 		};
-		
 		Status status = bus.bindSessionPort(mutableContactPort, sessionOpts,
 				sessionPortListener);
 
@@ -423,7 +428,7 @@ public abstract class P2PService<T> extends Service implements Observer {
 			}
 		}
 
-		String wellKnownName = packageName + "." + p2pInfoHolder.getChannelName();
+		String wellKnownName = packageName + "." + p2pApplication.getChannelName();
 
 		SessionOpts sessionOpts = new SessionOpts(SessionOpts.TRAFFIC_MESSAGES,
 				true, SessionOpts.PROXIMITY_ANY, SessionOpts.TRANSPORT_WLAN);
@@ -443,11 +448,12 @@ public abstract class P2PService<T> extends Service implements Observer {
 			Log.e(TAG, "Unable to join session: (" + status + ")");
 			return;
 		}
-		SignalEmitter emitter = new SignalEmitter(p2pInfoHolder.getBusObject(), useSessionId,
+		SignalEmitter emitter = new SignalEmitter(p2pApplication.getBusObject(), useSessionId,
 				SignalEmitter.GlobalBroadcast.Off);
 		clientInterface = emitter.getInterface(getBusObjectInterface());
+		p2pApplication.setSignalEmiter(clientInterface);
 		
-		p2pInfoHolder.setSignalEmiter(clientInterface);
+		
 	}
 
 
@@ -472,7 +478,7 @@ public abstract class P2PService<T> extends Service implements Observer {
 
 	
 	
-	private P2PInfoHolder p2pInfoHolder;
+	private P2PApplication p2pApplication;
 	private BusListener busListener;
 	private SessionPortListener sessionPortListener;
 
@@ -515,6 +521,13 @@ public abstract class P2PService<T> extends Service implements Observer {
 		Log.i(TAG, "onDestroy()");
 		backgroundHandler.disconnect();
 		stopBusThread();
+		this.stopSelf();
+	}
+	
+	@Override
+	public void onDestroy(){
+		destroy();
+		super.onDestroy();
 	}
 
 	@Override

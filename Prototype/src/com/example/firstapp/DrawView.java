@@ -2,6 +2,8 @@ package com.example.firstapp;
 
 import org.alljoyn.bus.BusException;
 
+import de.p2pservice.views.LobbyActivity;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="de.bachelor.maumau"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <!-- Permission required to use the TCP transport -->
+    <uses-permission android:name="android.permission.INTERNET" >
+    </uses-permission>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" >
+    </uses-permission>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" >
+    </uses-permission>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" >
+    </uses-permission>
+    <uses-permission android:name="android.permission.BLUETOOTH" >
+    </uses-permission>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" >
+    </uses-permission>
+
+    <uses-sdk
+        android:minSdkVersion="8"
+        android:targetSdkVersion="17" />
+
+    <application
+        android:name="de.bachelor.maumau.MauMauApplication"
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <activity
+            android:name="de.bachelor.maumau.MauMauLobbyView"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        
+        <activity
+            android:name="de.bachelor.maumau.Draw"
+            android:parentActivityName="de.bachelor.maumau.MauMauLobbyView" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="de.bachelor.maumau.MauMauLobbyView" />
+        </activity>
+        <activity
+            android:name="de.bachelor.maumau.GameActivity"
+            android:parentActivityName="de.bachelor.maumau.MauMauLobbyView" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="de.bachelor.maumau.MauMauLobbyView" />
+        </activity>
+
+        <service android:name="de.bachelor.maumau.MauMauService" >
+        </service>
+        <activity
+            android:name="de.bachelor.maumau.Activity"
+            android:label="@string/title_activity_" >
+        </activity>
+    </application>
+
+</manifest>

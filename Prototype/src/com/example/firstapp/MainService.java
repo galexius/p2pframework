@@ -24,6 +24,8 @@ import android.util.Log;
 
 import com.example.firstapp.Graph.IdChange;
 
+import de.p2pservice.views.LobbyActivity;
+
 @SuppressLint("HandlerLeak")
 public class MainService extends Service {
 

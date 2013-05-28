@@ -13,8 +13,29 @@ public final class R {
     public static final class drawable {
         public static int ic_launcher=0x7f020000;
     }
+    public static final class id {
+        public static int create_button=0x7f060002;
+        public static int create_channel_name=0x7f060001;
+        public static int join_channel_list=0x7f060003;
+        public static int player_name=0x7f060000;
+        public static int quit=0x7f060005;
+        public static int refresh_button=0x7f060004;
+    }
+    public static final class layout {
+        public static int activity_main=0x7f030000;
+    }
     public static final class string {
-        public static int app_name=0x7f030000;
+        public static int action_settings=0x7f040001;
+        public static int app_name=0x7f040000;
+        public static int button_connect=0x7f040003;
+        public static int button_create=0x7f040006;
+        public static int button_quit=0x7f040008;
+        public static int button_refresh=0x7f040007;
+        public static int channel_name=0x7f040002;
+        public static int default_player_name=0x7f04000a;
+        public static int hello_world=0x7f040005;
+        public static int player_name=0x7f040009;
+        public static int title_activity_display_message=0x7f040004;
     }
     public static final class style {
         /** 
@@ -38,10 +59,10 @@ public final class R {
     
  API 14 theme customizations can go here. 
          */
-        public static int AppBaseTheme=0x7f040000;
+        public static int AppBaseTheme=0x7f050000;
         /**  Application theme. 
  All customizations that are NOT specific to a particular API-level can go here. 
          */
-        public static int AppTheme=0x7f040001;
+        public static int AppTheme=0x7f050001;
     }
 }

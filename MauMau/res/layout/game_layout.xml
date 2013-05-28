@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background"
+    android:tileMode="repeat"
+    android:orientation="vertical"
+    android:showDividers="beginning|middle|end" >
+
+    <Gallery
+	    android:id="@+id/played_cards_gallery"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_above="@+id/own_cards_label"
+	    android:gravity="bottom" />
+
+    <Gallery
+        android:id="@+id/own_cards_gallery"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:fadingEdge="horizontal"
+        android:layout_alignParentBottom= "true"
+        android:spacing="@dimen/activity_vertical_margin" />
+
+    <TextView
+        android:id="@+id/own_cards_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:layout_above="@+id/own_cards_gallery"
+        android:layout_centerHorizontal="true"
+        android:text="@string/own_cards" />
+
+    <TextView
+        android:id="@+id/played_cards_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/played_cards_gallery"
+        android:text="@string/played_cards" />
+   
+    <ListView
+        android:id="@+id/listView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_above="@+id/startButon"
+        android:layout_alignParentTop="true" >
+    </ListView>
+
+    <Button
+        android:id="@+id/startButon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/played_cards_label"
+        android:onClick="start"
+        android:text="@string/start" />
+
+    <Button
+        android:id="@+id/draw_card_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/played_cards_label"
+        android:layout_toRightOf="@+id/startButon"
+        android:onClick="drawCard"
+        android:text="@string/draw_card" />
+
+    <Button
+        android:id="@+id/next_turn_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="nextTurn"
+        android:layout_above="@+id/played_cards_label"
+        android:layout_toRightOf="@+id/draw_card_button"
+        android:text="@string/next_turn" />
+    
+</RelativeLayout>
