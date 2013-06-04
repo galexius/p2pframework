@@ -23,6 +23,7 @@ public class CardsDrawnEvent {
 		
 		ruleEnforcer.addExclusiveRule(new SameSuitRule(gameManager));
 		ruleEnforcer.addExclusiveRule(new SameValueRule(gameManager));
+		ruleEnforcer.addExclusiveRule(new JackAllowedRule(gameManager));
 	}
 
 	

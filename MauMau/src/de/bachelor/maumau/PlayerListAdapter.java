@@ -29,7 +29,7 @@ final class PlayerListAdapter extends ArrayAdapter<String> {
 		
 		for (String key : joinedPlayers.keySet()) {
 			String playerName = application.getUniqueID().equals(key) ? "Me" : joinedPlayers.get(key);
-			int numberOfCards = gameManager.getCardsForUniqueId(key).size();
+			int numberOfCards = gameManager.getCardsForPlayersId(key).size();
 			String currrentTurn = gameManager.getCurrentPlayersID().equals(key) ? "CurrentTurn" : "";
 			
 			playerList.add(playerName+", Cards: " + numberOfCards + " " + currrentTurn );
@@ -43,8 +43,6 @@ final class PlayerListAdapter extends ArrayAdapter<String> {
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		  	  
-		 
          TextView textView = new TextView(getContext());	
          textView.setTextColor(Color.WHITE);
          textView.setText(playerList.get(position));         

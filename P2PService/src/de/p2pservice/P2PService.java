@@ -280,7 +280,7 @@ public abstract class P2PService<T> extends Service implements Observer {
 			}
 		};
 		bus.registerBusListener(busListener);
-		BusObject busObject =p2pApplication.getBusObject(); 
+		BusObject busObject = p2pApplication.getBusObject(); 
 		Status status;
 		if(busObject != null){
 			status = bus.registerBusObject(p2pApplication.getBusObject(), objectPath);
@@ -309,6 +309,8 @@ public abstract class P2PService<T> extends Service implements Observer {
 		Log.i(TAG, "doDisonnect()");
 		assert (busAttachmentState == BusAttachmentState.CONNECTED);
 		bus.unregisterBusListener(busListener);
+		bus.unregisterSignalHandlers(p2pApplication.getSignalHandler());
+		bus.unregisterBusObject(p2pApplication.getBusObject());
 		bus.disconnect();
 		busAttachmentState = BusAttachmentState.DISCONNECTED;
 		return true;

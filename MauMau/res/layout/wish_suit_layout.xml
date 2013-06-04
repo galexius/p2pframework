@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background"
+    android:orientation="vertical"
+    android:showDividers="beginning|middle|end"
+    android:tileMode="repeat" >
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dip"
+        android:text="@string/wish_suit"
+        android:textColor="@color/white"
+        android:layout_centerHorizontal="true"
+        android:textIsSelectable="false" />
+
+    <Button
+        android:id="@+id/clubs_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/heart_button"
+        android:layout_alignBottom="@+id/heart_button"
+        android:layout_toRightOf="@+id/heart_button"
+        android:onClick="clubs"
+        android:drawableTop="@drawable/suit_clubs" />
+
+    <Button
+        android:id="@+id/diamond_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/clubs_button"
+        android:layout_alignBottom="@+id/clubs_button"
+        android:layout_toRightOf="@+id/clubs_button"
+        android:onClick="diamond"
+        android:drawableTop="@drawable/suit_diamond" />
+
+    <Button
+        android:id="@+id/heart_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/textView1"
+        android:onClick="heart"
+        android:drawableTop="@drawable/suit_heart" />
+
+    <Button
+        android:id="@+id/spades_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/diamond_button"
+        android:layout_alignBottom="@+id/diamond_button"
+        android:layout_toRightOf="@+id/diamond_button"
+        android:onClick="spades"
+        android:drawableTop="@drawable/suit_spades" />
+
+</RelativeLayout>

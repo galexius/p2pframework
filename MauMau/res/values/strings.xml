@@ -10,5 +10,6 @@
     <string name="start">Start</string>
     <string name="draw_card">Draw Card</string>
     <string name="next_turn">Next Turn</string>
+    <string name="wish_suit">Wish Your Suit</string>
 
 </resources>

@@ -27,8 +27,8 @@
         android:id="@+id/own_cards_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/white"
         android:layout_above="@+id/own_cards_gallery"
+        android:textColor="@color/white"
         android:layout_centerHorizontal="true"
         android:text="@string/own_cards" />
 
@@ -64,6 +64,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/played_cards_label"
         android:layout_toRightOf="@+id/startButon"
+        android:enabled="false"
         android:onClick="drawCard"
         android:text="@string/draw_card" />
 
@@ -72,6 +73,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="nextTurn"
+        android:enabled="false"
         android:layout_above="@+id/played_cards_label"
         android:layout_toRightOf="@+id/draw_card_button"
         android:text="@string/next_turn" />

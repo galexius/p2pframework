@@ -4,14 +4,20 @@ package de.bachelor.maumau;
 import org.alljoyn.bus.BusException;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Display;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.Gallery;
 import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.Toast;
 import de.bachelor.maumau.GameManager.Card;
 import de.bachelor.maumau.GameManager.SpecialCases;
@@ -30,7 +36,10 @@ public class GameActivity extends Activity implements GameManagerObserver {
 	private Button startButton;
 	private Button drawCardButton;
 	private Button nextTurnButton;
-
+	private Card cardToPlay;
+	private PopupWindow wishSuitPopup;
+	private boolean gameStarted;
+	
 	@Override
 	public void onCreate(final Bundle savedInstanceState) {
 	  super.onCreate(savedInstanceState);
@@ -43,7 +52,7 @@ public class GameActivity extends Activity implements GameManagerObserver {
 	  nextTurnButton = (Button) findViewById(R.id.next_turn_button);	  
 	  playedCardsLabel.setVisibility(View.INVISIBLE);
 	  application = (MauMauApplication) getApplication();
-	  startButton.setVisibility(application.isHost()? View.VISIBLE: View.GONE);
+	  startButton.setVisibility(application.isHost() && !gameStarted? View.VISIBLE: View.GONE);
 	  gameManager = application.getGameManager();
 	  gameManager.HiIAm(application.getUniqueID(), application.getPlayerName());
 	  gameManager.addObserver(this);
@@ -58,18 +67,31 @@ public class GameActivity extends Activity implements GameManagerObserver {
 	  playedCardsGallery.setAdapter(playedCardsAdapter);
 	  
 	  ownCardsGallery.setOnItemClickListener(new OnItemClickListener() {
-		   @Override
+		@Override
 		   public void onItemClick(@SuppressWarnings("rawtypes") final AdapterView parent, final View v, final int position, final long id) {
-			   Card cardToPlay = (Card) v.getTag();
-			   if(gameManager.canPlayCard(cardToPlay)){
-				   if(cardToPlay.value == 11){
-					   //TODO wish suit
-					   playCard(cardToPlay);
+			   Card card = (Card) v.getTag();
+			   if(gameManager.canPlayCard(card)){
+				   if(card.value == 11){	
+					cardToPlay = card;
+					showWishSuitWindow(card); 
 				   }else{					   
-					   playCard(cardToPlay);
+					   playCard(card);
 				   }					
 			   }
 		   }
+		   
+
+		private void showWishSuitWindow(Card cardToPlay) {
+			WindowManager wm = (WindowManager) GameActivity.this.getSystemService(Context.WINDOW_SERVICE);
+	        Display display = wm.getDefaultDisplay();        
+	        
+	        int displayWidth = display.getWidth();
+	        int displayHeight = display.getHeight();
+			
+			LayoutInflater inflater = (LayoutInflater)  GameActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		    wishSuitPopup = new PopupWindow(inflater.inflate(R.layout.wish_suit_layout, null, false),displayWidth,displayHeight/3,true);				    
+		    wishSuitPopup.showAtLocation(GameActivity.this.findViewById(R.id.own_cards_label), Gravity.CENTER, 0, 0);
+		}
 	  });  
 	 	  
 	  
@@ -89,7 +111,7 @@ public class GameActivity extends Activity implements GameManagerObserver {
 	  }
 	}
 	
-	private void playCard(Card cardToPlay) {
+	public void playCard(Card cardToPlay) {
 		try {
 			gameManager.PlayCard(cardToPlay.id, application.getUniqueID());
 		} catch (BusException e) {
@@ -117,10 +139,13 @@ public class GameActivity extends Activity implements GameManagerObserver {
 	public void onBackPressed(){
 	  super.onBackPressed();
 	  application.leaveChannel();
+	  application.disconnect();
+	  application.connectAndStartDiscover();
 	}
 	  
 	
 	public void start(View view){
+		gameStarted = true;
 		startButton.setVisibility(View.GONE);
 		gameManager.startGameAsHost();
 	}
@@ -150,9 +175,29 @@ public class GameActivity extends Activity implements GameManagerObserver {
 		gameManager.nextTurn(false);
 	}
 	
+	public void clubs(View view){
+		wishSuit(SpecialCases.SUIT_WISHED_CLUB);
+	}
+	public void heart(View view){
+		wishSuit(SpecialCases.SUIT_WISHED_HEART);
+	}
+	public void spades(View view){
+		wishSuit(SpecialCases.SUIT_WISHED_SPADE);
+	}
+	public void diamond(View view){
+		wishSuit(SpecialCases.SUIT_WISHED_DIAMOND);
+	}
+	
+	private void wishSuit(int caseNumber){
+		gameManager.setSpecialCase(caseNumber);
+		playCard(cardToPlay);
+		wishSuitPopup.dismiss();
+	}
+	
 	private void updateButtonsState() {
-		drawCardButton.setEnabled(gameManager.isMyTurn() && !(gameManager.getPlayedCard().value == 14));
-		nextTurnButton.setEnabled(gameManager.isMyTurn() && (gameManager.getPlayedCard().value == 14 || gameManager.wereCardsDrawnThisTurn()));
+		boolean skipTurn = gameManager.getSpecialCase() == SpecialCases.SKIP_TURN;
+		drawCardButton.setEnabled(gameManager.isMyTurn() && !skipTurn);		
+		nextTurnButton.setEnabled(gameManager.isMyTurn() && (skipTurn || gameManager.wereCardsDrawnThisTurn()));
 	}
 	
 	@Override
@@ -172,7 +217,8 @@ public class GameActivity extends Activity implements GameManagerObserver {
 				@Override
 				public void run() {
 					playerListAdapter.refresh();
-					playerListAdapter.notifyDataSetChanged();					
+					playerListAdapter.notifyDataSetChanged();
+					updateButtonsState();
 				}
 			});
 			break;

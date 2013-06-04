@@ -35,6 +35,8 @@ public abstract class P2PApplication extends Application {
 	public void onCreate() {
 		Log.d("P2PApplication", "onCreate");
         PACKAGE_NAME = getPackageName();
+		initBusObject();
+		initSignalHandler();
         if(isWifiEnabledAndShowInfo())
         	return;  
 	}
@@ -48,7 +50,7 @@ public abstract class P2PApplication extends Application {
 	    	CharSequence text = "No WiFi connection";
 	    	int duration = Toast.LENGTH_SHORT;
 
-	    	Toast toast = Toast.makeText(context, text, duration);
+    	Toast toast = Toast.makeText(context, text, duration);
 	    	toast.show();
 	    	Log.i(TAG, "ShowWiFi");
 	    	return true;
@@ -64,7 +66,6 @@ public abstract class P2PApplication extends Application {
 	        } catch (Exception e) {}
 	        return state;
 	}
-	
     
 
 	public String getHostChannelName() {
@@ -110,17 +111,24 @@ public abstract class P2PApplication extends Application {
 	
 	public synchronized void joinChannel() {
 		notifyObservers(P2PService.JOIN_SESSION);
-
 	}
 	
-	public synchronized void connectAndStartDiscover() {		
+	public synchronized void connectAndStartDiscover() {
+		initBusObject();
+		initSignalHandler();
 		notifyObservers(P2PService.CONNECT);
 		notifyObservers(P2PService.START_DISCOVERY);		
+	}
+	
+	public synchronized void disconnect() {	
+		notifyObservers(P2PService.CANCEL_DISCOVERY);
+		notifyObservers(P2PService.DISCONNECT);
 	}
 	
 	
 	public synchronized void leaveChannel() {
 		notifyObservers(P2PService.LEAVE_SESSION);
+		notifyObservers(P2PService.CANCEL_ADVERTISE);
 	}
 
 	public synchronized void hostInitChannel() {
@@ -203,5 +211,8 @@ public abstract class P2PApplication extends Application {
 	public boolean isHost(){
 		return hostChannelName.equals(channelName);
 	}
+	
+	abstract protected void initBusObject();
+	abstract protected void initSignalHandler();
 
 }

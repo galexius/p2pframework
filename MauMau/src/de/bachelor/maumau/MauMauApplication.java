@@ -25,17 +25,30 @@ public class MauMauApplication extends P2PApplication implements GameManagerObse
 
 	@Override
 	public void onCreate(){
-		super.onCreate();
-		this.gameManager = new GameManager(this);
-		gameManager.initDeck();
-		gameManager.addObserver(this);
+		super.onCreate();		
         Intent service = new Intent(this,MauMauService.class);
         ComponentName mRunningService = startService(service);
         if (mRunningService == null) {
             Log.e(TAG, "onCreate(): failed to startService()");
         }
         new Intent(this,MauMauLobbyView.class);
-	}	
+	}		
+	
+	
+	@Override
+	protected void initBusObject(){
+		this.busObject = new GameManager(this);
+	}
+	
+	@Override
+	protected void initSignalHandler(){
+		if(gameManager != null){
+			gameManager.removeObserver(this);
+		}
+		this.gameManager = new GameManager(this);
+		gameManager.initDeck();
+		gameManager.addObserver(this);
+	}
 	
 	@Override
 	public BusObject getBusObject() {
@@ -88,8 +101,7 @@ public class MauMauApplication extends P2PApplication implements GameManagerObse
 		}
 
 
-    };
-    
+    };   
 
 	
 	void notifyPeersAboutMe(){

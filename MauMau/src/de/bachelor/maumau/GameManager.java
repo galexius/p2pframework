@@ -39,6 +39,7 @@ public class GameManager implements BusObject, GameManagerInterface {
 			public final static int SUIT_WISHED_DIAMOND = 6;
 			public final static int SUIT_WISHED_HEART = 7;
 			public final static int SUIT_WISHED_SPADE = 8;			
+			public final static int SKIP_TURN = 9;			
 		}
 		
 		public class Card{
@@ -142,6 +143,7 @@ public class GameManager implements BusObject, GameManagerInterface {
 					notOwnedCards.add(card);
 				}
 			}
+			
 			if(notOwnedCards.isEmpty()) return null;
 			if(notOwnedCards.size() == 1) return notOwnedCards.get(0);
 			cardsDrawnThisTurn = true;
@@ -151,6 +153,8 @@ public class GameManager implements BusObject, GameManagerInterface {
 			ownedCardIds.push(card.id);
 			application.update(OWNER_CHANGED);
 			notifyObservers(DRAW_CARDS);
+			
+			this.specialCase = SpecialCases.DEFAULT;
 			return card;
 		}		
 		
@@ -167,9 +171,10 @@ public class GameManager implements BusObject, GameManagerInterface {
 		@BusSignalHandler(iface = "de.bachelor.maumau.GameManagerInterface", signal = "NextTurn")
 		public synchronized void NextTurn(String uniqueID,int specialCase){
 			this.specialCase = specialCase;
-			CardPlayedEvent cardPlayedEvent = new CardPlayedEvent(this.playedCard, playCardRuleEnforcer,this,application.getUniqueID());
+			CardPlayedEvent cardPlayedEvent = new CardPlayedEvent(this.playedCard, playCardRuleEnforcer,this);
 			cardPlayedEvent.updateRuleEnforcer();
 			currentPlayersID = uniqueID;
+			cardsDrawnThisTurn = false;
 			notifyObservers(PLAYERS_STATE_CHANGED);
 		}
 		
@@ -185,7 +190,7 @@ public class GameManager implements BusObject, GameManagerInterface {
 				for (String key : keySet) {
 					if(key.equals(application.getUniqueID())) continue;
 					
-					int size = getCardsForUniqueId(key).size();
+					int size = getCardsForPlayersId(key).size();
 					if(!(size == NUMBER_OF_CARDS_AT_START)){
 						allPlayersSetUp = false;
 						break;
@@ -231,10 +236,10 @@ public class GameManager implements BusObject, GameManagerInterface {
 		}
 
 		public List<Card> getOwnCards() {			
-			return getCardsForUniqueId(application.getUniqueID());			
+			return getCardsForPlayersId(application.getUniqueID());			
 		}
 
-		public List<Card> getCardsForUniqueId(String uniqueID) {
+		public List<Card> getCardsForPlayersId(String uniqueID) {
 			ArrayList<Card> ownedCards = new ArrayList<Card>();
 			for (Card card : deckOfCards) {
 				if(card.owner.equals(uniqueID)){
@@ -245,7 +250,7 @@ public class GameManager implements BusObject, GameManagerInterface {
 		}
 		
 		public int getNumberOfCardsForPlayer(String uniqueID){
-			return getCardsForUniqueId(uniqueID).size();
+			return getCardsForPlayersId(uniqueID).size();
 		}
 
 		public Card getPlayedCard() {
@@ -254,7 +259,7 @@ public class GameManager implements BusObject, GameManagerInterface {
 
 		@Override
 		@BusSignalHandler(iface = "de.bachelor.maumau.GameManagerInterface", signal = "HiIAm")
-		public void HiIAm(String uniqueID,String playerName) {
+		public synchronized void HiIAm(String uniqueID,String playerName) {
 			Log.i(TAG, "HiIAm: " + uniqueID + " , " + playerName);			
 			if(joinedPlayers.get(uniqueID) == null ){
 				
@@ -272,7 +277,7 @@ public class GameManager implements BusObject, GameManagerInterface {
 
 		@Override
 		@BusSignalHandler(iface = "de.bachelor.maumau.GameManagerInterface", signal = "ByeIWas")
-		public void ByeIWas(String uniqueID,String playerName) {
+		public synchronized void ByeIWas(String uniqueID,String playerName) {
 			if(joinedPlayers.get(uniqueID) !=null ){
 				joinedPlayers.remove(uniqueID);
 				notifyObservers(PLAYERS_STATE_CHANGED);
@@ -313,27 +318,8 @@ public class GameManager implements BusObject, GameManagerInterface {
 			updateSpecialCaseOnTurnsEnd();
 			
 			cardsDrawnThisTurn = false;
-			String uniqueID = application.getUniqueID();
-			Set<String> keySet = joinedPlayers.keySet();
-			
-			boolean takeNextKey  = false;
-			for (String key : keySet) {
-				if(takeNextKey){
-					//set the next player in the list
-					setAndNotifyNextTurn(key);
-					return;
-				}				
-				if(key.equals(uniqueID)){
-					if(skip){
-						uniqueID = key;
-						skip = false;
-					}else{						
-						takeNextKey = true;
-					}
-				}
-			}
-			//Return first entry
-			setAndNotifyNextTurn(keySet.iterator().next());
+			String nextPlayersID = getPlayersIdByOffsetOfMine(1);
+			setAndNotifyNextTurn(nextPlayersID);
 		}
 
 		private void updateSpecialCaseOnTurnsEnd() {
@@ -344,6 +330,9 @@ public class GameManager implements BusObject, GameManagerInterface {
 			if(playedCard.value == 7){
 				if(specialCase <= SpecialCases.SEVEN_PLAYED_TREE_TIMES) specialCase ++;
 				else specialCase = SpecialCases.SEVEN_PLAYED_ONCE;
+			}
+			if(playedCard.value == 8 || playedCard.value == 14){
+				specialCase = SpecialCases.SKIP_TURN;
 			}
 		}
 
@@ -374,6 +363,24 @@ public class GameManager implements BusObject, GameManagerInterface {
 		
 		public boolean wereCardsDrawnThisTurn() {
 			return cardsDrawnThisTurn;
+		}
+		
+		public String getPlayersIdByOffsetOfMine(int offset){
+			Set<String> keySet = getJoinedPlayers().keySet();
+		 	ArrayList<String> arrayList = new ArrayList<String>(keySet);
+		 	int myIdPosition = -1;
+		    for(int i = 0; i < arrayList.size(); i++){
+		    	if(arrayList.get(i).equals(application.getUniqueID())) {
+		    		myIdPosition = i;
+		    		break;
+		    	}
+			}		    
+		    int playersIdPosition  = (myIdPosition + offset) % arrayList.size();
+		    if(playersIdPosition < 0){
+		    	playersIdPosition += arrayList.size();
+		    }
+		    return arrayList.get(playersIdPosition);
+			
 		}
 
 
