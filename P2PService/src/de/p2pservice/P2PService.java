@@ -19,6 +19,7 @@ import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 
 public abstract class P2PService<T> extends Service implements Observer {
@@ -52,26 +53,24 @@ public abstract class P2PService<T> extends Service implements Observer {
 	protected short contactPort = 100;
 	protected String objectPath = "/ObjectPath";
 	
+	@SuppressWarnings("unchecked")
 	public void onCreate() {
 
 		Log.i(TAG, "onCreate()");
 		packageName = this.getPackageName();
 		Context applicationContext = getApplicationContext();		
-		p2pApplication = (P2PApplication) applicationContext;
+		p2pApplication = (P2PApplication<T>) applicationContext;
 		if(p2pApplication== null){
 			Log.e(TAG, "Context must implement " + P2PApplication.class.getSimpleName());
 			return;
 		}
 		p2pApplication.addObserver(this);
 		org.alljoyn.bus.alljoyn.DaemonInit.PrepareDaemon(getApplicationContext());
-		bus = new BusAttachment(packageName,  BusAttachment.RemoteMessage.Receive);
+		
         startBusThread();
-        backgroundHandler.connect();
-        backgroundHandler.startDiscovery();
+        p2pApplication.acquireMissedNotifications();
  	}
-	
-	protected abstract Class<T> getBusObjectInterface();
-	
+		
 	public synchronized void doAction(int arg){
 
 			switch(arg){
@@ -250,10 +249,17 @@ public abstract class P2PService<T> extends Service implements Observer {
       	bus.cancelFindAdvertisedName(packageName);
       	busAttachmentState = BusAttachmentState.CONNECTED;
     }
+    
+    private String getDeviceID(){
+    	TelephonyManager telephonyManager = (TelephonyManager) getBaseContext().getSystemService(Context.TELEPHONY_SERVICE);
+		Log.i(TAG, "DeviceID: " + telephonyManager.getDeviceId());
+		return telephonyManager.getDeviceId();
+    }
 	
 	private void doConnect() {
 		Log.i(TAG, "doConnect()");
 		
+		bus = new BusAttachment(packageName + "." + getDeviceID(),  BusAttachment.RemoteMessage.Receive);
 		assert (busAttachmentState == BusAttachmentState.DISCONNECTED);
 		bus.useOSLogging(true);
 		bus.setDebugLevel("ALLJOYN_JAVA", 7);
@@ -283,7 +289,7 @@ public abstract class P2PService<T> extends Service implements Observer {
 		BusObject busObject = p2pApplication.getBusObject(); 
 		Status status;
 		if(busObject != null){
-			status = bus.registerBusObject(p2pApplication.getBusObject(), objectPath);
+			status = bus.registerBusObject(p2pApplication.getBusObject(), objectPath+ "/" + getDeviceID());
 			if (Status.OK != status) {			
 				Log.e(TAG, "Cannot register : " + status);
 				return;
@@ -303,16 +309,19 @@ public abstract class P2PService<T> extends Service implements Observer {
 		}
 		busAttachmentState = BusAttachmentState.CONNECTED;
 		p2pApplication.setUniqueID(bus.getUniqueName());
+		p2pApplication.setConnectionState(P2PApplication.CONNECTED);		
 	}
+	
 
 	private boolean doDisconnect() {
 		Log.i(TAG, "doDisonnect()");
 		assert (busAttachmentState == BusAttachmentState.CONNECTED);
 		bus.unregisterBusListener(busListener);
-		bus.unregisterSignalHandlers(p2pApplication.getSignalHandler());
 		bus.unregisterBusObject(p2pApplication.getBusObject());
+		bus.unregisterSignalHandlers(p2pApplication.getSignalHandler());
 		bus.disconnect();
 		busAttachmentState = BusAttachmentState.DISCONNECTED;
+		p2pApplication.setConnectionState(P2PApplication.DISCONNECTED);
 		return true;
 	}
 
@@ -382,6 +391,7 @@ public abstract class P2PService<T> extends Service implements Observer {
 				true, SessionOpts.PROXIMITY_ANY, SessionOpts.TRANSPORT_WLAN);
 
 		
+		
 		sessionPortListener = new SessionPortListener(){
 			public boolean acceptSessionJoiner(short sessionPort,
 								String joiner, SessionOpts sessionOpts) {
@@ -400,8 +410,8 @@ public abstract class P2PService<T> extends Service implements Observer {
 					
 					SignalEmitter emitter = new SignalEmitter(p2pApplication.getBusObject(), id,
 							SignalEmitter.GlobalBroadcast.Off);
-					hostInterface = emitter
-							.getInterface(getBusObjectInterface());
+					hostInterface = (T) emitter
+							.getInterface(p2pApplication.getBusObjectInterfaceType());
 					p2pApplication.setSignalEmiter(hostInterface);
 			}
 		};
@@ -452,7 +462,8 @@ public abstract class P2PService<T> extends Service implements Observer {
 		}
 		SignalEmitter emitter = new SignalEmitter(p2pApplication.getBusObject(), useSessionId,
 				SignalEmitter.GlobalBroadcast.Off);
-		clientInterface = emitter.getInterface(getBusObjectInterface());
+		
+		clientInterface = (T) emitter.getInterface(p2pApplication.getBusObjectInterfaceType());
 		p2pApplication.setSignalEmiter(clientInterface);
 		
 		
@@ -480,7 +491,7 @@ public abstract class P2PService<T> extends Service implements Observer {
 
 	
 	
-	private P2PApplication p2pApplication;
+	private P2PApplication<T> p2pApplication;
 	private BusListener busListener;
 	private SessionPortListener sessionPortListener;
 

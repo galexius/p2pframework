@@ -5,47 +5,23 @@ import org.alljoyn.bus.BusObject;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
-import android.content.ComponentName;
-import android.content.Intent;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import de.p2pservice.P2PApplication;
 import de.p2pservice.P2PService;
+import de.p2pservice.views.LobbyActivity;
 
 @SuppressLint("HandlerLeak")
-public class MainApplication extends P2PApplication implements GraphObserver{
+public class MainApplication extends P2PApplication<GraphInterface> implements GraphObserver{
 	
 	protected static final String TAG = "MainApp";
-	private ComponentName mRunningService;
 	
 	public void onCreate() {
         super.onCreate();
-        this.graph = new Graph(this);
-        this.busObject = new Graph(this);
-        Intent service = new Intent(this,ConcreteService.class);
-        mRunningService = startService(service);
-        if (mRunningService == null) {
-            Log.e(TAG, "onCreate(): failed to startService()");
-        }
-        new Intent(this,MyLobbyActivity.class);
-        
-        Log.i("MainApp", "onCreate finished");
-	}
-	
-	
-	
-    public void checkin() {
-    	if (mRunningService == null) {
-            Intent intent = new Intent(this, ConcreteService.class);
-            mRunningService = startService(intent);
-            if (mRunningService == null) {
-                Log.i(TAG, "checkin(): failed to startService()");
-            }    		
-    	}
-    }
-    
+	}	
+  
 	private Handler messageHandler = new Handler() {
 		
     	public void handleMessage(Message msg) {
@@ -79,37 +55,6 @@ public class MainApplication extends P2PApplication implements GraphObserver{
 
 	private boolean remoteObjectSet = false;
 	
-	public synchronized void joinChannel() {
-		notifyObservers(P2PService.JOIN_SESSION);
-
-	}
-	
-	public synchronized void connectAndStartDiscover() {		
-		notifyObservers(P2PService.CONNECT);
-		notifyObservers(P2PService.START_DISCOVERY);		
-	}
-	
-	
-	public synchronized void leaveChannel() {
-		notifyObservers(P2PService.LEAVE_SESSION);
-	}
-
-	public synchronized void hostInitChannel() {
-		notifyObservers(P2PService.UNBIND_SESSION);
-		notifyObservers(P2PService.RELEASE_NAME);
-		notifyObservers(P2PService.BIND_SESSION);
-		
-	}
-
-	public synchronized void hostStartChannel() {	
-		notifyObservers(P2PService.REQUEST_NAME);
-		notifyObservers(P2PService.ADVERTISE);
-	}
-	
-	public synchronized void hostStopChannel() {
-		notifyObservers(P2PService.UNBIND_SESSION);
-	}
-
 	public Graph getGraph() {
 		return this.graph;
 	}
@@ -154,6 +99,31 @@ public class MainApplication extends P2PApplication implements GraphObserver{
 		}else{
 			notifyObservers(P2PService.LEAVE_SESSION);
 		}		
-	}	
-		
+	}
+
+	@Override
+	protected void initBusObject() {
+        this.busObject = new Graph(this);
+	}
+
+	@Override
+	protected void initSignalHandler() {
+        this.graph = new Graph(this);
+	}
+
+	@Override
+	protected Class<? extends P2PService<GraphInterface>> getConcreteServiceClass() {
+		return ConcreteService.class;
+	}
+
+	@Override
+	protected Class<? extends LobbyActivity> getLobbyClass() {
+		return MyLobbyActivity.class;
+	}
+
+	@Override
+	public Class<GraphInterface> getBusObjectInterfaceType() {
+		return GraphInterface.class;
+	}
+
 }

@@ -29,6 +29,7 @@ import de.bachelor.maumau.rules.YourTurnRule;
 public class GameManager implements BusObject, GameManagerInterface {
 		private static final String TAG = "GM";
 		
+		
 		public class SpecialCases{			
 			public final static int DEFAULT = 0;
 			public final static int SEVEN_PLAYED_ONCE = 1;

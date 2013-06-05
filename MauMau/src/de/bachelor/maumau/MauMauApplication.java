@@ -7,33 +7,26 @@ import org.alljoyn.bus.BusException;
 import org.alljoyn.bus.BusObject;
 
 import android.annotation.SuppressLint;
-import android.content.ComponentName;
-import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import de.bachelor.maumau.GameManager.Card;
 import de.p2pservice.P2PApplication;
+import de.p2pservice.P2PService;
+import de.p2pservice.views.LobbyActivity;
 
 @SuppressLint("HandlerLeak")
-public class MauMauApplication extends P2PApplication implements GameManagerObserver{
+public class MauMauApplication extends P2PApplication<GameManagerInterface> implements GameManagerObserver{
 	
     private GameManager busObject;
 	private GameManager gameManager;
 	private Object signalEmitter;
-	private List<String> connctedPlayers = new ArrayList<String>();
+	private List<String> connectedPlayers = new ArrayList<String>();
 
 	@Override
 	public void onCreate(){
-		super.onCreate();		
-        Intent service = new Intent(this,MauMauService.class);
-        ComponentName mRunningService = startService(service);
-        if (mRunningService == null) {
-            Log.e(TAG, "onCreate(): failed to startService()");
-        }
-        new Intent(this,MauMauLobbyView.class);
-	}		
-	
+		super.onCreate();	       
+	}			
 	
 	@Override
 	protected void initBusObject(){
@@ -84,7 +77,7 @@ public class MauMauApplication extends P2PApplication implements GameManagerObse
 	}
 
 	public List<String> getConnectedPlayers() {
-		return connctedPlayers;		
+		return connectedPlayers;		
 	}
 	
 	private Handler messageHandler = new Handler() {
@@ -168,10 +161,27 @@ public class MauMauApplication extends P2PApplication implements GameManagerObse
 		}		
 	}
 
-
 	@Override
 	public void update(int args) {
 		sendMessage(args);
+	}
+
+
+	@Override
+	public Class<GameManagerInterface> getBusObjectInterfaceType() {
+		return GameManagerInterface.class;
+	}
+
+
+	@Override
+	protected Class<? extends LobbyActivity> getLobbyClass() {
+		return MauMauLobbyView.class;
+	}
+
+
+	@Override
+	protected Class<? extends P2PService<GameManagerInterface>> getConcreteServiceClass() {
+		return MauMauService.class;
 	}
 
 }

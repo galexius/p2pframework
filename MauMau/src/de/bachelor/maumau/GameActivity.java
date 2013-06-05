@@ -26,6 +26,7 @@ import de.bachelor.maumau.rules.CardsDrawnEvent;
 @SuppressWarnings("deprecation")
 public class GameActivity extends Activity implements GameManagerObserver {
 
+	
 	MauMauApplication application;
 	GameManager gameManager;
 	private PlayerListAdapter playerListAdapter;
