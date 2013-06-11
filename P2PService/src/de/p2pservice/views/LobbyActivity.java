@@ -6,6 +6,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
@@ -16,14 +17,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
-import de.p2pservice.P2PApplication;
+import de.p2pservice.P2PHelper;
 import de.p2pservice.R;
 
 @TargetApi(Build.VERSION_CODES.GINGERBREAD)
 public abstract class LobbyActivity extends Activity implements LobbyObserver {
 
-	@SuppressWarnings("rawtypes")
-	private P2PApplication application;
 	private ListView channelList;
 	private Button refreshButton;
 	private Button createButtn;
@@ -31,24 +30,23 @@ public abstract class LobbyActivity extends Activity implements LobbyObserver {
 	protected abstract Class<?> getJoinChannelView();
 	protected abstract Class<?> getHostChannelView();
      
-	@SuppressWarnings("rawtypes")
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);       
-        setContentView(R.layout.activity_main);
-        application = (P2PApplication) getApplication();
-        application.addLobbyObserver(this);
+        this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        setContentView(R.layout.activity_main);       
+        P2PHelper.getInstance().addLobbyObserver(this);
         createButtn = (Button) findViewById(R.id.create_button);
         refreshButton = (Button) findViewById(R.id.refresh_button);
-        channelList = (ListView)findViewById(R.id.join_channel_list);
+        channelList = (ListView) findViewById(R.id.join_channel_list);
         setupListView();
         updateUIState();
-        application.connectAndStartDiscover();
+        P2PHelper.getInstance().connectAndStartDiscover();
     }
 	
 	@Override
 	protected void onDestroy() {
-		application.removeLobbyObserver(this);
+		P2PHelper.getInstance().removeLobbyObserver(this);
 		super.onDestroy();
 	}
 
@@ -70,10 +68,10 @@ public abstract class LobbyActivity extends Activity implements LobbyObserver {
 	    	Toast toast = Toast.makeText(context, text, duration);
 	    	toast.show();
     	}else{
-			application.setChannelName(channelName);
-	    	application.setHostChannelName(channelName);
-	    	application.setPlayerName(playerName);
-	    	application.doAction(P2PApplication.HOST_CHANNEL);
+    		P2PHelper.getInstance().setChannelName(channelName);
+    		P2PHelper.getInstance().setHostChannelName(channelName);
+    		P2PHelper.getInstance().setPlayerName(playerName);
+    		P2PHelper.getInstance().doAction(P2PHelper.HOST_CHANNEL);
 	    	Intent intent = new Intent(this, getJoinChannelView());
 	    	startActivity(intent);  
     	}
@@ -81,7 +79,7 @@ public abstract class LobbyActivity extends Activity implements LobbyObserver {
     }
     
     public void quit(View view){
-    	application.doAction(P2PApplication.QUIT);
+    	P2PHelper.getInstance().doAction(P2PHelper.QUIT);
     }
     
     public void refresh(View view){
@@ -104,9 +102,9 @@ public abstract class LobbyActivity extends Activity implements LobbyObserver {
 	    	    	toast.show();
 	        	}else{
 					String name = channelList.getItemAtPosition(position).toString();
-					application.setChannelName(name);
-					application.doAction(P2PApplication.JOIN_CHANNEL);
-					application.setPlayerName(playerName);
+					P2PHelper.getInstance().setChannelName(name);
+					P2PHelper.getInstance().doAction(P2PHelper.JOIN_CHANNEL);
+					P2PHelper.getInstance().setPlayerName(playerName);
 					Intent intent = new Intent(LobbyActivity.this, getJoinChannelView());
 					LobbyActivity.this.startActivity(intent);
 	        	}
@@ -117,7 +115,7 @@ public abstract class LobbyActivity extends Activity implements LobbyObserver {
         channelList.setAdapter(channelListAdapter);
         
 	    @SuppressWarnings("unchecked")
-		List<String> channels = application.getFoundChannels();
+		List<String> channels = P2PHelper.getInstance().getFoundChannels();
         for (String channel : channels) {
         	channelListAdapter.add(channel);
         }
@@ -134,10 +132,9 @@ public abstract class LobbyActivity extends Activity implements LobbyObserver {
     	});
     }
 	private void updateUIState() {
-		boolean connected = application.getConnectionState()==P2PApplication.CONNECTED;
+		boolean connected = P2PHelper.getInstance().getConnectionState()==P2PHelper.CONNECTED;
 		createButtn.setEnabled(connected);
 		refreshButton.setEnabled(connected);
 		channelList.setEnabled(connected);		
-	}
-    
+	}    
 }

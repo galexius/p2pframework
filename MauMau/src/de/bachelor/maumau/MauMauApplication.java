@@ -1,84 +1,78 @@
 package de.bachelor.maumau;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.alljoyn.bus.BusException;
 import org.alljoyn.bus.BusObject;
+import org.alljoyn.bus.annotation.BusSignal;
 
 import android.annotation.SuppressLint;
+import android.app.Application;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import de.bachelor.maumau.GameManager.Card;
-import de.p2pservice.P2PApplication;
-import de.p2pservice.P2PService;
-import de.p2pservice.views.LobbyActivity;
+import de.p2pservice.P2PHelper;
+
 
 @SuppressLint("HandlerLeak")
-public class MauMauApplication extends P2PApplication<GameManagerInterface> implements GameManagerObserver{
+public class MauMauApplication extends Application implements GameManagerObserver{
 	
-    private GameManager busObject;
-	private GameManager gameManager;
-	private Object signalEmitter;
-	private List<String> connectedPlayers = new ArrayList<String>();
+	class GameManagerDummyObject implements GameManagerInterface,BusObject{
 
+		@Override
+		@BusSignal
+		public void ChangeOwner(int cardId, String uniqueUserID)
+				throws BusException {
+		}
+
+		@Override
+		@BusSignal
+		public void PlayCard(int cardId, String uniqueUserID)
+				throws BusException {
+		}
+
+		@Override
+		@BusSignal
+		public void NextTurn(String uniqueUserID, int specialCase)
+				throws BusException {
+		}
+
+		@Override
+		@BusSignal
+		public void HiIAm(String uniqueID, String playerName)
+				throws BusException {
+		}
+
+		@Override
+		@BusSignal
+		public void ByeIWas(String uniqueID, String playerName)
+				throws BusException {
+			
+		}
+		
+	}
+	private GameManager gameManager;
+	
+	
 	@Override
 	public void onCreate(){
-		super.onCreate();	       
-	}			
-	
-	@Override
-	protected void initBusObject(){
-		this.busObject = new GameManager(this);
-	}
-	
-	@Override
-	protected void initSignalHandler(){
-		if(gameManager != null){
-			gameManager.removeObserver(this);
-		}
-		this.gameManager = new GameManager(this);
-		gameManager.initDeck();
+		super.onCreate();	
+		gameManager = new GameManager(this);
+		gameManager.reset();
 		gameManager.addObserver(this);
-	}
+		P2PHelper.initHelper(GameManagerInterface.class, this, new GameManagerDummyObject(), gameManager, MauMauService.class, MauMauLobbyView.class);
+	}		
 	
-	@Override
-	public BusObject getBusObject() {
-		if(busObject == null)
-			busObject = new GameManager(this);
-		return busObject;
-	}
-
-	@Override
-	public Object getSignalHandler() {
-		return this.gameManager;
-	}
-
-	@Override
-	public void setSignalEmiter(Object signalEmitter) {
-		this.signalEmitter = signalEmitter;
-		sendMessage(GameManager.PLAYERS_STATE_CHANGED);
-	}
 	
 	void sendMessage(int args){
 		Message obtainedMessage = messageHandler.obtainMessage(args);
 		messageHandler.sendMessage(obtainedMessage);	
 	}
 
-
-	public boolean isRemoteObjectSet() {
-		return true;
-	}
-
-
 	public GameManager getGameManager() {
 		return this.gameManager;
 	}
 
-	public List<String> getConnectedPlayers() {
-		return connectedPlayers;		
-	}
 	
 	private Handler messageHandler = new Handler() {
 		
@@ -98,10 +92,10 @@ public class MauMauApplication extends P2PApplication<GameManagerInterface> impl
 
 	
 	void notifyPeersAboutMe(){
-		GameManagerInterface remoteGameManagers = (GameManagerInterface) signalEmitter;
+		GameManagerInterface remoteGameManagers = (GameManagerInterface) P2PHelper.getInstance().getSignalEmitter();
 		if(remoteGameManagers!=null){
 			try {
-				remoteGameManagers.HiIAm(getUniqueID(),getPlayerName());
+				remoteGameManagers.HiIAm(P2PHelper.getInstance().getUniqueID(),P2PHelper.getInstance().getPlayerName());
 			} catch (BusException e) {
 				e.printStackTrace();
 			}
@@ -111,10 +105,10 @@ public class MauMauApplication extends P2PApplication<GameManagerInterface> impl
 	private void sendCardOwnerChanged(){
 		int id = 0;
 		while((id = gameManager.getOwnedCardId()) != -1){
-			GameManagerInterface gameManagers = (GameManagerInterface) signalEmitter;
+			GameManagerInterface gameManagers = (GameManagerInterface) P2PHelper.getInstance().getSignalEmitter();
 			if(gameManagers!=null){
 				try {
-					gameManagers.ChangeOwner(id, getUniqueID());
+					gameManagers.ChangeOwner(id, P2PHelper.getInstance().getUniqueID());
 				} catch (BusException e) {
 					e.printStackTrace();
 				}
@@ -123,7 +117,7 @@ public class MauMauApplication extends P2PApplication<GameManagerInterface> impl
 	}
 	
 	private void sendNextTurn() {
-		GameManagerInterface gameManagers = (GameManagerInterface) signalEmitter;
+		GameManagerInterface gameManagers = (GameManagerInterface) P2PHelper.getInstance().getSignalEmitter();
 		if(gameManagers!=null){
 			try {
 				gameManagers.NextTurn(gameManager.getCurrentPlayersID(),gameManager.getSpecialCase());
@@ -135,11 +129,11 @@ public class MauMauApplication extends P2PApplication<GameManagerInterface> impl
 	
 	private void sendOwnedCards() {
 		List<Card> ownCards = gameManager.getOwnCards();
-		GameManagerInterface gameManagers = (GameManagerInterface) signalEmitter;
+		GameManagerInterface gameManagers = (GameManagerInterface) P2PHelper.getInstance().getSignalEmitter();
 		if(gameManagers!=null){
 			try {
 				for (Card card : ownCards) {
-					gameManagers.ChangeOwner(card.id, getUniqueID());
+					gameManagers.ChangeOwner(card.id, P2PHelper.getInstance().getUniqueID());
 				}
 			} catch (BusException e) {
 				e.printStackTrace();
@@ -150,11 +144,10 @@ public class MauMauApplication extends P2PApplication<GameManagerInterface> impl
 
 	private void sendCardPlayed() {
 		Card playedCard = gameManager.getPlayedCard();
-		GameManagerInterface gameManagers = (GameManagerInterface) signalEmitter;
+		GameManagerInterface gameManagers = (GameManagerInterface) P2PHelper.getInstance().getSignalEmitter();
 		if(gameManagers!=null){
 			try {
-				Log.i(TAG, "sendCardPlayed");
-				gameManagers.PlayCard(playedCard.id, getUniqueID());
+				gameManagers.PlayCard(playedCard.id, P2PHelper.getInstance().getUniqueID());
 			} catch (BusException e) {
 				e.printStackTrace();
 			}
@@ -164,24 +157,5 @@ public class MauMauApplication extends P2PApplication<GameManagerInterface> impl
 	@Override
 	public void update(int args) {
 		sendMessage(args);
-	}
-
-
-	@Override
-	public Class<GameManagerInterface> getBusObjectInterfaceType() {
-		return GameManagerInterface.class;
-	}
-
-
-	@Override
-	protected Class<? extends LobbyActivity> getLobbyClass() {
-		return MauMauLobbyView.class;
-	}
-
-
-	@Override
-	protected Class<? extends P2PService<GameManagerInterface>> getConcreteServiceClass() {
-		return MauMauService.class;
-	}
-
+	}	
 }

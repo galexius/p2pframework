@@ -61,6 +61,7 @@
             android:name="de.bachelor.maumau.Activity"
             android:label="@string/title_activity_" >
         </activity>
+        
     </application>
 
 </manifest>

@@ -5,6 +5,7 @@ import org.alljoyn.bus.BusException;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Display;
@@ -22,6 +23,7 @@ import android.widget.Toast;
 import de.bachelor.maumau.GameManager.Card;
 import de.bachelor.maumau.GameManager.SpecialCases;
 import de.bachelor.maumau.rules.CardsDrawnEvent;
+import de.p2pservice.P2PHelper;
 
 @SuppressWarnings("deprecation")
 public class GameActivity extends Activity implements GameManagerObserver {
@@ -44,6 +46,7 @@ public class GameActivity extends Activity implements GameManagerObserver {
 	@Override
 	public void onCreate(final Bundle savedInstanceState) {
 	  super.onCreate(savedInstanceState);
+	  this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 	  setContentView(R.layout.game_layout);
 
 	  final Gallery ownCardsGallery = (Gallery) findViewById(R.id.own_cards_gallery);
@@ -53,9 +56,9 @@ public class GameActivity extends Activity implements GameManagerObserver {
 	  nextTurnButton = (Button) findViewById(R.id.next_turn_button);	  
 	  playedCardsLabel.setVisibility(View.INVISIBLE);
 	  application = (MauMauApplication) getApplication();
-	  startButton.setVisibility(application.isHost() && !gameStarted? View.VISIBLE: View.GONE);
 	  gameManager = application.getGameManager();
-	  gameManager.HiIAm(application.getUniqueID(), application.getPlayerName());
+	  startButton.setVisibility(P2PHelper.getInstance().isHost() && !gameStarted && gameManager.getJoinedPlayers().size() > 1 ? View.VISIBLE: View.GONE);
+	  gameManager.HiIAm(P2PHelper.getInstance().getUniqueID(), P2PHelper.getInstance().getPlayerName());
 	  gameManager.addObserver(this);
 	  
 
@@ -79,20 +82,19 @@ public class GameActivity extends Activity implements GameManagerObserver {
 					   playCard(card);
 				   }					
 			   }
-		   }
-		   
+		   }		   
 
-		private void showWishSuitWindow(Card cardToPlay) {
-			WindowManager wm = (WindowManager) GameActivity.this.getSystemService(Context.WINDOW_SERVICE);
-	        Display display = wm.getDefaultDisplay();        
-	        
-	        int displayWidth = display.getWidth();
-	        int displayHeight = display.getHeight();
-			
-			LayoutInflater inflater = (LayoutInflater)  GameActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		    wishSuitPopup = new PopupWindow(inflater.inflate(R.layout.wish_suit_layout, null, false),displayWidth,displayHeight/3,true);				    
-		    wishSuitPopup.showAtLocation(GameActivity.this.findViewById(R.id.own_cards_label), Gravity.CENTER, 0, 0);
-		}
+			private void showWishSuitWindow(Card cardToPlay) {
+				WindowManager wm = (WindowManager) GameActivity.this.getSystemService(Context.WINDOW_SERVICE);
+		        Display display = wm.getDefaultDisplay();        
+		        
+		        int displayWidth = display.getWidth();
+		        int displayHeight = display.getHeight();
+				
+				LayoutInflater inflater = (LayoutInflater)  GameActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			    wishSuitPopup = new PopupWindow(inflater.inflate(R.layout.wish_suit_layout, null, false),displayWidth,displayHeight/3,true);				    
+			    wishSuitPopup.showAtLocation(GameActivity.this.findViewById(R.id.own_cards_label), Gravity.CENTER, 0, 0);
+			}
 	  });  
 	 	  
 	  
@@ -107,14 +109,14 @@ public class GameActivity extends Activity implements GameManagerObserver {
 	  playerListAdapter = new PlayerListAdapter(application, this, android.R.layout.test_list_item);
 	  listview.setAdapter(playerListAdapter);
 	  
-	  if(application.isHost()){		  
+	  if(P2PHelper.getInstance().isHost()){		  
 		  getCards();
 	  }
 	}
 	
 	public void playCard(Card cardToPlay) {
 		try {
-			gameManager.PlayCard(cardToPlay.id, application.getUniqueID());
+			gameManager.PlayCard(cardToPlay.id, P2PHelper.getInstance().getUniqueID());
 		} catch (BusException e) {
 			e.printStackTrace();
 		}
@@ -139,9 +141,10 @@ public class GameActivity extends Activity implements GameManagerObserver {
 	@Override
 	public void onBackPressed(){
 	  super.onBackPressed();
-	  application.leaveChannel();
-	  application.disconnect();
-	  application.connectAndStartDiscover();
+	  gameManager.reset();
+	  P2PHelper.getInstance().leaveChannel();
+	  P2PHelper.getInstance().disconnect();
+	  P2PHelper.getInstance().connectAndStartDiscover();
 	}
 	  
 	
@@ -209,6 +212,8 @@ public class GameActivity extends Activity implements GameManagerObserver {
 				public void run() {
 					playerListAdapter.refresh();
 					playerListAdapter.notifyDataSetChanged();
+					boolean showStartGameButton = !gameStarted && playerListAdapter.getCount() > 1;
+					startButton.setVisibility(showStartGameButton && P2PHelper.getInstance().isHost() ? View.VISIBLE : View.GONE);
 					updateButtonsState();
 				}
 			});
@@ -222,8 +227,7 @@ public class GameActivity extends Activity implements GameManagerObserver {
 					updateButtonsState();
 				}
 			});
-			break;
-			
+			break;			
 			case GameManager.CARD_PLAYED: runOnUiThread(new Runnable() {				
 				@Override
 				public void run() {
@@ -240,7 +244,9 @@ public class GameActivity extends Activity implements GameManagerObserver {
 			case GameManager.DRAW_CARDS: runOnUiThread(new Runnable() {				
 				@Override
 				public void run() {
-					ownCardsAdapter.notifyDataSetChanged();					
+					ownCardsAdapter.notifyDataSetChanged();	
+					playerListAdapter.refresh();
+					playerListAdapter.notifyDataSetChanged();
 				}
 			});break;			
 			default: break;			

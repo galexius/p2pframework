@@ -1,0 +1,59 @@
+% Dokumentart, Seitenformat
+\documentclass[pdftex, a4paper, oneside, parskip, numbers=noenddot, listof=totoc, bibliography=totocnumbered]{scrreprt}
+
+% Seitenabstände
+\usepackage[bindingoffset=1cm, left=2.5cm, right=2.5cm, top=2.5cm, bottom=2.5cm]{geometry}
+
+% Kopfzeilen
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\renewcommand{\chaptermark}[1]{\markboth{\thechapter\ #1}{}}
+\lhead{\leftmark} \rhead{\thepage}
+\cfoot{}
+\fancypagestyle{plain}{}
+
+
+% Eingabe von ü, ä, ö, ß erlauben
+\usepackage[latin1]{inputenc}
+\usepackage[T1]{fontenc}
+
+% Deutsche Trennungen, Anführungsstriche und mehr:
+\usepackage[ngerman]{babel}
+\usepackage[babel, german=quotes]{csquotes}
+
+
+% Farben einbinden
+\usepackage{color}
+\usepackage{colortbl}
+
+% Farben
+\definecolor{tableBlue}{RGB}{79, 129, 189} % Tabellen
+\definecolor{lightyellow}{rgb}{1, 1, 0.8}  % Quellcode
+
+
+% Tabellen
+\usepackage{tabularx}
+\usepackage{multirow}
+
+
+% Bilder einbinden
+\usepackage{graphicx, wrapfig}
+
+% Fix zur Bildereinbindung
+\renewcommand{\textfraction}{0}
+
+
+% Hyperlinks
+\usepackage[hyphens]{url}
+\usepackage{hyperref}
+\hypersetup{colorlinks, citecolor=black, linkcolor=black, urlcolor=black}
+
+
+% Quellcode einbinden
+\usepackage{listings}
+\renewcommand{\lstlistlistingname}{Quellcodeverzeichnis}
+\lstset{aboveskip=\bigskipamount, backgroundcolor=\color{lightyellow}, basicstyle=\ttfamily\small, breaklines, breakautoindent, captionpos=b, columns=flexible, extendedchars, float=hbp, frame=single, keywordstyle=\bfseries, language=C, numbers=left, numberstyle=\tiny, showspaces=false, showstringspaces=false, showtabs=false, stringstyle=, tabsize=2}
+
+
+% Abkürzungsverzeichnis
+\usepackage[printonlyused]{acronym}
