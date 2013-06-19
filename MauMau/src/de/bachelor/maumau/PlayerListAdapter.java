@@ -3,14 +3,13 @@ package de.bachelor.maumau;
 import java.util.ArrayList;
 import java.util.Map;
 
-import de.p2pservice.P2PHelper;
-
 import android.content.Context;
 import android.graphics.Color;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import de.ptpservice.PTPHelper;
 
 final class PlayerListAdapter extends ArrayAdapter<String> {
 
@@ -28,7 +27,7 @@ final class PlayerListAdapter extends ArrayAdapter<String> {
 		Map<String, String> joinedPlayers = gameManager.getJoinedPlayers();
 		
 		for (String key : joinedPlayers.keySet()) {
-			String playerName = P2PHelper.getInstance().getUniqueID().equals(key) ? "Me" : joinedPlayers.get(key);
+			String playerName = PTPHelper.getInstance().getUniqueID().equals(key) ? "Me" : joinedPlayers.get(key);
 			int numberOfCards = gameManager.getCardsForPlayersId(key).size();
 			String currrentTurn = gameManager.getCurrentPlayersID().equals(key) ? "CurrentTurn" : "";
 			

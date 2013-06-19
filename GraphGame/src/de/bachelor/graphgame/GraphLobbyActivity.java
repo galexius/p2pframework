@@ -1,6 +1,6 @@
 package de.bachelor.graphgame;
 
-import de.p2pservice.views.LobbyActivity;
+import de.ptpservice.views.LobbyActivity;
 
 public class GraphLobbyActivity extends LobbyActivity {
 

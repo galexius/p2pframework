@@ -17,7 +17,7 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.WindowManager;
 import android.widget.Toast;
-import de.p2pservice.P2PHelper;
+import de.ptpservice.PTPHelper;
 
 @SuppressLint({ "NewApi", "ViewConstructor" })
 public class DrawView extends View implements OnTouchListener, GraphObserver {	
@@ -97,7 +97,7 @@ public class DrawView extends View implements OnTouchListener, GraphObserver {
     public void onDraw(Canvas canvas) {
 		if(isFinished) return;
 		
-		if(P2PHelper.getInstance().getSignalEmitter()==null){
+		if(PTPHelper.getInstance().getSignalEmitter()==null){
 			canvas.drawText("Waiting for connection!", displayWidth/2, displayHeight/2, paint);
 			isWaitingForConnection = true;
 			return;
@@ -114,7 +114,7 @@ public class DrawView extends View implements OnTouchListener, GraphObserver {
 				canvas.drawLine((float)edge.getFrom().x*displayWidth,(float) edge.getFrom().y*displayHeight,(float) edge.getTo().x*displayWidth,(float) edge.getTo().y*displayHeight, paint);
 			}		
 			for (Node point : graph.getAllNodes()) {
-				if(!point.getOwner().isEmpty() && !P2PHelper.getInstance().getUniqueID().equals(point.getOwner())){				
+				if(!point.getOwner().isEmpty() && !PTPHelper.getInstance().getUniqueID().equals(point.getOwner())){				
 					canvas.drawBitmap(redButton,(float) (point.x*displayWidth)-offset,(float) (point.y*displayHeight)-offset, null);	
 				}else{
 					canvas.drawBitmap(blueButton,(float) (point.x*displayWidth)-offset,(float) (point.y*displayHeight)-offset, null);
@@ -156,17 +156,17 @@ public class DrawView extends View implements OnTouchListener, GraphObserver {
 	         if(event.getAction() == MotionEvent.ACTION_DOWN){
 				for (Node point : graph.getAllNodes()) {
 					 if(Math.abs(point.x*displayWidth - event.getX(0)) < TOUCH_SIZE && Math.abs(point.y* displayHeight - event.getY(0)) < TOUCH_SIZE){
-						 if(!pointHit && (point.getOwner().equals(P2PHelper.getInstance().getUniqueID()) || point.getOwner().isEmpty())){
+						 if(!pointHit && (point.getOwner().equals(PTPHelper.getInstance().getUniqueID()) || point.getOwner().isEmpty())){
 							 pointHit = true;
 							 hitPoint = point;
-							 graph.ChangeOwnerOfNode(hitPoint.getId(), P2PHelper.getInstance().getUniqueID(), P2PHelper.getInstance().getUniqueID());
+							 graph.ChangeOwnerOfNode(hitPoint.getId(), PTPHelper.getInstance().getUniqueID(), PTPHelper.getInstance().getUniqueID());
 							 Log.d(TAG, "hit");	 
 						 }						 
 					 }
 				}	        	 
 	         }
 	         if(event.getAction() == MotionEvent.ACTION_UP && pointHit){
-	        	 graph.ChangeOwnerOfNode(hitPoint.getId(), "", P2PHelper.getInstance().getUniqueID());
+	        	 graph.ChangeOwnerOfNode(hitPoint.getId(), "", PTPHelper.getInstance().getUniqueID());
 	        	 pointHit = false;
 	        	 return false;
 	         }
@@ -174,7 +174,7 @@ public class DrawView extends View implements OnTouchListener, GraphObserver {
 	        	Node nodeMove = new Node();
 		        nodeMove.x = event.getX()/displayWidth - hitPoint.x;
 		        nodeMove.y = event.getY()/displayHeight - hitPoint.y;
-		        graph.MoveNode(hitPoint.getId(), nodeMove.x, nodeMove.y, P2PHelper.getInstance().getUniqueID());
+		        graph.MoveNode(hitPoint.getId(), nodeMove.x, nodeMove.y, PTPHelper.getInstance().getUniqueID());
 		        invalidate();
 	         }
 		} catch (BusException e) {

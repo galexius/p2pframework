@@ -11,7 +11,7 @@ import android.app.Application;
 import android.os.Handler;
 import android.os.Message;
 import de.bachelor.maumau.GameManager.Card;
-import de.p2pservice.P2PHelper;
+import de.ptpservice.PTPHelper;
 
 
 @SuppressLint("HandlerLeak")
@@ -60,7 +60,7 @@ public class MauMauApplication extends Application implements GameManagerObserve
 		gameManager = new GameManager(this);
 		gameManager.reset();
 		gameManager.addObserver(this);
-		P2PHelper.initHelper(GameManagerInterface.class, this, new GameManagerDummyObject(), gameManager, MauMauService.class, MauMauLobbyView.class);
+		PTPHelper.initHelper(GameManagerInterface.class, this, new GameManagerDummyObject(), gameManager, MauMauService.class, MauMauLobbyView.class);
 	}		
 	
 	
@@ -92,10 +92,10 @@ public class MauMauApplication extends Application implements GameManagerObserve
 
 	
 	void notifyPeersAboutMe(){
-		GameManagerInterface remoteGameManagers = (GameManagerInterface) P2PHelper.getInstance().getSignalEmitter();
+		GameManagerInterface remoteGameManagers = (GameManagerInterface) PTPHelper.getInstance().getSignalEmitter();
 		if(remoteGameManagers!=null){
 			try {
-				remoteGameManagers.HiIAm(P2PHelper.getInstance().getUniqueID(),P2PHelper.getInstance().getPlayerName());
+				remoteGameManagers.HiIAm(PTPHelper.getInstance().getUniqueID(),PTPHelper.getInstance().getPlayerName());
 			} catch (BusException e) {
 				e.printStackTrace();
 			}
@@ -105,10 +105,10 @@ public class MauMauApplication extends Application implements GameManagerObserve
 	private void sendCardOwnerChanged(){
 		int id = 0;
 		while((id = gameManager.getOwnedCardId()) != -1){
-			GameManagerInterface gameManagers = (GameManagerInterface) P2PHelper.getInstance().getSignalEmitter();
+			GameManagerInterface gameManagers = (GameManagerInterface) PTPHelper.getInstance().getSignalEmitter();
 			if(gameManagers!=null){
 				try {
-					gameManagers.ChangeOwner(id, P2PHelper.getInstance().getUniqueID());
+					gameManagers.ChangeOwner(id, PTPHelper.getInstance().getUniqueID());
 				} catch (BusException e) {
 					e.printStackTrace();
 				}
@@ -117,7 +117,7 @@ public class MauMauApplication extends Application implements GameManagerObserve
 	}
 	
 	private void sendNextTurn() {
-		GameManagerInterface gameManagers = (GameManagerInterface) P2PHelper.getInstance().getSignalEmitter();
+		GameManagerInterface gameManagers = (GameManagerInterface) PTPHelper.getInstance().getSignalEmitter();
 		if(gameManagers!=null){
 			try {
 				gameManagers.NextTurn(gameManager.getCurrentPlayersID(),gameManager.getSpecialCase());
@@ -129,11 +129,11 @@ public class MauMauApplication extends Application implements GameManagerObserve
 	
 	private void sendOwnedCards() {
 		List<Card> ownCards = gameManager.getOwnCards();
-		GameManagerInterface gameManagers = (GameManagerInterface) P2PHelper.getInstance().getSignalEmitter();
+		GameManagerInterface gameManagers = (GameManagerInterface) PTPHelper.getInstance().getSignalEmitter();
 		if(gameManagers!=null){
 			try {
 				for (Card card : ownCards) {
-					gameManagers.ChangeOwner(card.id, P2PHelper.getInstance().getUniqueID());
+					gameManagers.ChangeOwner(card.id, PTPHelper.getInstance().getUniqueID());
 				}
 			} catch (BusException e) {
 				e.printStackTrace();
@@ -144,10 +144,10 @@ public class MauMauApplication extends Application implements GameManagerObserve
 
 	private void sendCardPlayed() {
 		Card playedCard = gameManager.getPlayedCard();
-		GameManagerInterface gameManagers = (GameManagerInterface) P2PHelper.getInstance().getSignalEmitter();
+		GameManagerInterface gameManagers = (GameManagerInterface) PTPHelper.getInstance().getSignalEmitter();
 		if(gameManagers!=null){
 			try {
-				gameManagers.PlayCard(playedCard.id, P2PHelper.getInstance().getUniqueID());
+				gameManagers.PlayCard(playedCard.id, PTPHelper.getInstance().getUniqueID());
 			} catch (BusException e) {
 				e.printStackTrace();
 			}
@@ -158,4 +158,6 @@ public class MauMauApplication extends Application implements GameManagerObserve
 	public void update(int args) {
 		sendMessage(args);
 	}	
+	
+	
 }

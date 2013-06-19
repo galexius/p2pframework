@@ -1,7 +1,7 @@
 package de.bachelor.graphgame;
 
-import de.p2pservice.P2PService;
+import de.ptpservice.PTPService;
 
-public class GraphService extends P2PService<GraphInterface> {
+public class GraphService extends PTPService<GraphInterface> {
 
 }

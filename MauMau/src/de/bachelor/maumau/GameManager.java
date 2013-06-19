@@ -24,7 +24,7 @@ import de.bachelor.maumau.rules.RuleEnforcer;
 import de.bachelor.maumau.rules.SameSuitRule;
 import de.bachelor.maumau.rules.SameValueRule;
 import de.bachelor.maumau.rules.YourTurnRule;
-import de.p2pservice.P2PHelper;
+import de.ptpservice.PTPHelper;
 
 @TargetApi(Build.VERSION_CODES.GINGERBREAD)
 public class GameManager implements BusObject, GameManagerInterface {
@@ -151,7 +151,7 @@ public class GameManager implements BusObject, GameManagerInterface {
 			cardsDrawnThisTurn = true;
 			int cardPosition = random.nextInt(notOwnedCards.size()-1);
 			Card card = notOwnedCards.get(cardPosition);
-			card.owner = P2PHelper.getInstance().getUniqueID();
+			card.owner = PTPHelper.getInstance().getUniqueID();
 			ownedCardIds.push(card.id);
 			application.update(OWNER_CHANGED);
 			notifyObservers(DRAW_CARDS);
@@ -182,15 +182,15 @@ public class GameManager implements BusObject, GameManagerInterface {
 		
 		public void startGameAsHost(){
 			cardsDrawnThisTurn = false;
-			setAndNotifyNextTurn(P2PHelper.getInstance().getUniqueID());
+			setAndNotifyNextTurn(PTPHelper.getInstance().getUniqueID());
 		}
 		
 		private void drawCardsIfNeeded() {
-			if(isInitState && !P2PHelper.getInstance().isHost()){
+			if(isInitState && !PTPHelper.getInstance().isHost()){
 				Set<String> keySet = joinedPlayers.keySet();
 				boolean allPlayersSetUp = true;
 				for (String key : keySet) {
-					if(key.equals(P2PHelper.getInstance().getUniqueID())) continue;
+					if(key.equals(PTPHelper.getInstance().getUniqueID())) continue;
 					
 					int size = getCardsForPlayersId(key).size();
 					if(!(size == NUMBER_OF_CARDS_AT_START)){
@@ -219,7 +219,7 @@ public class GameManager implements BusObject, GameManagerInterface {
 				playedCard.owner= "";
 			}
 			playedCard = card;
-			if(uniqueUserID.equals(P2PHelper.getInstance().getUniqueID())){
+			if(uniqueUserID.equals(PTPHelper.getInstance().getUniqueID())){
 				notifyObservers(CARD_PLAYED);	
 				nextTurn(false);
 			}else{
@@ -238,7 +238,7 @@ public class GameManager implements BusObject, GameManagerInterface {
 		}
 
 		public List<Card> getOwnCards() {			
-			return getCardsForPlayersId(P2PHelper.getInstance().getUniqueID());			
+			return getCardsForPlayersId(PTPHelper.getInstance().getUniqueID());			
 		}
 
 		public List<Card> getCardsForPlayersId(String uniqueID) {
@@ -305,7 +305,7 @@ public class GameManager implements BusObject, GameManagerInterface {
 		}
 
 		public boolean isMyTurn() {
-			return P2PHelper.getInstance().getUniqueID().equals(currentPlayersID);
+			return PTPHelper.getInstance().getUniqueID().equals(currentPlayersID);
 		}	
 		
 		public String getCurrentPlayersID(){
@@ -325,7 +325,7 @@ public class GameManager implements BusObject, GameManagerInterface {
 		}
 
 		private void updateSpecialCaseOnTurnsEnd() {
-			if( !lastCardPlayedBy.equals(P2PHelper.getInstance().getUniqueID()) && playedCard.value != 11){
+			if( !lastCardPlayedBy.equals(PTPHelper.getInstance().getUniqueID()) && playedCard.value != 11){
 				specialCase = SpecialCases.DEFAULT;
 				return;
 			}
@@ -372,7 +372,7 @@ public class GameManager implements BusObject, GameManagerInterface {
 		 	ArrayList<String> arrayList = new ArrayList<String>(keySet);
 		 	int myIdPosition = -1;
 		    for(int i = 0; i < arrayList.size(); i++){
-		    	if(arrayList.get(i).equals(P2PHelper.getInstance().getUniqueID())) {
+		    	if(arrayList.get(i).equals(PTPHelper.getInstance().getUniqueID())) {
 		    		myIdPosition = i;
 		    		break;
 		    	}

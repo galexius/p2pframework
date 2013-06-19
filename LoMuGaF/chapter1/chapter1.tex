@@ -1,39 +1,90 @@
 \chapter{Einleitung}
 
-  Sed turpis erat (Abbildung \ref{Sprungmarke1}), tincidunt eu sollicitudin eu, tempus quis lectus. Nullam orci leo, tempus vitae dictum eu, bibendum at ante. In placerat, mi eu consequat suscipit, turpis arcu dictum tellus, nec scelerisque turpis eros a enim. Mauris quis leo lacus. Vestibulum condimentum porttitor malesuada. Pellentesque nec dictum nisl. Donec eleifend libero sit amet urna dignissim in faucibus lorem ultricies. Vestibulum interdum egestas metus vel porta. In vehicula leo at nibh dignissim malesuada. Etiam non nunc ligula. Vivamus vitae nibh dolor, eget faucibus tortor. Suspendisse ac quam enim. 
+Spiele auf mobilen Endgeräten gibt es unzählige. Jedoch sind die
+meisten dieser Spiele entweder Singleplayer oder sind Serverbasierte Multiplayer
+Spiele. Dies bedeutet, dass zum Spielen mit Anderen eine aktive
+Internetverbindung vorhanden sein muss. Trotz der mittlerweile gut ausgebauten
+Netzabdeckung und guter Internetgeschwindigkeit auf Smartphones, kann das
+Spielerlebniss durch den hohen Roundtrip getrübt werden. So sind z.B.
+Actionspiele meist nur über eine Hotspot Verbindung spielbar. Außerdem gibt es
+Situationen bei denen man keine oder nur eine beschränkte Internetverbindung
+hat, z.B. wenn man mit dem Zug unterwegs ist oder sich gerade in Ausland
+befindet und sich die Roaminggebühren sparen will. Gerade in solchen Situationen
+ist die Möglichkeit miteinander eine Mehrspielerpartie zu starten ohne eine
+Internetverbindung zu haben sehr willkommen. Man denke an die Situtation man
+sitze im Zug mit paar Freunden und möchte eine Runde Karten spielen, aber man
+hat keinen Platz für die richtigen Karten.
+Um die Entwicklung solcher Spiele vorran zu treiben und es den Entwicklern
+soweit wie möglich zu erleichtern, wollte ich ein Framework dafür zur Verfügung stellen.
+Ich wollte die ganzen Kommunikatonsbedingen Herausforderungen mit dem Framework
+lösen, sodass die Entwickler sich nur um die Implementierung der Spiele selbst Gedanken
+machen müssen. Die Entwickler hätten nur die Aufgabe sich
+um die Synchronisierung der spielbezogenen Daten zu kümmern und die
+Übertragen der Daten an die einzelnen Gerät würde sozusagen vom Framework übernommen.
+Damit die Entwicklung solcher Spiele für die Hobbyentwickler keine finanziellen
+Hürden stellt, habe ich mich für das Android SDK entschieden. Da das Android SDK
+kostenlos für jeden Entwickler zur Verfügung steht, kann jeder Entwickler, der
+über ein Android Gerät verfügt gleich mit der Entwicklung des Spieles loslegen.
+Natürlich lässt sich das Framework auch für praktische Anwendungen, wie z.B.
+Textmessanger, verwenden, jedoch werden ich im Rahmen dieser Ausarbeitung nur
+auf die Realisierung von Spielen eingehen.
 
-  \begin{figure}[htbp]
-    \centering
-    \includegraphics[width=0.5\linewidth]{chapter1/RTEmagicC_fame_unscharf_03}
-    \caption{Bildbeschreibung}
-    \label{Sprungmarke1}
-  \end{figure}
+\section{Konzepte}
 
-  Curabitur vitae velit nisl, vel sagittis arcu. Nullam sit amet ligula ut nibh ornare tempor. Pellentesque sollicitudin convallis dolor, eget pulvinar augue tempus sit amet. Aenean lacinia condimentum commodo. Pellentesque vestibulum mauris in orci sodales vitae tristique nulla tincidunt. Aenean tincidunt interdum est, a aliquet quam sollicitudin vel. Donec et lacus lorem. Nunc odio est, volutpat non rhoncus eu, dictum ut turpis. Fusce posuere rhoncus ipsum, nec pharetra nunc posuere bibendum. Morbi eu venenatis tortor.
+  Das Framework basiert auf dem Peer-to-Peer Prinzip und benötigt deswegen
+  keinen weiteren Server. Weil durch einen Serverbasierten Ansatz der Zustand
+  des Spiels nur auf dem Server organisiert wird ist es eine
+  gewisse Herausforderung bei einem Peer-to-Peer Ansatz alle Gerät synchron zu
+  halten. Der Entwickler hat nur Objekte, über die er die Kommunikation realisieren muss. Dabei handelt es sich zum einen um Objekte, die die eingehenden Signale behandeln und zum Anderen Objekte um Nachrichten an die anderen Spieler zu senden.
+ 
+\begin{wrapfigure}{r}{0.5\textwidth}
+   \centering
+   \includegraphics[width=0.48\textwidth]{chapter1/emitterhandler}
+   \caption[Von Text umflossenes Bild]{Kommunications-Konzept}
+   \label{fig:Wrap}
+\end{wrapfigure}
+   
+  Jedes der Geräte hat zum einen einen Handler sowie einen Emitter. Der Emitter
+  ist das Objekt welches die Signale an andere Geräte rausschickt und der Handler ist somit das Objekt, welches auf jedem Gerät die eingehende Nachricht behandelt. In den meisten Anwendungsfällen haben die Emitter und
+  Handler auf allen Geräten die selbe Impelementierung. Zusätzlich wird eine
+  Session verwendung um die einzelnen Spielsitzungen oder Spielrunden in sich
+  geschlossen zu handhaben. Somit erstellt ein Host eine Session zu der sich die
+  die Klienten verbinden können um an der Spielrunde teilnehmen zu können.
+  Dadurch wird außerdem die Möglichkeit  gegeben mehrere Spiele simultan im
+  selben Netzwerk zu spielen.
 
+\section{Ziel und Aufgabenstellung der Arbeit}
 
-  \section{Konzepte}
+Ziel dieser Arbeit ist es die Lokalisierung und Verbindung der Geräte vom
+Framework übernehmen zu lassen. Somit hat der Entwickler sich nur um die
+Implementierung der Schnittstellen-Objekte zu kümmern über die die
+Kommunikation abläuft. Das Framework soll auf dem Android SDK aufbauen, da es
+sich hierbei um eine kostenlos verfügbaren Entwicklungsframework handelt.
+Weiterhin sind zwei Spiele als praktische Beispiele mithilfe dieses Frameworks zu 
+implementierung um zum einen die Vorgehensweise zu demonstrieren und zum Anderen die 
+Realisierbarkeit zu testen.
+  
+\section{Lösungsweg der Aufgabenstellung}  
+  
+Um sich die ganzen Herausforderung bei der Realisierung Endgerät-zu-Endgerät
+Kommunikation zu ersparen wurde ein weiteres Framework namens
+AllJoyn verwendet, welches die die Verbindung und die Kommunikation zum
+größten Teil schon übernimmt. Somit blieb zum Einen eine geschickte
+Integration von AllJoyn in das Framework, weiterhin mussten die vielen,
+gerade auf den ersten Blick komplizierten, Konfigurationen des AllJoyn
+Frameworks durch eine einfache Schnittstelle erweitert werden. Außerdem
+musste ein Multithreaded Handler-System verwendet werden um UI-Prozesse des
+Spiels nicht durch die Hintergrundprozesse der Gerätekommunikation zu
+behindern. Als praktische Anwendungsbeispiele wurde ein Echtzeitpuzzlespiel
+und ein Turnbased Kartenspiel namens MauMau implementiert.
+   
+\section{Gliederung}
 
-    Phasellus consectetur metus a sapien condimentum sodales. Sed ultrices sem turpis, in cursus turpis. Phasellus eleifend volutpat enim, ut varius tellus scelerisque et. Nulla facilisi. Integer congue gravida leo sit amet vulputate. Nam eu lacus nulla, eget sagittis arcu. Curabitur faucibus felis nulla, ut luctus justo. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur mattis orci porta eros mattis sed ullamcorper erat volutpat. Nullam eu eros ut urna cursus posuere eu non neque. Nam suscipit mattis eros quis consectetur. Aliquam nec mi at metus iaculis fringilla ac euismod erat. Morbi id diam ac neque accumsan consequat. Nam laoreet facilisis placerat. Etiam interdum tincidunt dignissim. Nam facilisis vulputate elit, id dignissim dolor rhoncus nec. Vivamus pharetra laoreet dui tempus tincidunt.
-
-
-  \section{Ziel und Aufgabenstellung der Arbeit}
-
-  \begin{wrapfigure}{r}{5cm}
-    \centering
-    \includegraphics{chapter1/Logo_ComTec}
-    \caption[Von Text umflossenes Bild]{Wrapfigure}
-    \label{fig:Wrap}
-  \end{wrapfigure}
-
-    Curabitur molestie egestas congue. Suspendisse erat urna, euismod at vulputate sit amet, scelerisque in arcu. Nam in est ac neque tristique mollis sit amet ac eros. Mauris felis ipsum, tincidunt at aliquam vel, faucibus vitae velit. Proin suscipit viverra vulputate. Nullam dignissim porttitor diam quis dictum. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Cras nulla urna, consectetur vitae laoreet ac, hendrerit in odio. Cras pellentesque luctus luctus. Donec ante nibh, dignissim ac semper sit amet, dictum eget libero. Donec elementum urna nec nisl feugiat et feugiat odio malesuada. Pellentesque pellentesque, leo in pharetra congue, leo augue bibendum leo, adipiscing aliquam sapien tellus eget odio. Cras et quam sed nibh iaculis convallis vitae nec est.
-
-
-  \section{Lösungsweg der Aufgabenstellung}
-
-    Cras pharetra rhoncus lacinia. Donec suscipit mattis arcu, sed mollis leo elementum vitae. Nam hendrerit, metus vitae ullamcorper pulvinar, neque velit aliquet massa, nec rhoncus neque erat at est. Proin ac lectus sit amet massa aliquam auctor. Phasellus non purus ac ante volutpat lacinia. Suspendisse ullamcorper libero nec libero auctor vulputate pretium arcu fermentum. Etiam vitae eros vitae justo viverra tempor. Quisque mauris mauris, dignissim non cursus tincidunt, ullamcorper sit amet nisi. Etiam tempor tellus et odio posuere ullamcorper. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Aliquam id nisi a augue commodo hendrerit. Maecenas arcu arcu, interdum pretium pulvinar vel, aliquam sed nisl. Nam sodales nulla nec massa mattis cursus. Sed vel fermentum nisi. Aliquam tristique sagittis sem, non pharetra ante auctor et. Phasellus vestibulum velit sed ipsum ullamcorper sit amet faucibus felis adipiscing. Nullam nec metus sit amet felis sodales blandit sed a neque. Ut sed erat a neque aliquet semper. Vestibulum id massa ut nulla posuere blandit id ut diam.
-
-
-  \section{Gliederung}
-
-    Nunc vitae tortor posuere ante viverra sollicitudin. Phasellus vestibulum est quis libero tincidunt lobortis. Suspendisse potenti. Pellentesque sit amet nisi id turpis pellentesque sodales. Morbi dui lectus, posuere ut adipiscing non, consectetur vitae odio. Fusce ut urna metus, quis tristique urna. Nunc faucibus euismod dui egestas sagittis. Aenean eu mauris ut libero adipiscing fermentum. Sed vitae lectus turpis, quis porta nisi. Vestibulum vel tortor sit amet urna bibendum scelerisque vel eu est. Suspendisse potenti. Nam odio tellus, consequat vitae faucibus quis, tincidunt at mi. Aliquam ut turpis lorem. Sed ut urna sit amet risus scelerisque consectetur. Donec porta aliquam est, quis iaculis nisl sagittis consequat. Curabitur in orci nisi. Nullam ipsum elit, convallis eget interdum at, imperdiet ut ligula.
+Die Arbeit beinhaltet zu Anfang die Erklärung der verwendeten Frameworks
+AndroidSDK und AllJoyn. Dabei werden die Konzepte dieser Frameworks grob
+beschrieben. Als nächstes wird das Konzept und die Impelementierung des
+Multiplayer Spieleframeworks, welches das Hauptaugenmerk dieser Arbeit ist,
+beschrieben. Daraufhin wird beschrieben wie die zwei Spielebeispiele realisiert
+wurden, sowie Herausforderung, die während der Implementierung entstanden.
+Zum Schluss gibt es noch eine theoretische Auseinandersetzung mit dem Prinzip
+der Wlan basierten P2P-Spiele.

@@ -1,6 +1,6 @@
 package de.bachelor.graphgame;
 
-import de.p2pservice.P2PHelper;
+import de.ptpservice.PTPHelper;
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
@@ -30,8 +30,8 @@ public class DrawActivity extends Activity {
 	public void onBackPressed(){
 	  super.onBackPressed();
 	  application.getGraph().setupPoints();
-	  P2PHelper.getInstance().leaveChannel();
-	  P2PHelper.getInstance().disconnect();
-	  P2PHelper.getInstance().connectAndStartDiscover();
+	  PTPHelper.getInstance().leaveChannel();
+	  PTPHelper.getInstance().disconnect();
+	  PTPHelper.getInstance().connectAndStartDiscover();
 	}
 }

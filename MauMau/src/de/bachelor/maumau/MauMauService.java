@@ -1,5 +1,5 @@
 package de.bachelor.maumau;
 
-import de.p2pservice.P2PService;
+import de.ptpservice.PTPService;
 
-public class MauMauService extends P2PService<GameManagerInterface> {}
+public class MauMauService extends PTPService<GameManagerInterface> {}

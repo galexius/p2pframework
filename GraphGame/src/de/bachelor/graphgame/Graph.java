@@ -7,11 +7,10 @@ import org.alljoyn.bus.BusException;
 import org.alljoyn.bus.BusObject;
 import org.alljoyn.bus.annotation.BusSignalHandler;
 
-import de.p2pservice.P2PHelper;
-
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.util.Log;
+import de.ptpservice.PTPHelper;
 
 class Graph implements GraphInterface, BusObject {
 
@@ -79,7 +78,7 @@ class Graph implements GraphInterface, BusObject {
 				checkAndAdjust(point);
 			}
 		}
-		if(uniqueName.equals(P2PHelper.getInstance().getUniqueID())){
+		if(uniqueName.equals(PTPHelper.getInstance().getUniqueID())){
 			Node changedNode = new Node(x,y,id);
 			changedNodes.add(changedNode);
 			notifyObservers(NODE_POSITION_CHANGED);
@@ -110,7 +109,7 @@ class Graph implements GraphInterface, BusObject {
 		for (Node node : nodes) {
 			if(node.getId() == id){
 				node.setOwner(owner);
-				if(uniqueID.equals(P2PHelper.getInstance().getUniqueID())){
+				if(uniqueID.equals(PTPHelper.getInstance().getUniqueID())){
 					addIdOfChangedPoint(new IdChange(id,owner));
 					notifyObservers(POINT_OWNERSHIP_CHANGED);
 					return;

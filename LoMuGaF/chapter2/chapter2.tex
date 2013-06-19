@@ -1,28 +1,74 @@
 \chapter{Grundlagen}
 
-  \section{Im Detail}
+  \section{Android SDK}
+  
+  Android ist das Linux-basierte Betriebssystem für mobile Endgeräte, welches
+  von Google 2011 offiziell zur Verfügung gestellt wurde. Android selbst gilt
+  als sogenannte frei Software, welche bis auf den System-Kern unter der
+  Apache-Lizens steht. Diese Tatsache unter Anderen ermöglichte eine rasante
+  Verbreitung dieses Betriebsystems auf vielen Geräten unterschiedlicher
+  Hersteller.
+  
+  \begin{wrapfigure}{l}{0.3\textwidth}
+   \centering
+   \includegraphics[width=0.25\textwidth]{chapter2/android}
+   \caption[Von Text umflossenes Bild]{Android}
+   \label{fig:Wrap}
+  \end{wrapfigure}
 
-    Etiam sit amet semper dolor \cite{Mus09}. Vestibulum varius felis ac lacus iaculis euismod. Etiam placerat, ante quis consequat accumsan, purus sem tempor lectus, sit amet viverra urna elit ac tellus. Sed nisi nisi, lobortis et porttitor non, lacinia non enim. Suspendisse dignissim, arcu sit amet ultrices aliquet, orci nulla bibendum est, eget aliquet sapien libero et tellus. Etiam consectetur, mi a molestie viverra, felis lectus bibendum lorem, sed scelerisque erat augue ac elit. Vestibulum tristique eleifend velit vestibulum laoreet. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer laoreet pellentesque elit, quis fringilla metus dapibus vel. Maecenas lectus orci, facilisis nec bibendum ac, interdum congue quam.
+ Somit waren im März 2013 etwa 750 Millionen Android End-Geräte aktiviert und
+ man merkt schnell, dass die Popularität dieses Betriebssystem immer mehr
+ zunimmt.Da ein Smartphone Betriebsystem auch von den angeboten Apps lebt hat
+ Google um die Entwicklung dieser eine Entwicklungswerkzeugsammlung zur
+ Verfügung gestellt, welche die Entwicklung von Applikationen für Android
+ möglichst einfach ermögichen soll. Bei dieser Werkzeugensammlung handelt es
+ sich um das Android SDK, welches auch als das Android Developer Tool kurz ADT
+ verfügbar ist. ADT ist ein Plugin für das mittlerweile sehr weit verbreitete
+ Entwicklungsumgebung Eclipse, welche die Entwicklung und die Übertragung der
+ Applikation auf das Gerät mühelos ermöglicht. Weiterhin bringt das Android SDK
+ einen Emulator mit sich, welches das Testen von Apps unter unteschiedlichen
+ Konfigurationen ermöglicht ohne dass man ein Android-Gerät benötigt. Vorallem
+ ermöglicht das Android SDK die Entwicklung der Apps in der Programmiersprache
+ Java, welche sich immer höherer Beliebtheit erfreut und dank Eclipse zu einer
+ höheren Produktivität beiträgt.
+ Als nächstes gehe ich auf die einzelne Grundlagen von Android SDK ein um die
+ Funktionalität dieser zu beschreiben.
+ 
+ \subsection{Activity}
+Eine Activity ist eine Klasse, welche einzelne UI-Fenster representiert. Somit
+bestehen die meisten Apps in Android aus mehreren Activities, welche
+mit einander verbunden sind. Ein Use-Case bei dem man mehrere Fenster hat, würde
+sozusagen mehrere Activities nacheinander aufrufen. 
+Um eine Activity zu erstellen muss seine Klasse eine Unterklasse von Activity
+sein. Zusätzlich muss man die Methode \textbf{\textit{onCreate()}} in seiner
+Klasse überschreiben. Diese Methode wird jedesmal aufgerufen wenn die Activity
+erstellt wird, also auf dem Bildschirm erscheinen soll. In diese Methode kommen
+meist Anpassungen an die UI hinein oder andere Operationen die beim Start
+notwendig sind.
 
-    \begin{table}[htdp]
-      \centering
-      \caption[Anzahl Probanden pro Gruppe bei $\alpha = 0,05$]{Anzahl Probanden \emph{pro Gruppe} nach Power und Effektstärke bei $\alpha = 0,05$}
-      \label{Sprungmarke2}
-      \begin{tabular}{|r||r|r|r|r|r|r|r|r|r|r|}
-        \hline
-        \multicolumn{11}{|c|}{\cellcolor{tableBlue}$\mathbf{\alpha = 0.05}$} \\ \hline
-        & \multicolumn{10}{c|}{\textbf{Effektstärke}} \\
-        \textbf{Power} & \textbf{0.10} & \textbf{0.15} & \textbf{0.20} & \textbf{0.25} & \textbf{0.30} & \textbf{0.40} & \textbf{0.50} & \textbf{0.60} & \textbf{0.70} & \textbf{0.80} \\ \hline\hline
-        \textbf{.60}  &  977 &  434 & 244 & 156 & 109 &  61 &  39 &  27 & 20 & 15 \\ \hline
-        \textbf{.70}  & 1230 &  547 & 308 & 197 & 137 &  77 &  49 &  34 & 25 & 19 \\ \hline
-        \textbf{.80}  & 1568 &  697 & 392 & 251 & 174 &  98 &  63 &  44 & 32 & 25 \\ \hline
-        \textbf{.90}  & 2100 &  933 & 525 & 336 & 233 & 131 &  84 &  58 & 43 & 33 \\ \hline
-        \textbf{.95}  & 2592 & 1152 & 648 & 415 & 288 & 162 & 104 &  72 & 53 & 41 \\ \hline
-        \textbf{.99} & 3680 & 1636 & 920 & 589 & 409 & 230 & 147 & 102 & 75 & 58 \\ \hline
-      \end{tabular}
-    \end{table}
+\subsection{Service}
+Ein Service ist eine Komponente, welche dazu gedacht ist Hintergrundprozesse zu
+übernehmen. Ein Service wird von z.B. einer Activity gestarted und läuft dabei
+im Hintergrund, selbst wenn die Activity nicht mehr existiert. Somit bietet sich
+ein Service gut an um z.B. die Netzwerkkommunikation im Hintergrund zu behandeln
+ohne die Applikation selbst zu behindern.
+Weiterhin lässt sich ein Service auch an z.B eine Applikation binden, sodass der
+Service auch beendet wird wenn die Applikation geschlossen wird.
 
+\subsection{Application}
+Application bietet zusätzlich zu den Activities die Möglichkeit während der
+ganzen Laufzeit der Applikation eine feste Instanz zu haben, welche den Zustand
+bestimmter Daten beinhaltet. So kann man es im Prinzip mit einem Singleton
+vergleichen der den Status der Applikation hält. Um an die Instanz zu kommen
+muss man aus dem Kontext heraus die Methode
+\textbf{\textit{Context.getApplicationContext()}} aufrufen.
 
-  \section{Forschungsfrage}
+\subsection{Context}
+Der Context beinhaltet Informationen über die Applikationsumgebung und lässt
+verschiedene Aktionen zu, wie z.B. das Aufrufen von weiteren Activities. Eine
+Activity ist eine Unterklasse vom Context und wird bei der Erstellung von z.B.
+einer View an diese übergeben.
+
+  \section{AllJoyn}
 
     Duis\cite{Lor09} sed lectus sem. Proin viverra venenatis tincidunt. Fusce eget turpis sit amet erat vestibulum pretium. In hac habitasse platea dictumst. Morbi eget massa et ante laoreet iaculis. Duis vitae nulla nulla. Suspendisse sit amet diam at enim accumsan consequat a eu sem. Proin venenatis ullamcorper gravida. Proin fermentum, metus vitae hendrerit bibendum, ligula dolor vestibulum eros, sed molestie lectus urna eget libero. Aenean ut sem nec metus tristique pretium.

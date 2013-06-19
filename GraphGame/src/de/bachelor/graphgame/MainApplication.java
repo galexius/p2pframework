@@ -9,7 +9,7 @@ import android.app.Application;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import de.p2pservice.P2PHelper;
+import de.ptpservice.PTPHelper;
 
 @SuppressLint("HandlerLeak")
 public class MainApplication extends Application implements GraphObserver{
@@ -33,25 +33,25 @@ public class MainApplication extends Application implements GraphObserver{
         graph.addObserver(this);  
         graph.setupPoints();
         
-		P2PHelper.initHelper(GraphInterface.class, this, new GraphDummyObject(), graph, GraphService.class, GraphLobbyActivity.class);
+		PTPHelper.initHelper(GraphInterface.class, this, new GraphDummyObject(), graph, GraphService.class, GraphLobbyActivity.class);
 	}	
   
 	private Handler messageHandler = new Handler() {
 		
     	public void handleMessage(Message msg) {
     		try{
-    			GraphInterface remoteGraph = (GraphInterface) P2PHelper.getInstance().getSignalEmitter();
+    			GraphInterface remoteGraph = (GraphInterface) PTPHelper.getInstance().getSignalEmitter();
 				switch (msg.what) {
 				case Graph.NODE_POSITION_CHANGED:
 					Node node;
 					while(( node = graph.getChangedNode()) != null){
-						remoteGraph.MoveNode(node.getId(), node.x, node.y, P2PHelper.getInstance().getUniqueID());
+						remoteGraph.MoveNode(node.getId(), node.x, node.y, PTPHelper.getInstance().getUniqueID());
 					}break;
 					
 				case Graph.POINT_OWNERSHIP_CHANGED:				
 					Graph.IdChange idChange;
 					while(( idChange = graph.getIdChange()) != null){
-						remoteGraph.ChangeOwnerOfNode(idChange.id, idChange.owner, P2PHelper.getInstance().getUniqueID());
+						remoteGraph.ChangeOwnerOfNode(idChange.id, idChange.owner, PTPHelper.getInstance().getUniqueID());
 					}break;
 					
 				default: break;

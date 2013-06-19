@@ -23,7 +23,7 @@ import android.widget.Toast;
 import de.bachelor.maumau.GameManager.Card;
 import de.bachelor.maumau.GameManager.SpecialCases;
 import de.bachelor.maumau.rules.CardsDrawnEvent;
-import de.p2pservice.P2PHelper;
+import de.ptpservice.PTPHelper;
 
 @SuppressWarnings("deprecation")
 public class GameActivity extends Activity implements GameManagerObserver {
@@ -57,8 +57,8 @@ public class GameActivity extends Activity implements GameManagerObserver {
 	  playedCardsLabel.setVisibility(View.INVISIBLE);
 	  application = (MauMauApplication) getApplication();
 	  gameManager = application.getGameManager();
-	  startButton.setVisibility(P2PHelper.getInstance().isHost() && !gameStarted && gameManager.getJoinedPlayers().size() > 1 ? View.VISIBLE: View.GONE);
-	  gameManager.HiIAm(P2PHelper.getInstance().getUniqueID(), P2PHelper.getInstance().getPlayerName());
+	  startButton.setVisibility(PTPHelper.getInstance().isHost() && !gameStarted && gameManager.getJoinedPlayers().size() > 1 ? View.VISIBLE: View.GONE);
+	  gameManager.HiIAm(PTPHelper.getInstance().getUniqueID(), PTPHelper.getInstance().getPlayerName());
 	  gameManager.addObserver(this);
 	  
 
@@ -109,14 +109,14 @@ public class GameActivity extends Activity implements GameManagerObserver {
 	  playerListAdapter = new PlayerListAdapter(application, this, android.R.layout.test_list_item);
 	  listview.setAdapter(playerListAdapter);
 	  
-	  if(P2PHelper.getInstance().isHost()){		  
+	  if(PTPHelper.getInstance().isHost()){		  
 		  getCards();
 	  }
 	}
 	
 	public void playCard(Card cardToPlay) {
 		try {
-			gameManager.PlayCard(cardToPlay.id, P2PHelper.getInstance().getUniqueID());
+			gameManager.PlayCard(cardToPlay.id, PTPHelper.getInstance().getUniqueID());
 		} catch (BusException e) {
 			e.printStackTrace();
 		}
@@ -142,9 +142,9 @@ public class GameActivity extends Activity implements GameManagerObserver {
 	public void onBackPressed(){
 	  super.onBackPressed();
 	  gameManager.reset();
-	  P2PHelper.getInstance().leaveChannel();
-	  P2PHelper.getInstance().disconnect();
-	  P2PHelper.getInstance().connectAndStartDiscover();
+	  PTPHelper.getInstance().leaveChannel();
+	  PTPHelper.getInstance().disconnect();
+	  PTPHelper.getInstance().connectAndStartDiscover();
 	}
 	  
 	
@@ -213,7 +213,7 @@ public class GameActivity extends Activity implements GameManagerObserver {
 					playerListAdapter.refresh();
 					playerListAdapter.notifyDataSetChanged();
 					boolean showStartGameButton = !gameStarted && playerListAdapter.getCount() > 1;
-					startButton.setVisibility(showStartGameButton && P2PHelper.getInstance().isHost() ? View.VISIBLE : View.GONE);
+					startButton.setVisibility(showStartGameButton && PTPHelper.getInstance().isHost() ? View.VISIBLE : View.GONE);
 					updateButtonsState();
 				}
 			});
