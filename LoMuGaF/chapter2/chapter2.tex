@@ -1,5 +1,71 @@
 \chapter{Grundlagen}
 
+\section{Konzepte}
+
+  Das PTP-Rahmenwerk basiert auf dem Peer-to-Peer Prinzip  und benötigt deswegen keinen weiteren Server. Weil durch
+  einen Serverbasierten Ansatz der Zustand des Spiels nur auf dem Server organisiert wird ist es eine
+  gewisse Herausforderung bei einem Peer-to-Peer Ansatz alle Gerät synchron zu
+  halten. Der Entwickler hat nur Objekte, über die er die Kommunikation realisieren muss. Dabei handelt es sich zum einen um Objekte, die die eingehenden Signale behandeln und zum Anderen Objekte um Nachrichten an die anderen Spieler zu senden.
+ 
+\begin{wrapfigure}{r}{0.5\textwidth}
+   \centering
+   \includegraphics[width=0.48\textwidth]{chapter1/emitterhandler}
+   \caption[Von Text umflossenes Bild]{Kommunications-Konzept}
+   \label{fig:Wrap}
+\end{wrapfigure}
+   
+  Jedes der Geräte hat zum einen Handler sowie einen Emitter. Der Emitter
+  ist das Objekt welches die Signale an andere Geräte rausschickt und der Handler ist somit das Objekt, welches auf jedem Gerät die eingehende Nachricht behandelt. In den meisten Anwendungsfällen haben die Emitter und
+  Handler auf allen Geräten die selbe Impelementierung. Zusätzlich wird eine
+  Session verwendung um die einzelnen Spielsitzungen oder Spielrunden in sich
+  geschlossen zu handhaben. Somit erstellt ein Host eine Session zu der sich die
+  die Klienten verbinden können um an der Spielrunde teilnehmen zu können.
+  Dadurch wird außerdem die Möglichkeit  gegeben mehrere Spiele simultan im
+  selben Netzwerk zu spielen.
+  
+  \section{Peer-to-Peer}
+  Peer ist das englische Wort für Gleichstehender oder Gleichberechtigter, somit
+  ist das Prinzip eines Peer-to-Peer Netzwerk, dass alle Teilnehmer
+  gleichberechtigt sind. Da es bei dem Peer-to-Peer Netzwerk im Grunde keinen
+  Server gibt, welcher sonst die Steuerung der Prozesse und der Ressourcen
+  übernimmt, müssen die einzelnen Peers sich selbst darum kümmern und sich
+  entsprechend selbst organisieren.
+  
+
+\begin{figure}[!htb]
+\minipage{0.5\textwidth}
+  \includegraphics[width=0.75\linewidth]{chapter2/Server-based-network}
+  \caption{Server basiertes Netzwerk}
+  \label{fig:server-based-network}
+\endminipage\hfill
+\minipage{0.5\textwidth}
+  \includegraphics[width=0.75\linewidth]{chapter2/P2P-network}
+  \caption{PtP basiertes Netzwerk}
+  \label{fig:server-based-network}
+\endminipage\hfill
+\end{figure}
+
+ 
+ Die Bilder verdeutlichen nochmal das Gesagte. Durch das Weglassen eines fest
+ zugeordneten Servers, erhält man eine Flexibilität, sodass nur Peers benötigt
+ werden um das Spiel zu spielen. Es ergeben sich auch Probleme bei dieser Art
+ der realisierung, die man mit einem Serverbasiertem system kaum hätte.
+ Normalerweise bei einem Serverbasiertem Spiel wird der Zustand des Spiels auf
+ dem Server geregelt und alle zu dem Server verbundenen Geräte brauchen den
+ Server nur nach diesen Zustand zu fragen. Da die Berechnungen meistens auf dem
+ Server liegen werden die verbundenen Geräte entlastet. 
+ Bei einem Peer-to-Peer System hingegen muss der Zustand von jedem einzelnen
+ Gerät ermittelt werden und mit den anderen Geräten synchonisiert werden. Dies
+ hat einen höheren Ressourcenaufwand und limitiert somit die Anzahl der
+ möglichen Teilnehmer, da die Informationen mit allen Peers ausgetauscht werden
+ um zu garantieren, dass alle den selben Zustand haben. Jedoch ist es auch sehr
+ vom Anwendungfall abhängig, denn ein entsprechendes Gegenbeispiel für eine hohe
+ Peersanzahl zeigten Tauschbörsen wie Torrent oder Napster um nur zwei bekannte
+ Beispiele zu nennen. Somit liegt die Herausforderung bei den Entwicklern, da
+ sie zum einen Entscheiden müssen wie viele Spieler maximal zulässig sind und
+ somit auch die Anforderung für die Komplexität des Spiel setzen.
+
+
   \section{Android SDK}
   
   Android ist das Linux-basierte Betriebssystem für mobile Endgeräte, welches
@@ -18,16 +84,15 @@
 
  Somit waren im März 2013 etwa 750 Millionen Android End-Geräte aktiviert und
  man merkt schnell, dass die Popularität dieses Betriebssystem immer mehr
- zunimmt.Da ein Smartphone Betriebsystem auch von den angeboten Apps lebt hat
- Google um die Entwicklung dieser eine Entwicklungswerkzeugsammlung zur
+ zunimmt. Da ein Smartphone Betriebsystem auch von den angeboten Apps lebt, hat
+ Google eine Entwicklungswerkzeugsammlung zur
  Verfügung gestellt, welche die Entwicklung von Applikationen für Android
- möglichst einfach ermögichen soll. Bei dieser Werkzeugensammlung handelt es
+ möglichst einfach ermöglichen soll. Bei dieser Werkzeugensammlung handelt es
  sich um das Android SDK, welches auch als das Android Developer Tool kurz ADT
  verfügbar ist. ADT ist ein Plugin für das mittlerweile sehr weit verbreitete
  Entwicklungsumgebung Eclipse, welche die Entwicklung und die Übertragung der
- Applikation auf das Gerät mühelos ermöglicht. Weiterhin bringt das Android SDK
- einen Emulator mit sich, welches das Testen von Apps unter unteschiedlichen
- Konfigurationen ermöglicht ohne dass man ein Android-Gerät benötigt. Vorallem
+ Applikation auf das Gerät mühelos ermöglicht.
+ Weiterhin bringt das Android SDK einen Emulator mit sich, welches das Testen von Apps unter unteschiedlichen Konfigurationen ermöglicht ohne dass man ein Android-Gerät benötigt. Vorallem
  ermöglicht das Android SDK die Entwicklung der Apps in der Programmiersprache
  Java, welche sich immer höherer Beliebtheit erfreut und dank Eclipse zu einer
  höheren Produktivität beiträgt.
@@ -35,16 +100,17 @@
  Funktionalität dieser zu beschreiben.
  
  \subsection{Activity}
-Eine Activity ist eine Klasse, welche einzelne UI-Fenster representiert. Somit
-bestehen die meisten Apps in Android aus mehreren Activities, welche
+Eine Activity ist eine Klasse, welche die Erstellung von einzelnen UI-Fenstern
+übernimmt.
+Somit bestehen die meisten Apps in Android aus mehreren Activities, welche
 mit einander verbunden sind. Ein Use-Case bei dem man mehrere Fenster hat, würde
 sozusagen mehrere Activities nacheinander aufrufen. 
 Um eine Activity zu erstellen muss seine Klasse eine Unterklasse von Activity
 sein. Zusätzlich muss man die Methode \textbf{\textit{onCreate()}} in seiner
 Klasse überschreiben. Diese Methode wird jedesmal aufgerufen wenn die Activity
 erstellt wird, also auf dem Bildschirm erscheinen soll. In diese Methode kommen
-meist Anpassungen an die UI hinein oder andere Operationen die beim Start
-notwendig sind.
+Aufrufe von Fenstern, die die UI beinhalten, oder andere Operationen die beim
+Start notwendig sind.
 
 \subsection{Service}
 Ein Service ist eine Komponente, welche dazu gedacht ist Hintergrundprozesse zu
@@ -69,6 +135,181 @@ verschiedene Aktionen zu, wie z.B. das Aufrufen von weiteren Activities. Eine
 Activity ist eine Unterklasse vom Context und wird bei der Erstellung von z.B.
 einer View an diese übergeben.
 
-  \section{AllJoyn}
+\subsection{View}
+Eine View representiert eine Sammlung von UI-Elementen auf einem Bildschirm. Die
+Elemente werden meist über das XML-Layout erstellt und darüber referenziert.
+Activities haben so die Möglichkeit eine Unterklasse der View als Instanz
+aufzurufen, welche das UI-Fenster representiert oder können die UI-Elemente
+direkt über das XML-Layout laden.
 
-    Duis\cite{Lor09} sed lectus sem. Proin viverra venenatis tincidunt. Fusce eget turpis sit amet erat vestibulum pretium. In hac habitasse platea dictumst. Morbi eget massa et ante laoreet iaculis. Duis vitae nulla nulla. Suspendisse sit amet diam at enim accumsan consequat a eu sem. Proin venenatis ullamcorper gravida. Proin fermentum, metus vitae hendrerit bibendum, ligula dolor vestibulum eros, sed molestie lectus urna eget libero. Aenean ut sem nec metus tristique pretium.
+\subsection{UI-Thread}
+Der UI Thread ist der Hauptthread, welcher beim Start der Applikation gestartet
+wird. Dieser Thread ist für die Darstellung von UI-Elemente
+verantwortlich sowie auf Benutzeraktivitäten wie Touchevents zu reagieren und
+sie zu verarbeiten.
+
+ \begin{wrapfigure}{l}{0.5\textwidth}
+   \centering
+   \includegraphics[width=0.45\textwidth]{chapter2/anr}
+   \caption[Von Text umflossenes Bild]{ANR}
+   \label{fig:Wrap}
+  \end{wrapfigure}
+  
+Somit ist es wichtig langwierige und blockende Aufgaben wie die
+Netzwerkkommunikation in ein seperaten Thread auszulagern um den UI Thread nicht zu überlasten
+Denn ein blockierter UI Thread kann schnell zu einer sogenannten ANR-Meldung
+führen oder auf deutschen Geräten `Anwendung reagiert nicht mehr'. Außerdem muss
+man bei Verwendung von mehreren Thread darauf achten, dass die UI Komponenten
+nur vom UI Thread angefasst werden dürfen. Somit muss eventuell bei Background
+Thread \textbf{\textit{runOnUiThread()}} Methode
+verwendet werden, welche die auszuführende Aufgabe an den UI Thread übergibt.
+
+\newpage
+
+\section{AllJoyn}
+
+\begin{wrapfigure}{r}{0.25\textwidth}
+   \centering
+   \includegraphics[width=0.2\textwidth]{chapter2/img-alljoyn-logo}
+   \caption[Von Text umflossenes Bild]{AllJoyn}
+   \label{fig:Wrap}
+\end{wrapfigure} 
+AllJoyn ist ein Open-Source Peer-to-Peer Rahmenwerk welches es erlaubt
+Verbindungen zwischen verschiedenen Geräten herzustellen. 
+AllJoyn wird von Qualcomm Innovation Center Inc. entwickelt und steht unter der
+Apache v.2 Licenz. Besonderer Augenmerk dieses Framework besteht in der
+Tatsache, dass es verschiedene Betriebssysteme unterstützt und eine Vielzahl von
+Programmiersprachen, darunter C$\sharp$, C++, Java sowie Objective C. Somit lassen sich
+Anwendungen auf Peer-to-Peer Basis auf Windows,MacOS,Linux,Android und iOS
+entwickeln und mit einander verbinden.
+Es bietet weiterhin die Unterstützung für
+Bluetooth, Wifi und Ethernet. Vorallem ermöglicht AllJoyn die Verbindung von
+Mobilen-Endgeräten im Wifi-Netz ohne sich selbst um das Finden und Verbinden
+kümmern zu müssen. Außerdem bietet AllJoyn für jedes Betriebssystem ein SDK an,
+welches alle notwendigen Bibliotheken sowie einige Beispielanwendungen
+beinhaltet. 
+
+\subsection{Bussystem}
+
+
+\begin{wrapfigure}{c}{0.50\textwidth}
+   \centering
+   \includegraphics[width=0.50\textwidth]{chapter2/img-developer-proxy}
+   \caption[Von Text umflossenes Bild]{Bussystem}
+   \label{fig:Wrap}
+\end{wrapfigure} 
+Das Prinzip von AllJoyn basiert auf einem Bussystem zu dem sich einzelne
+Anwendung verbinden können.  
+Jedes dieser Anwendung muss einen sogenannten BusAttachement erstellen und den
+entsprechenden EventHandler implementieren über den dann die Nachrichten von
+anderen Anwendungen behandelt werden. Über einen ProxyObjekt lassen sich dann
+entweder Methoden auf einem bestimmten Gerät aufrufen oder auf allen Geräten,
+die zu dem Bus verbunden sind und das entsprechende Interface implementieren.
+
+\newpage
+
+\subsection{BusAttachement}
+Um mit dem Bussystem zu kommunizieren, erstellt man einen BusAttachement:
+\begin{lstlisting}
+bus = new BusAttachment("name",BusAttachment.RemoteMessage.Receive)
+\end{lstlisting}
+Der ``applicationName'' Parameter ist notwendig um verschiedene BusAttachements zu den entsprechenden Anwendungen zu
+zuordnet, falls mehrere Anwendungen über den selben Bus kommunizieren. Als
+Zweitparameter lässt sich noch angeben ob das BusAttachement eingehende
+Nachrichten verwerfen oder behandeln soll.
+
+\subsection{Interface}
+Die Kommunikation bei AllJoyn funktioniert über Interfaces, also eine konkrete
+Beschreibung der Methoden über die Nachrichten verschickt werden. So muss zum
+einen über dem Interfacenamen die folgende Annotation stehen:
+\begin{lstlisting}
+@BusInterface (name = "de.package.MyInterface")
+public interface MyInterface{}
+\end{lstlisting}
+Das Interface wird benötigt um über das BusAttachement an die ProxyObjekt zu
+kommen. Weiterhin muss das Inteface auch die Methoden entsprechend deklarieren.
+\begin{lstlisting}
+@BusMethod
+public void MyMethod() throws BusException;
+\end{lstlisting}
+
+\subsection{ProxyObjecte}
+Bei Proxy Objekten handelt es sich um Objekte die dazu benutzt werden um
+Methoden auf Objekten anderer Geräte oder Anwendungen aufzurufen. Sie
+implementieren das zuvor definierte Interface, worüber dann die Kommunikation
+realisiert wird.
+
+\subsection{BusObject}
+Ein BusObject ist ein Objekt welches das definierte Inteface implementiert und
+unter einem bestimmten Pfad abgespeichert wird.
+\begin{lstlisting}
+bus.registerBusObject(busObject, "/objectPath");
+\end{lstlisting}
+Somit können alle Anwendungen über den Pfad auf das Bus-Objekt zugreifen und
+darauf Methoden aufrufen oder Properties abfragen.
+
+\subsection{SignalHandler}
+Ein SignalHandler ist ein Object welches die Behandlung von eingehenden
+Nachrichten implementiert. Der Unterschied von einem BusObject und einem
+SignalHandler ist, dass beim BusObject man nur die Methode auf dem
+entsprechenden Object ausführt, welcher unter einem bestimmten Pfad gespeichert
+ist und bei SignalHandler handelt es sich um Objecte die auf Nachrichten
+reagieren die an alle Geräte geschickt werden wie bei einem Broadcast. 
+Falls es sich bei dem Inteface um einen SignalHandler handelt müssen die
+Methoden @BusSignal als Annotationen beinhalten
+\begin{lstlisting}
+@BusSignal
+public int MyHandler() throws BusException;
+\end{lstlisting}
+Zusätzlich muss man bei der Implementierung eine weitere Annotation hinzufügen
+um den Nachrichtentyp explizit zu definieren.
+\begin{lstlisting}
+@Override
+@BusSignalHandler(iface = "de.packege.MyInterface", signal = "MyHandler") 
+public void MyHandler() throws BusException {}
+\end{lstlisting}
+
+\subsection{SignalEmitter}
+Ein SignalEmitter ist das Objekt das dazu verwendet wird Nachrichten an alle
+Teilnehmer zu senden. Der SignalEmitter kann dazu verwendet werden um an das
+Inteface zu kommen welches auch von den SignalHandlern implementiert wird. Es
+ist im Prinzip der Proxy zu allen Teilnehmern. Den SignalEmitter bekommen man durch den folgenden Aufruf:
+\begin{lstlisting}
+emitter = new SignalEmitter(busObject, id, SignalEmitter.GlobalBroadcast.Off);
+myInterface = (MyInterface) emitter.getInterface(MyInterface.class);
+\end{lstlisting}
+Bei der id handelt es sich um die SessionID, welche beim Verbinden zu einer
+Session mitgeteilt wird. Zusätzlich lässt sich noch konfigurieren ob das Signal
+auch über den Bus hinaus weitergeleitet wird, falls jemand zu mehreren
+Bussystemen verbunden ist. Als Standartkonfiguration ist die Signalweiterleitung aus.
+
+\subsection{Session}
+Eine Session ermöglicht es mehrere Teilnehmer zu einer gemeinsamen Einheit
+zusammenzufassen um verschiedene Anwendungsabläufe wie z.B. eine Spielrunde von
+einander getrennt zu handhaben. Dazu muss z.B. der Host einen sogenannten
+Channel erstellen, wohin sich alle anderen Teilnehmen verbinden können. Dazu
+benötigen alle Geräte zum einen den Namen des Channels und zum anderen die
+Channelportnummer. Dazu kann der Host den erstellten Channelname den anderen
+Teilnehmern, welche sich im Bussystem befinden,über das sogennante Advertising
+mitteilen. Um diese Mitteilungen auch zu empfangen, müssen die Teilnehmer einen
+BusListener implementieren, welcher dann auf solche Nachrichten horcht.
+Somit hat einer der Teilnehmer die Aufgabe des Hosts und erstellt einen Channel
+und teilt diesen dann den Anderen mit:
+\begin{lstlisting}
+bus.bindSessionPort(contactPort, sessionOpts, sessionPortListener);
+bus.requestName("myChannelName");
+bus.advertiseName("myChannelName");
+\end{lstlisting}
+Das Erstellen der Session benötigt unter einigen Einstellungen, wie die
+Portnummer,Transportprotokol usw, auch den SessionPortListener, welcher z.B. das
+Verbinden von anderen Teilnehmern behandelt und bestimmte Aktionen dann
+ausführen kann. Typische Methoden eines SessionPortListeners wären z.B.
+\begin{lstlisting}
+public boolean acceptSessionJoiner(short sessionPort,
+								String joiner, SessionOpts sessionOpts) {}
+					
+public void sessionJoined(short sessionPort, int id, String joiner) {}
+
+\end{lstlisting}
+Der Host braucht dann die Implementierung der Methoden um das Verbinden zu der
+Session zu Kontrollieren.

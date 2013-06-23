@@ -23,6 +23,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" 
         android:name="de.bachelor.graphgame.MainApplication">
+        
         <activity
             android:name="de.bachelor.graphgame.GraphLobbyActivity"
             android:label="@string/app_name" >
@@ -40,9 +41,8 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="de.bachelor.graphgame.MyLobbyActivity" />
         </activity>
-         <service
-            android:name="GraphService">
-        </service>service>
+        <service android:name="de.ptpservice.PTPService"/>
+           
         
     </application>
 

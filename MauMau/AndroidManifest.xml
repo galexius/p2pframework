@@ -55,7 +55,7 @@
                 android:value="de.bachelor.maumau.MauMauLobbyView" />
         </activity>
 
-        <service android:name="de.bachelor.maumau.MauMauService" >
+        <service android:name="de.ptpservice.PTPService" >
         </service>
         <activity
             android:name="de.bachelor.maumau.Activity"

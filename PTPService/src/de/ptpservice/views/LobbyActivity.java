@@ -3,7 +3,6 @@ package de.ptpservice.views;
 import java.util.List;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -21,7 +20,7 @@ import de.p2pservice.R;
 import de.ptpservice.PTPHelper;
 
 @TargetApi(Build.VERSION_CODES.GINGERBREAD)
-public abstract class LobbyActivity extends Activity implements LobbyObserver {
+public abstract class LobbyActivity extends AbstractLobbyActivity {
 
 	private ListView channelList;
 	private Button refreshButton;
@@ -68,7 +67,7 @@ public abstract class LobbyActivity extends Activity implements LobbyObserver {
 	    	Toast toast = Toast.makeText(context, text, duration);
 	    	toast.show();
     	}else{
-    		PTPHelper.getInstance().setChannelName(channelName);
+    		PTPHelper.getInstance().setClientChannelName(channelName);
     		PTPHelper.getInstance().setHostChannelName(channelName);
     		PTPHelper.getInstance().setPlayerName(playerName);
     		PTPHelper.getInstance().doAction(PTPHelper.HOST_CHANNEL);
@@ -102,9 +101,9 @@ public abstract class LobbyActivity extends Activity implements LobbyObserver {
 	    	    	toast.show();
 	        	}else{
 					String name = channelList.getItemAtPosition(position).toString();
-					PTPHelper.getInstance().setChannelName(name);
-					PTPHelper.getInstance().doAction(PTPHelper.JOIN_CHANNEL);
+					PTPHelper.getInstance().setClientChannelName(name);
 					PTPHelper.getInstance().setPlayerName(playerName);
+					PTPHelper.getInstance().doAction(PTPHelper.JOIN_CHANNEL);					
 					Intent intent = new Intent(LobbyActivity.this, getJoinChannelView());
 					LobbyActivity.this.startActivity(intent);
 	        	}

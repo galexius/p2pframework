@@ -51,16 +51,16 @@ public class MauMauApplication extends Application implements GameManagerObserve
 		}
 		
 	}
+	
 	private GameManager gameManager;
-	
-	
+		
 	@Override
 	public void onCreate(){
 		super.onCreate();	
 		gameManager = new GameManager(this);
 		gameManager.reset();
 		gameManager.addObserver(this);
-		PTPHelper.initHelper(GameManagerInterface.class, this, new GameManagerDummyObject(), gameManager, MauMauService.class, MauMauLobbyView.class);
+		PTPHelper.initHelper(GameManagerInterface.class, this, new GameManagerDummyObject(), gameManager, MauMauLobbyView.class);
 	}		
 	
 	

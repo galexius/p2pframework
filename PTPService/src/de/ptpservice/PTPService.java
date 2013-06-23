@@ -23,7 +23,7 @@ import android.os.Message;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
-public abstract class PTPService<T> extends Service implements Observer {
+public class PTPService extends Service implements Observer {
 
 	public static final int EXIT = 1;
 	public static final int CONNECT = 2;
@@ -255,7 +255,7 @@ public abstract class PTPService<T> extends Service implements Observer {
 	private void doConnect() {
 		Log.i(TAG, "doConnect()");
 		
-		bus = new BusAttachment(packageName + "." + getDeviceID(),  BusAttachment.RemoteMessage.Receive);
+		bus = new BusAttachment(packageName + "." + TAG,  BusAttachment.RemoteMessage.Receive);
 		assert (busAttachmentState == BusAttachmentState.DISCONNECTED);
 		bus.useOSLogging(true);
 		bus.setDebugLevel("ALLJOYN_JAVA", 7);
@@ -267,6 +267,7 @@ public abstract class PTPService<T> extends Service implements Observer {
 					PTPHelper.getInstance().addAdvertisedName(getSimpleName(fullName));
 				}	
 			};
+			
 			
 			@Override
 			public void lostAdvertisedName(String fullName, short transport, String namePrefix) {
@@ -407,7 +408,7 @@ public abstract class PTPService<T> extends Service implements Observer {
 					
 					SignalEmitter emitter = new SignalEmitter(PTPHelper.getInstance().getBusObject(), id,
 							SignalEmitter.GlobalBroadcast.Off);
-					hostInterface = (T) emitter
+					hostInterface = emitter
 							.getInterface(PTPHelper.getInstance().getBusObjectInterfaceType());
 					PTPHelper.getInstance().setSignalEmiter(hostInterface);
 			}
@@ -461,15 +462,15 @@ public abstract class PTPService<T> extends Service implements Observer {
 		SignalEmitter emitter = new SignalEmitter(PTPHelper.getInstance().getBusObject(), useSessionId,
 				SignalEmitter.GlobalBroadcast.Off);
 		
-		clientInterface = (T) emitter.getInterface(PTPHelper.getInstance().getBusObjectInterfaceType());
+		clientInterface = emitter.getInterface(PTPHelper.getInstance().getBusObjectInterfaceType());
 		PTPHelper.getInstance().setSignalEmiter(clientInterface);
 		
 		
 	}
 
 
-	T clientInterface = null;
-	T hostInterface = null;
+	Object clientInterface = null;
+	Object hostInterface = null;
 	
 	private void doLeaveSession() {
 		Log.i(TAG, "doLeaveSession()");

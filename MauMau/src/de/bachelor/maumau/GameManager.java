@@ -94,6 +94,7 @@ public class GameManager implements BusObject, GameManagerInterface {
 		private int specialCase = SpecialCases.DEFAULT;
 		private String lastCardPlayedBy = "";
 		private boolean cardsDrawnThisTurn;
+		private boolean cardPlayedThisTurn;
 		
 		public GameManager(MauMauApplication application){
 			this.application = application;		
@@ -220,8 +221,9 @@ public class GameManager implements BusObject, GameManagerInterface {
 			}
 			playedCard = card;
 			if(uniqueUserID.equals(PTPHelper.getInstance().getUniqueID())){
+				cardPlayedThisTurn = true;
 				notifyObservers(CARD_PLAYED);	
-				nextTurn(false);
+				nextTurn();
 			}else{
 				removeObserver(application);
 				notifyObservers(CARD_PLAYED);
@@ -316,10 +318,11 @@ public class GameManager implements BusObject, GameManagerInterface {
 			return getPlayCardRuleEnforcer().allRulesPassed(card);
 		}
 
-		public void nextTurn(boolean skip) {
+		public void nextTurn() {
 			updateSpecialCaseOnTurnsEnd();
 			
 			cardsDrawnThisTurn = false;
+			cardPlayedThisTurn = false;
 			String nextPlayersID = getPlayersIdByOffsetOfMine(1);
 			setAndNotifyNextTurn(nextPlayersID);
 		}
@@ -333,7 +336,7 @@ public class GameManager implements BusObject, GameManagerInterface {
 				if(specialCase <= SpecialCases.SEVEN_PLAYED_TREE_TIMES) specialCase ++;
 				else specialCase = SpecialCases.SEVEN_PLAYED_ONCE;
 			}
-			if(playedCard.value == 8 || playedCard.value == 14){
+			if((playedCard.value == 8 || playedCard.value == 14) && cardPlayedThisTurn){
 				specialCase = SpecialCases.SKIP_TURN;
 			}
 		}

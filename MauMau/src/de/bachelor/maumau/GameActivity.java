@@ -176,7 +176,7 @@ public class GameActivity extends Activity implements GameManagerObserver {
 	
 	public void nextTurn(View view){
 		gameManager.setSpecialCase(SpecialCases.DEFAULT);
-		gameManager.nextTurn(false);
+		gameManager.nextTurn();
 	}
 	
 	public void clubs(View view){

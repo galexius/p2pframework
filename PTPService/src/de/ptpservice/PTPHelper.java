@@ -17,7 +17,7 @@ import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.util.Log;
 import android.widget.Toast;
-import de.ptpservice.views.LobbyActivity;
+import de.ptpservice.views.AbstractLobbyActivity;
 import de.ptpservice.views.LobbyObserver;
 
 
@@ -43,22 +43,23 @@ public class PTPHelper<T> {
 	@SuppressWarnings("rawtypes")
 	private static PTPHelper instance = null;
 	
-	public static <T> void initHelper(Class<T> theInterfaceType, Context context,BusObject busObject,Object signalHandler,Class<? extends PTPService<T>> concreteServiceClass, Class<? extends LobbyActivity> lobbyClass){
-		instance = new PTPHelper<T>(theInterfaceType, context,busObject,signalHandler,concreteServiceClass,lobbyClass);		
+	public static <T> void initHelper(Class<T> theInterfaceType, Context context,BusObject busObject,Object signalHandler, Class<? extends AbstractLobbyActivity> lobbyClass){
+		instance = new PTPHelper<T>(theInterfaceType, context,busObject,signalHandler,lobbyClass);		
 		PACKAGE_NAME = context.getPackageName();
         if(instance.isWifiEnabledAndShowInfo(context))
         	return;          
                 
-		Intent service = new Intent(context,concreteServiceClass);
-        boolean bound = context.bindService(service,new PTPServiceConnection(),Service.BIND_AUTO_CREATE);
-        if (!bound) {
-            Log.e(TAG, "onCreate(): failed to bindService()");
-        }
+		Intent service = new Intent(context,PTPService.class);
+		context.startService(service);
+//        boolean bound = context.bindService(service,new PTPServiceConnection(),Service.BIND_AUTO_CREATE);
+//        if (!bound) {
+//            Log.e(TAG, "onCreate(): failed to bind Service()");
+//        }
         new Intent(context,lobbyClass);
 	}
 	
 	@SuppressWarnings("rawtypes")
-	public static PTPHelper getInstance(){
+	public static PTPHelper getInstance(){		
 		return instance;
 	}
 	
@@ -69,17 +70,15 @@ public class PTPHelper<T> {
 	protected String channelName = "";
 	protected Queue<Integer> notificationQueue = new LinkedList<Integer>();
 	
-	private PTPHelper(Class<T> theInterfaceType, Context context,BusObject busObject,Object signalHandler,Class<? extends PTPService<T>> concreteServiceClass, Class<? extends LobbyActivity> lobbyClass) {
+	private PTPHelper(Class<T> theInterfaceType, Context context,BusObject busObject,Object signalHandler, Class<? extends AbstractLobbyActivity> lobbyClass) {
 		Log.d("P2PHelper", "onConstructor");
 		this.busObjectInterfaceType = theInterfaceType;
 		this.busObject = busObject;
 		this.signalHandler  = signalHandler;
-		this.concreteServiceClass = concreteServiceClass;
 		this.lobbyClass = lobbyClass;	        
 	}
 		
-	protected Class<? extends PTPService<T>> concreteServiceClass;
-	protected Class<? extends LobbyActivity> lobbyClass;
+	protected Class<? extends AbstractLobbyActivity> lobbyClass;
 
 	
 	@TargetApi(Build.VERSION_CODES.GINGERBREAD)
@@ -91,7 +90,7 @@ public class PTPHelper<T> {
 	    	int duration = Toast.LENGTH_SHORT;
 	    	Toast toast = Toast.makeText(context, text, duration);
 	    	toast.show();
-	    	Log.i(TAG, "ShowWiFi");
+	    	Log.i(TAG, "ShowNoWiFi");
 	    	return true;
 	    }
 	    return false;
@@ -123,7 +122,7 @@ public class PTPHelper<T> {
 		return channelName;
 	}
 	
-	public void setChannelName(String name){
+	public void setClientChannelName(String name){
 		this.channelName = name; 
 	}
 	
@@ -165,7 +164,6 @@ public class PTPHelper<T> {
 	private List<String> foundChannels = new ArrayList<String>();
 
 	private String uniqueID  = "";
-	private Object remoteObject;
 	private String playerName = "";
 	private int connectionState;
 	private BusObject busObject;
@@ -210,15 +208,6 @@ public class PTPHelper<T> {
 	}
 	public synchronized void quit() {
 		notifyObservers(PTPService.EXIT);
-	}
-
-	
-	public synchronized void setRemoteObject(Object remoteObject) {
-		this.remoteObject = remoteObject;			
-	}
-	
-	public synchronized Object getRemoteObject(){
-		return remoteObject;
 	}
 	
 	public BusObject getBusObject(){

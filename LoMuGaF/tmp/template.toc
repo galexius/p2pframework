@@ -1,36 +1,42 @@
 \select@language {ngerman}
 \contentsline {chapter}{Zusammenfassung}{ii}{chapter*.1}
 \contentsline {chapter}{Erkl\"arung}{iii}{chapter*.2}
-\contentsline {chapter}{Einleitung}{iv}{chapter*.3}
 \vspace {0.2cm}
-\contentsline {chapter}{Abbildungsverzeichnis}{vii}{chapter*.5}
-\contentsline {chapter}{Tabellenverzeichnis}{viii}{chapter*.6}
-\contentsline {chapter}{Quellcodeverzeichnis}{ix}{chapter*.7}
+\contentsline {chapter}{Abbildungsverzeichnis}{vi}{chapter*.4}
+\contentsline {chapter}{Tabellenverzeichnis}{vii}{chapter*.5}
+\contentsline {chapter}{Quellcodeverzeichnis}{viii}{chapter*.6}
 \vspace {1.0cm}
 \contentsline {chapter}{\numberline {1}Einleitung}{1}{chapter.1}
-\contentsline {section}{\numberline {1.1}Konzepte}{2}{section.1.1}
-\contentsline {section}{\numberline {1.2}Ziel und Aufgabenstellung der Arbeit}{2}{section.1.2}
-\contentsline {section}{\numberline {1.3}L\"osungsweg der Aufgabenstellung}{3}{section.1.3}
-\contentsline {section}{\numberline {1.4}Gliederung}{3}{section.1.4}
-\contentsline {chapter}{\numberline {2}Grundlagen}{4}{chapter.2}
-\contentsline {section}{\numberline {2.1}Android SDK}{4}{section.2.1}
-\contentsline {subsection}{\numberline {2.1.1}Activity}{5}{subsection.2.1.1}
-\contentsline {subsection}{\numberline {2.1.2}Service}{5}{subsection.2.1.2}
-\contentsline {subsection}{\numberline {2.1.3}Application}{5}{subsection.2.1.3}
-\contentsline {subsection}{\numberline {2.1.4}Context}{5}{subsection.2.1.4}
-\contentsline {section}{\numberline {2.2}AllJoyn}{6}{section.2.2}
-\contentsline {chapter}{\numberline {3}Versuchsdurchf\"uhrung}{7}{chapter.3}
-\contentsline {section}{\numberline {3.1}Theoretische Vor\"uberlegungen}{7}{section.3.1}
-\contentsline {section}{\numberline {3.2}Versuchsaufbau}{7}{section.3.2}
-\contentsline {section}{\numberline {3.3}Versuchsinstrumente}{8}{section.3.3}
-\contentsline {section}{\numberline {3.4}Versuchsvorbereitung}{8}{section.3.4}
-\contentsline {section}{\numberline {3.5}Praktische Versuchsdurchf\"uhrung}{8}{section.3.5}
-\contentsline {chapter}{\numberline {4}Versuchsergebnisse}{10}{chapter.4}
-\contentsline {chapter}{\numberline {5}Diskussion der Messergebnisse}{11}{chapter.5}
-\contentsline {chapter}{\numberline {6}Weitere Problemstellungen / Ausblick}{12}{chapter.6}
-\contentsline {chapter}{\numberline {7}Fazit}{13}{chapter.7}
+\contentsline {section}{\numberline {1.1}Ziel und Aufgabenstellung der Arbeit}{2}{section.1.1}
+\contentsline {section}{\numberline {1.2}L\"osungsweg der Aufgabenstellung}{2}{section.1.2}
+\contentsline {section}{\numberline {1.3}Gliederung}{2}{section.1.3}
+\contentsline {chapter}{\numberline {2}Grundlagen}{3}{chapter.2}
+\contentsline {section}{\numberline {2.1}Konzepte}{3}{section.2.1}
+\contentsline {section}{\numberline {2.2}Peer-to-Peer}{4}{section.2.2}
+\contentsline {section}{\numberline {2.3}Android SDK}{5}{section.2.3}
+\contentsline {subsection}{\numberline {2.3.1}Activity}{5}{subsection.2.3.1}
+\contentsline {subsection}{\numberline {2.3.2}Service}{6}{subsection.2.3.2}
+\contentsline {subsection}{\numberline {2.3.3}Application}{6}{subsection.2.3.3}
+\contentsline {subsection}{\numberline {2.3.4}Context}{6}{subsection.2.3.4}
+\contentsline {subsection}{\numberline {2.3.5}View}{6}{subsection.2.3.5}
+\contentsline {subsection}{\numberline {2.3.6}UI-Thread}{7}{subsection.2.3.6}
+\contentsline {section}{\numberline {2.4}AllJoyn}{8}{section.2.4}
+\contentsline {subsection}{\numberline {2.4.1}Bussystem}{8}{subsection.2.4.1}
+\contentsline {subsection}{\numberline {2.4.2}BusAttachement}{9}{subsection.2.4.2}
+\contentsline {subsection}{\numberline {2.4.3}Interface}{9}{subsection.2.4.3}
+\contentsline {subsection}{\numberline {2.4.4}ProxyObjecte}{9}{subsection.2.4.4}
+\contentsline {subsection}{\numberline {2.4.5}BusObject}{9}{subsection.2.4.5}
+\contentsline {subsection}{\numberline {2.4.6}SignalHandler}{10}{subsection.2.4.6}
+\contentsline {subsection}{\numberline {2.4.7}SignalEmitter}{10}{subsection.2.4.7}
+\contentsline {subsection}{\numberline {2.4.8}Session}{11}{subsection.2.4.8}
+\contentsline {chapter}{\numberline {3}Implementierung}{12}{chapter.3}
+\contentsline {section}{\numberline {3.1}PTPHelper}{12}{section.3.1}
+\contentsline {section}{\numberline {3.2}Graphenspiel}{14}{section.3.2}
+\contentsline {section}{\numberline {3.3}MauMau}{14}{section.3.3}
+\contentsline {chapter}{\numberline {4}Praktisches Anwendungsbeispiel: Graphenspiel}{15}{chapter.4}
+\contentsline {chapter}{\numberline {5}Praktisches Anwendungsbeispiel: MauMau}{16}{chapter.5}
+\contentsline {chapter}{\numberline {6}Herausforderungen und Probleme}{17}{chapter.6}
+\contentsline {chapter}{\numberline {7}Fazit}{18}{chapter.7}
 \vspace {1cm}
-\contentsline {chapter}{\numberline {A}Herleitung der Formel}{I}{appendix.A}
-\contentsline {chapter}{\numberline {B}\"Uber das Problem X}{II}{appendix.B}
-\contentsline {chapter}{\numberline {C}Abk\"urzungsverzeichnis}{III}{appendix.C}
-\contentsline {chapter}{\numberline {D}Literaturverzeichnis}{IV}{appendix.D}
+\contentsline {chapter}{\numberline {A}Abk\"urzungsverzeichnis}{I}{appendix.A}
+\contentsline {chapter}{\numberline {B}Literaturverzeichnis}{II}{appendix.B}
