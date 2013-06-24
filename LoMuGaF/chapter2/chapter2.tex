@@ -164,6 +164,18 @@ nur vom UI Thread angefasst werden dürfen. Somit muss eventuell bei Background
 Thread \textbf{\textit{runOnUiThread()}} Methode
 verwendet werden, welche die auszuführende Aufgabe an den UI Thread übergibt.
 
+\subsection{AndroidManifest}
+Das Android Manifest ist eine XML-Datei, welche sich im Wurzelverzeichniss des
+Projektes befindet. Sie beschreibt welche Rechte die Anwendung benötigt, sowie
+alle Activities und Services, die während der Laufzeit gestartet werden. So
+müssen alle Berechtigungen z.B. folgendermaßen angegeben werden:
+\begin{lstlisting}
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" >
+    </uses-permission>
+\end{lstlisting}
+Weiterhin beinhaltet das Manifest, die Information über die verwendete Android
+SDK Version, das Icon der Application, sowie Themes und andere relevante Daten.
+
 \newpage
 
 \section{AllJoyn}

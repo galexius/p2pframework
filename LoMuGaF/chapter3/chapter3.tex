@@ -15,22 +15,23 @@ Entwickler dann nur noch eine Jar-Datei als Bibliothek in sein Projekt einbinden
 könnte loslegen.
 
 \section{PTPHelper}
+Der PTPHelper ist eine Schnittstelle zwischen dem Spiel und
+dem Hintergrundservice, welcher sich um die Verbindung kümmert.
 Nach Abwägen mehrerer Möglichkeiten wie man den Service, welcher sich um die
 Verbindungstechnischen Abläufe kümmert, in die Applikation integrieren kann, ist
 die Wahl schließlich auf die Benutzung eines Singletons gefallen. Zwar ließe
-sich eine Abstrakte Application benutzen, die der Entwickler in seinem Projekt
+sich eine abstrakte Application benutzen, die der Entwickler in seinem Projekt
 implementieren müsste, aber dies würde dem Entwickler auch eine
 Architekturentscheidung aufzwingen. Außerdem ist eine zu enge Bindung an das
 Android Rahmenwerk unvorteilhaft, da sich dessen API recht oft ändert und die
 Entwicklung in der Zukunft erschweren kann. Durch das Singleton kann der
 Entwickler entscheiden, wann er den Service startet und wie er damit
-interagieren will. So kann er z.B. den Einzelspielermodus vollkommen ohne den Helper realisieren und
-erst bei Multiplayermodus den Service starten. Um den PTPHelper zu
+interagieren will. So kann er z.B.
+den Einzelspielermodus vollkommen ohne den Helper realisieren und erst bei Multiplayermodus den Service starten. Um den PTPHelper zu
 initialisieren muss der Entwickler in seinem Code den Folgenden Befehl ausführen:
 
 \begin{lstlisting}
-PTPHelper.initHelper(MyInterface.class, context, proxyObject, signalHandler,
-MyService.class, MyLobby.class);
+PTPHelper.initHelper(MyInterface.class, context, proxyObject, signalHandler, MyLobby.class);
 \end{lstlisting}
 
 Daraufhin kann er über den Getter an die initialisierte Instanz kommen.
@@ -38,13 +39,22 @@ Daraufhin kann er über den Getter an die initialisierte Instanz kommen.
 \begin{lstlisting}
 PTPHelper.getInstance();
 \end{lstlisting}
-Die P2PHelper Klasse ist eine generische Klasse und muss deshalb bei der
-Instanziierung den entsprechenden Typ bekommen. Daher auch die etwas
-umfangreiche Init-Methode. Es wird zum einen die Interface Klasse benötigt über
-das die Kommunikation mit den anderen Peers realisiert wird. Bei der
-Initialisierung wird der P2PService im Hintergrund gestartet welcher die Verbindung zum Bussystem aufbaut.
+Bei der Initialisierung wird der P2PService im Hintergrund gestartet welcher die
+Verbindung zum Bussystem aufbaut, daher sind die ganzen Parameter notwendig. Es
+wird zum einen die Interface Klasse benötigt über das die Kommunikation mit den anderen Peers realisiert wird und gibt den Typ
+für die generische P2PHelper Klasse vor.
+Der context ist die Activity oder die Application an die der Service gebunden wird. Der
+MyLobby.class Paramater übergibt die Klasse, die die AbstractLobbyActivity
+aus dem PTPRahmenwerk implementiert. Die LobbyActivity ist an den Service
+gebunden, da sie über den Zustand der Verbindung benachrichtigt wird. Die
+genauere Funktionalität der Lobby wird später noch erklärt. Das ProxyObject und
+der SignalHandler müssen gleich bei der Initialisierung übergeben werden, da sie
+bei der Verbindung mit dem Bus beim Bus registriert werden müssen, damit sie
+gleich auf Nachrichten reagieren können und das ProxyObject gleich einem
+konkreten End-punkt zugewiesen werden kann.
+
 Das PTPRahmenwerk ist dazu ausgelegt nur im WLAN zu funkionieren, somit wird bei der
-Initialisierung geprüft ob das Gerät eine WiFi Verbindung momentan hat. 
+Initialisierung geprüft ob das Gerät über eine WiFi Verbindung verfügt. 
 Dies wird über den WiFiManager realisiert.
 
 \begin{lstlisting}
@@ -58,8 +68,8 @@ Im Falle dessen, dass es keine WiFi-Verbindung gibt, wird die Initialisierung
 abgebrochen und der Service wird nicht gestartet.
 Android ermöglicht es zusätzlich ein AccessPoint zu erstellen, worüber sich
 andere Geräte verbinden können. Die Information über diesen Zustand wird jedoch
-nicht ohne weiteres über den WiFi-Mananger herausgegeben, sodass man an diese Information nur über
-Java-Reflection gelangt:
+nicht ohne Weiteres über den WiFi-Mananger herausgegeben, sodass man an diese
+Information nur über Java-Reflection gelangt:
 
 \begin{lstlisting}
 
@@ -81,10 +91,9 @@ PTPHelper.getInstance().joinChannel();
 
 \end{lstlisting}
 
-\section{Graphenspiel}
-
+\section{LobbyActivity}
  
 
-\section{MauMau}
+\section{PTPService}
 
  

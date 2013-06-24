@@ -39,7 +39,7 @@ public abstract class LobbyActivity extends AbstractLobbyActivity {
         refreshButton = (Button) findViewById(R.id.refresh_button);
         channelList = (ListView) findViewById(R.id.join_channel_list);
         setupListView();
-        updateUIState();
+        updateUIState(PTPHelper.getInstance().getConnectionState());
         PTPHelper.getInstance().connectAndStartDiscover();
     }
 	
@@ -70,7 +70,8 @@ public abstract class LobbyActivity extends AbstractLobbyActivity {
     		PTPHelper.getInstance().setClientChannelName(channelName);
     		PTPHelper.getInstance().setHostChannelName(channelName);
     		PTPHelper.getInstance().setPlayerName(playerName);
-    		PTPHelper.getInstance().doAction(PTPHelper.HOST_CHANNEL);
+    		PTPHelper.getInstance().hostInitChannel(); 
+    		PTPHelper.getInstance().hostStartChannel();
 	    	Intent intent = new Intent(this, getJoinChannelView());
 	    	startActivity(intent);  
     	}
@@ -78,7 +79,7 @@ public abstract class LobbyActivity extends AbstractLobbyActivity {
     }
     
     public void quit(View view){
-    	PTPHelper.getInstance().doAction(PTPHelper.QUIT);
+    	PTPHelper.getInstance().quit();
     }
     
     public void refresh(View view){
@@ -103,7 +104,7 @@ public abstract class LobbyActivity extends AbstractLobbyActivity {
 					String name = channelList.getItemAtPosition(position).toString();
 					PTPHelper.getInstance().setClientChannelName(name);
 					PTPHelper.getInstance().setPlayerName(playerName);
-					PTPHelper.getInstance().doAction(PTPHelper.JOIN_CHANNEL);					
+					PTPHelper.getInstance().joinChannel();
 					Intent intent = new Intent(LobbyActivity.this, getJoinChannelView());
 					LobbyActivity.this.startActivity(intent);
 	        	}
@@ -113,7 +114,6 @@ public abstract class LobbyActivity extends AbstractLobbyActivity {
     	
         channelList.setAdapter(channelListAdapter);
         
-	    @SuppressWarnings("unchecked")
 		List<String> channels = PTPHelper.getInstance().getFoundChannels();
         for (String channel : channels) {
         	channelListAdapter.add(channel);
@@ -122,16 +122,16 @@ public abstract class LobbyActivity extends AbstractLobbyActivity {
     }
     
     @Override
-    public void ConnectionStateChanged(){
+    public void connectionStateChanged(final int connectionState){
     	runOnUiThread(new Runnable() {				
 			@Override
 			public void run() {
-				updateUIState();
+				updateUIState(connectionState);
 			}
     	});
     }
-	private void updateUIState() {
-		boolean connected = PTPHelper.getInstance().getConnectionState()==PTPHelper.CONNECTED;
+	private void updateUIState(int connectionState) {
+		boolean connected = connectionState == PTPHelper.CONNECTED;
 		createButtn.setEnabled(connected);
 		refreshButton.setEnabled(connected);
 		channelList.setEnabled(connected);		

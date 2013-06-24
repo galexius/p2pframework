@@ -66,6 +66,13 @@ class Graph implements GraphInterface, BusObject {
 		edges.add(new Edge(node5, node6));		
 	}
     
+    public void resetGraph(){
+    	changedNodes.clear();
+    	idChanges.clear();
+    	mObservers.clear();
+    	setupPoints();
+    }
+    
 	@TargetApi(Build.VERSION_CODES.GINGERBREAD)
 	@Override
 	@BusSignalHandler(iface = "com.example.firstapp.GraphInterface", signal = "MoveNode")

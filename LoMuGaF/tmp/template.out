@@ -17,22 +17,23 @@
 \BOOKMARK [2][-]{subsection.2.3.4}{Context}{section.2.3}% 17
 \BOOKMARK [2][-]{subsection.2.3.5}{View}{section.2.3}% 18
 \BOOKMARK [2][-]{subsection.2.3.6}{UI-Thread}{section.2.3}% 19
-\BOOKMARK [1][-]{section.2.4}{AllJoyn}{chapter.2}% 20
-\BOOKMARK [2][-]{subsection.2.4.1}{Bussystem}{section.2.4}% 21
-\BOOKMARK [2][-]{subsection.2.4.2}{BusAttachement}{section.2.4}% 22
-\BOOKMARK [2][-]{subsection.2.4.3}{Interface}{section.2.4}% 23
-\BOOKMARK [2][-]{subsection.2.4.4}{ProxyObjecte}{section.2.4}% 24
-\BOOKMARK [2][-]{subsection.2.4.5}{BusObject}{section.2.4}% 25
-\BOOKMARK [2][-]{subsection.2.4.6}{SignalHandler}{section.2.4}% 26
-\BOOKMARK [2][-]{subsection.2.4.7}{SignalEmitter}{section.2.4}% 27
-\BOOKMARK [2][-]{subsection.2.4.8}{Session}{section.2.4}% 28
-\BOOKMARK [0][-]{chapter.3}{Implementierung}{}% 29
-\BOOKMARK [1][-]{section.3.1}{PTPHelper}{chapter.3}% 30
-\BOOKMARK [1][-]{section.3.2}{Graphenspiel}{chapter.3}% 31
-\BOOKMARK [1][-]{section.3.3}{MauMau}{chapter.3}% 32
-\BOOKMARK [0][-]{chapter.4}{Praktisches Anwendungsbeispiel: Graphenspiel}{}% 33
-\BOOKMARK [0][-]{chapter.5}{Praktisches Anwendungsbeispiel: MauMau}{}% 34
-\BOOKMARK [0][-]{chapter.6}{Herausforderungen und Probleme}{}% 35
-\BOOKMARK [0][-]{chapter.7}{Fazit}{}% 36
-\BOOKMARK [0][-]{appendix.A}{Abk\374rzungsverzeichnis}{}% 37
-\BOOKMARK [0][-]{appendix.B}{Literaturverzeichnis}{}% 38
+\BOOKMARK [2][-]{subsection.2.3.7}{AndroidManifest}{section.2.3}% 20
+\BOOKMARK [1][-]{section.2.4}{AllJoyn}{chapter.2}% 21
+\BOOKMARK [2][-]{subsection.2.4.1}{Bussystem}{section.2.4}% 22
+\BOOKMARK [2][-]{subsection.2.4.2}{BusAttachement}{section.2.4}% 23
+\BOOKMARK [2][-]{subsection.2.4.3}{Interface}{section.2.4}% 24
+\BOOKMARK [2][-]{subsection.2.4.4}{ProxyObjecte}{section.2.4}% 25
+\BOOKMARK [2][-]{subsection.2.4.5}{BusObject}{section.2.4}% 26
+\BOOKMARK [2][-]{subsection.2.4.6}{SignalHandler}{section.2.4}% 27
+\BOOKMARK [2][-]{subsection.2.4.7}{SignalEmitter}{section.2.4}% 28
+\BOOKMARK [2][-]{subsection.2.4.8}{Session}{section.2.4}% 29
+\BOOKMARK [0][-]{chapter.3}{Implementierung}{}% 30
+\BOOKMARK [1][-]{section.3.1}{PTPHelper}{chapter.3}% 31
+\BOOKMARK [1][-]{section.3.2}{LobbyActivity}{chapter.3}% 32
+\BOOKMARK [1][-]{section.3.3}{PTPService}{chapter.3}% 33
+\BOOKMARK [0][-]{chapter.4}{Praktisches Anwendungsbeispiel: Graphenspiel}{}% 34
+\BOOKMARK [0][-]{chapter.5}{Praktisches Anwendungsbeispiel: MauMau}{}% 35
+\BOOKMARK [0][-]{chapter.6}{Herausforderungen und Probleme}{}% 36
+\BOOKMARK [0][-]{chapter.7}{Fazit}{}% 37
+\BOOKMARK [0][-]{appendix.A}{Abk\374rzungsverzeichnis}{}% 38
+\BOOKMARK [0][-]{appendix.B}{Literaturverzeichnis}{}% 39

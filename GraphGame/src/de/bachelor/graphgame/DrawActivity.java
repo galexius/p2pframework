@@ -29,7 +29,7 @@ public class DrawActivity extends Activity {
 	@Override
 	public void onBackPressed(){
 	  super.onBackPressed();
-	  application.getGraph().setupPoints();
+	  application.getGraph().resetGraph();
 	  PTPHelper.getInstance().leaveChannel();
 	  PTPHelper.getInstance().disconnect();
 	  PTPHelper.getInstance().connectAndStartDiscover();

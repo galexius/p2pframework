@@ -28,7 +28,7 @@ public class MauMauApplication extends Application implements GameManagerObserve
 		@Override
 		@BusSignal
 		public void PlayCard(int cardId, String uniqueUserID)
-				throws BusException {
+				throws BusException {			
 		}
 
 		@Override
@@ -46,8 +46,7 @@ public class MauMauApplication extends Application implements GameManagerObserve
 		@Override
 		@BusSignal
 		public void ByeIWas(String uniqueID, String playerName)
-				throws BusException {
-			
+				throws BusException {			
 		}
 		
 	}
@@ -60,7 +59,7 @@ public class MauMauApplication extends Application implements GameManagerObserve
 		gameManager = new GameManager(this);
 		gameManager.reset();
 		gameManager.addObserver(this);
-		PTPHelper.initHelper(GameManagerInterface.class, this, new GameManagerDummyObject(), gameManager, MauMauLobbyView.class);
+		PTPHelper.initHelper("MauMau",GameManagerInterface.class, this, new GameManagerDummyObject(), gameManager, MauMauLobbyView.class);
 	}		
 	
 	
@@ -86,8 +85,6 @@ public class MauMauApplication extends Application implements GameManagerObserve
 			default: break;
 			};
 		}
-
-
     };   
 
 	

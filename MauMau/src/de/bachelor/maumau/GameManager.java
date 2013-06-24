@@ -28,8 +28,7 @@ import de.ptpservice.PTPHelper;
 
 @TargetApi(Build.VERSION_CODES.GINGERBREAD)
 public class GameManager implements BusObject, GameManagerInterface {
-		private static final String TAG = "GM";
-		
+		private static final String TAG = "GM";	
 		
 		public class SpecialCases{			
 			public final static int DEFAULT = 0;
@@ -389,9 +388,12 @@ public class GameManager implements BusObject, GameManagerInterface {
 		}
 
 		public void reset() {
+			observers.clear();
+			ownedCardIds.clear();
 			initDeck();
 			specialCase = 0;
 			lastCardPlayedBy = "";
+			currentPlayersID = "";
 			joinedPlayers.clear();
 			playedCard = null;
 			

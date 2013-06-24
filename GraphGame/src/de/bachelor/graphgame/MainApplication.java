@@ -33,7 +33,7 @@ public class MainApplication extends Application implements GraphObserver{
         graph.addObserver(this);  
         graph.setupPoints();
         
-		PTPHelper.initHelper(GraphInterface.class, this, new GraphDummyObject(), graph, GraphLobbyActivity.class);
+		PTPHelper.initHelper("GraphGame",GraphInterface.class, this, new GraphDummyObject(), graph, GraphLobbyActivity.class);
 	}	
   
 	private Handler messageHandler = new Handler() {
