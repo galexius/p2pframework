@@ -67,13 +67,10 @@ public abstract class LobbyActivity extends AbstractLobbyActivity {
 	    	Toast toast = Toast.makeText(context, text, duration);
 	    	toast.show();
     	}else{
-    		PTPHelper.getInstance().setClientChannelName(channelName);
     		PTPHelper.getInstance().setHostChannelName(channelName);
     		PTPHelper.getInstance().setPlayerName(playerName);
-    		PTPHelper.getInstance().hostInitChannel(); 
     		PTPHelper.getInstance().hostStartChannel();
-	    	Intent intent = new Intent(this, getJoinChannelView());
-	    	startActivity(intent);  
+    		updateUIState(PTPHelper.SESSION_HOSTED);
     	}
 
     }
@@ -105,8 +102,7 @@ public abstract class LobbyActivity extends AbstractLobbyActivity {
 					PTPHelper.getInstance().setClientChannelName(name);
 					PTPHelper.getInstance().setPlayerName(playerName);
 					PTPHelper.getInstance().joinChannel();
-					Intent intent = new Intent(LobbyActivity.this, getJoinChannelView());
-					LobbyActivity.this.startActivity(intent);
+					updateUIState(PTPHelper.SESSION_JOINED);
 	        	}
 			}
     	});
@@ -123,15 +119,18 @@ public abstract class LobbyActivity extends AbstractLobbyActivity {
     
     @Override
     public void connectionStateChanged(final int connectionState){
-    	runOnUiThread(new Runnable() {				
-			@Override
-			public void run() {
-				updateUIState(connectionState);
-			}
-    	});
+		updateUIState(connectionState);
+		if(connectionState == PTPHelper.SESSION_HOSTED){
+			Intent intent = new Intent(LobbyActivity.this, getHostChannelView());
+			LobbyActivity.this.startActivity(intent);
+		}
+		if(connectionState == PTPHelper.SESSION_JOINED){
+			Intent intent = new Intent(LobbyActivity.this, getJoinChannelView());
+			LobbyActivity.this.startActivity(intent);
+		}
     }
 	private void updateUIState(int connectionState) {
-		boolean connected = connectionState == PTPHelper.CONNECTED;
+		boolean connected = connectionState == PTPHelper.CONNECTED || connectionState == PTPHelper.SESSION_CLOSED || connectionState == PTPHelper.SESSION_LEFT;
 		createButtn.setEnabled(connected);
 		refreshButton.setEnabled(connected);
 		channelList.setEnabled(connected);		

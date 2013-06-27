@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.4-1.40.13 (MiKTeX 2.9) (preloaded format=pdflatex 2013.6.7)  24 JUN 2013 17:55
+This is pdfTeX, Version 3.1415926-2.4-1.40.13 (MiKTeX 2.9) (preloaded format=pdflatex 2013.6.7)  27 JUN 2013 20:10
 entering extended mode
 **template.tex
 (G:\Bachelor\workspace\LoMuGaF\template.tex
@@ -446,7 +446,7 @@ File: lstlang1.sty 2004/09/05 1.3 listings language file
 )
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\listings\lstmisc.sty"
 File: lstmisc.sty 2007/02/22 1.4 (Carsten Heinz)
-))
+)
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\acronym\acronym.sty"
 Package: acronym 2012/10/29 v1.38 Support for acronyms (Tobias Oetiker)
 
@@ -462,13 +462,16 @@ Package: suffix 2006/07/15 1.5 Variant command support
 Package: xstring 2013/2/28  v1.7a  String manipulations (C Tellechea)
 )
 \AC@clearlist=\toks24
-)
+))
 Package csquotes Info: Checking for multilingual support...
 Package csquotes Info: ... found 'babel' package.
 
 (G:\Bachelor\workspace\LoMuGaF\template.aux
 
 LaTeX Warning: Label `fig:server-based-network' multiply defined.
+
+
+LaTeX Warning: Label `fig:Wrap' multiply defined.
 
 
 LaTeX Warning: Label `fig:Wrap' multiply defined.
@@ -571,12 +574,12 @@ LaTeX Font Info:    Try loading font information for T1+cmss on input line 3.
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\base\t1cmss.fd"
 File: t1cmss.fd 1999/05/25 v2.5h Standard LaTeX font definitions
 )
-<title/Logo_UniKassel.png, id=159, 582.175pt x 132.495pt>
+<title/Logo_UniKassel.png, id=187, 582.175pt x 132.495pt>
 <use title/Logo_UniKassel.png>
 Overfull \vbox (20.91284pt too high) detected at line 12
  []
 
-<title/SE_Logo.png, id=160, 200.75pt x 80.3pt> <use title/SE_Logo.png>
+<title/SE_Logo.png, id=188, 200.75pt x 80.3pt> <use title/SE_Logo.png>
 Overfull \vbox (14.72226pt too high) detected at line 12
  []
 
@@ -686,7 +689,7 @@ Kapitel 1.
 
 ]) (G:\Bachelor\workspace\LoMuGaF\chapter2/chapter2.tex [2]
 Kapitel 2.
-<chapter1/emitterhandler.png, id=270, 356.83313pt x 228.855pt>
+<chapter1/emitterhandler.png, id=307, 356.83313pt x 228.855pt>
 File: chapter1/emitterhandler.png Graphic file (type png)
 
 <use chapter1/emitterhandler.png>
@@ -695,7 +698,7 @@ Package pdftex.def Info: chapter1/emitterhandler.png used on input line 12.
  [3
 
  <G:/Bachelor/workspace/LoMuGaF/chapter1/emitterhandler.png>]
-<chapter2/Server-based-network.png, id=276, 119.44624pt x 123.46124pt>
+<chapter2/Server-based-network.png, id=313, 119.44624pt x 123.46124pt>
 File: chapter2/Server-based-network.png Graphic file (type png)
 
 <use chapter2/Server-based-network.png>
@@ -703,7 +706,7 @@ Package pdftex.def Info: chapter2/Server-based-network.png used on input line 3
 7.
 (pdftex.def)             Requested size: 160.04675pt x 165.43718pt.
 
-<chapter2/P2P-network.png, id=277, 119.44624pt x 123.46124pt>
+<chapter2/P2P-network.png, id=314, 119.44624pt x 123.46124pt>
 File: chapter2/P2P-network.png Graphic file (type png)
 
 <use chapter2/P2P-network.png>
@@ -711,14 +714,14 @@ Package pdftex.def Info: chapter2/P2P-network.png used on input line 42.
 (pdftex.def)             Requested size: 160.04675pt x 165.43718pt.
  [4 <G:/Bachelor/workspace/LoMuGaF/chapter2/Server-based-network.png> <G:/Bache
 lor/workspace/LoMuGaF/chapter2/P2P-network.png>]
-<chapter2/android.jpg, id=284, 256.96pt x 248.93pt>
+<chapter2/android.jpg, id=321, 256.96pt x 248.93pt>
 File: chapter2/android.jpg Graphic file (type jpg)
  <use chapter2/android.jpg>
 Package pdftex.def Info: chapter2/android.jpg used on input line 80.
 (pdftex.def)             Requested size: 106.69783pt x 103.36479pt.
 
 [5 <G:/Bachelor/workspace/LoMuGaF/chapter2/android.jpg>] [6]
-<chapter2/anr.png, id=295, 281.05pt x 137.51375pt>
+<chapter2/anr.png, id=332, 281.05pt x 137.51375pt>
 File: chapter2/anr.png Graphic file (type png)
  <use chapter2/anr.png>
 Package pdftex.def Info: chapter2/anr.png used on input line 153.
@@ -733,7 +736,7 @@ LaTeX Font Info:    Try loading font information for T1+cmtt on input line 172.
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\base\t1cmtt.fd"
 File: t1cmtt.fd 1999/05/25 v2.5h Standard LaTeX font definitions
 ) [7 <G:/Bachelor/workspace/LoMuGaF/chapter2/anr.png>]
-<chapter2/img-alljoyn-logo.png, id=306, 52.195pt x 55.20625pt>
+<chapter2/img-alljoyn-logo.png, id=343, 52.195pt x 55.20625pt>
 File: chapter2/img-alljoyn-logo.png Graphic file (type png)
 
 <use chapter2/img-alljoyn-logo.png>
@@ -744,7 +747,7 @@ Overfull \hbox (4.14542pt too wide) in paragraph at lines 186--186
 [][]\T1/cmr/m/n/10.95 AllJoyn| 
  []
 
-<chapter2/img-developer-proxy.png, id=307, 581.17125pt x 438.63875pt>
+<chapter2/img-developer-proxy.png, id=344, 581.17125pt x 438.63875pt>
 File: chapter2/img-developer-proxy.png Graphic file (type png)
 
 <use chapter2/img-developer-proxy.png>
@@ -760,21 +763,39 @@ LaTeX Font Info:    Font shape `T1/cmtt/bx/n' in size <10> not available
 Kapitel 3.
 [12
 
-] [13]) (G:\Bachelor\workspace\LoMuGaF\chapter4/chapter4.tex [14]
+]
+Underfull \hbox (badness 10000) in paragraph at lines 67--72
+
+ []
+
+[13] [14] [15] [16] <chapter3/lobby.png, id=484, 540.51938pt x 391.4625pt>
+File: chapter3/lobby.png Graphic file (type png)
+
+<use chapter3/lobby.png>
+Package pdftex.def Info: chapter3/lobby.png used on input line 224.
+(pdftex.def)             Requested size: 204.85803pt x 148.36305pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 220--227
+\T1/cmr/m/n/12 so-dass man sich dar-um nicht mehr selbst küm-mern muss.
+ []
+
+[17 <G:/Bachelor/workspace/LoMuGaF/chapter3/lobby.png>] [18] [19] [20] [21]
+[22] [23] [24] [25] [26] [27])
+(G:\Bachelor\workspace\LoMuGaF\chapter4/chapter4.tex [28]
 Kapitel 4.
-) (G:\Bachelor\workspace\LoMuGaF\chapter5/chapter5.tex [15
+) (G:\Bachelor\workspace\LoMuGaF\chapter5/chapter5.tex [29
 
 ]
 Kapitel 5.
-) (G:\Bachelor\workspace\LoMuGaF\chapter6/chapter6.tex [16
+) (G:\Bachelor\workspace\LoMuGaF\chapter6/chapter6.tex [30
 
 ]
 Kapitel 6.
-) (G:\Bachelor\workspace\LoMuGaF\chapter7/chapter7.tex [17
+) (G:\Bachelor\workspace\LoMuGaF\chapter7/chapter7.tex [31
 
 ]
 Kapitel 7.
-) [18
+) [32
 
 ] (G:\Bachelor\workspace\LoMuGaF\appendixA/appendixA.tex)
 (G:\Bachelor\workspace\LoMuGaF\appendixB/appendixB.tex)
@@ -794,20 +815,20 @@ Package atveryend Info: Empty hook `AfterLastShipout' on input line 71.
 Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 71.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 71.
 Package rerunfilecheck Info: File `template.out' has not changed.
-(rerunfilecheck)             Checksum: EA6032C3A4BEC336651B525C438390D3;2401.
+(rerunfilecheck)             Checksum: 2C61099A4A2C4A5031EA7FEA16A2EA16;3035.
 
 
 LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 11286 strings out of 493921
- 168232 string characters out of 3144880
- 341841 words of memory out of 3000000
- 14197 multiletter control sequences out of 15000+200000
+ 11924 strings out of 493921
+ 178502 string characters out of 3144880
+ 379841 words of memory out of 3000000
+ 14562 multiletter control sequences out of 15000+200000
  20970 words of font info for 46 fonts, out of 3000000 for 9000
  841 hyphenation exceptions out of 8191
- 40i,13n,56p,819b,1926s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 40i,13n,56p,819b,1928s stack positions out of 5000i,500n,10000p,200000b,50000s
  <C:\Users\alex\AppData\Local\MiKTeX\2.9\fonts\pk\ljfour\jknappen\ec\dpi600\e
 ctt1200.pk> <C:\Users\alex\AppData\Local\MiKTeX\2.9\fonts\pk\ljfour\jknappen\ec
 \dpi600\ecti1200.pk> <C:\Users\alex\AppData\Local\MiKTeX\2.9\fonts\pk\ljfour\jk
@@ -827,9 +848,9 @@ k\ljfour\jknappen\ec\dpi600\ecss1200.pk> <C:\Users\alex\AppData\Local\MiKTeX\2.
 MiKTeX\2.9\fonts\pk\ljfour\jknappen\ec\dpi600\eccc2074.pk> <C:\Users\alex\AppDa
 ta\Local\MiKTeX\2.9\fonts\pk\ljfour\jknappen\ec\dpi600\ecss1000.pk><C:/Program 
 Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi12.pfb>
-Output written on template.pdf (28 pages, 355905 bytes).
+Output written on template.pdf (42 pages, 490031 bytes).
 PDF statistics:
- 1028 PDF objects out of 1200 (max. 8388607)
- 130 named destinations out of 1000 (max. 500000)
- 358 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 1486 PDF objects out of 1728 (max. 8388607)
+ 402 named destinations out of 1000 (max. 500000)
+ 419 words of extra memory for PDF output out of 10000 (max. 10000000)
 

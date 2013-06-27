@@ -1,8 +1,8 @@
 package de.ptpservice;
 
 public interface SessionObserver {
-	public void notifyMemberJoined(String uniqueId);
-	public void notifyMemberLeft(String uniqueId);
-	public void notifySessionLost();
+	public void memberJoined(String uniqueId);
+	public void memberLeft(String uniqueId);
+	public void sessionLost();
 	
 }

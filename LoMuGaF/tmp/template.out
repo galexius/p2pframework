@@ -31,9 +31,16 @@
 \BOOKMARK [1][-]{section.3.1}{PTPHelper}{chapter.3}% 31
 \BOOKMARK [1][-]{section.3.2}{LobbyActivity}{chapter.3}% 32
 \BOOKMARK [1][-]{section.3.3}{PTPService}{chapter.3}% 33
-\BOOKMARK [0][-]{chapter.4}{Praktisches Anwendungsbeispiel: Graphenspiel}{}% 34
-\BOOKMARK [0][-]{chapter.5}{Praktisches Anwendungsbeispiel: MauMau}{}% 35
-\BOOKMARK [0][-]{chapter.6}{Herausforderungen und Probleme}{}% 36
-\BOOKMARK [0][-]{chapter.7}{Fazit}{}% 37
-\BOOKMARK [0][-]{appendix.A}{Abk\374rzungsverzeichnis}{}% 38
-\BOOKMARK [0][-]{appendix.B}{Literaturverzeichnis}{}% 39
+\BOOKMARK [2][-]{subsection.3.3.1}{doConnect\(\) und doDisconnect\(\)}{section.3.3}% 34
+\BOOKMARK [2][-]{subsection.3.3.2}{doStartDiscovery\(\) und doStopDiscovery\(\)}{section.3.3}% 35
+\BOOKMARK [2][-]{subsection.3.3.3}{doBindSession\(\) und doUnbindSession\(\)}{section.3.3}% 36
+\BOOKMARK [2][-]{subsection.3.3.4}{doRequestName\(\) und doReleaseName\(\)}{section.3.3}% 37
+\BOOKMARK [2][-]{subsection.3.3.5}{doAdvertise\(\) und doCancelAdvertise\(\)}{section.3.3}% 38
+\BOOKMARK [2][-]{subsection.3.3.6}{doJoinSession\(\) und doLeaveSession\(\)}{section.3.3}% 39
+\BOOKMARK [2][-]{subsection.3.3.7}{doQuit\(\)}{section.3.3}% 40
+\BOOKMARK [0][-]{chapter.4}{Praktisches Anwendungsbeispiel: Graphenspiel}{}% 41
+\BOOKMARK [0][-]{chapter.5}{Praktisches Anwendungsbeispiel: MauMau}{}% 42
+\BOOKMARK [0][-]{chapter.6}{Herausforderungen und Probleme}{}% 43
+\BOOKMARK [0][-]{chapter.7}{Fazit}{}% 44
+\BOOKMARK [0][-]{appendix.A}{Abk\374rzungsverzeichnis}{}% 45
+\BOOKMARK [0][-]{appendix.B}{Literaturverzeichnis}{}% 46

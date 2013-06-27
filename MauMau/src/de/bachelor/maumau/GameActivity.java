@@ -60,9 +60,7 @@ public class GameActivity extends Activity implements GameManagerObserver {
 	  startButton.setVisibility(PTPHelper.getInstance().isHost() && !gameStarted && gameManager.getJoinedPlayers().size() > 1 ? View.VISIBLE: View.GONE);
 	  gameManager.HiIAm(PTPHelper.getInstance().getUniqueID(), PTPHelper.getInstance().getPlayerName());
 	  gameManager.addObserver(this);
-	  
-
-	 
+	  	 
 	  ownCardsAdapter = new OwnCardsAdapter(this,gameManager);
 	  ownCardsGallery.setAdapter(ownCardsAdapter);
 

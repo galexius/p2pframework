@@ -8,6 +8,7 @@ import java.util.Queue;
 
 import org.alljoyn.bus.BusObject;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Service;
 import android.content.Context;
@@ -15,6 +16,9 @@ import android.content.Intent;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.util.Log;
 import android.widget.Toast;
 import de.ptpservice.views.AbstractLobbyActivity;
@@ -28,27 +32,94 @@ public class PTPHelper {
         System.loadLibrary("alljoyn_java");
     } 
     
+    @SuppressLint("HandlerLeak")
+	class BackgroundHandler extends Handler{
+    	public static final int BUS_DISCONNECTED = 0;
+    	public static final int SESSION_LOST = 1;
+    	public static final int MEMBER_JOINED = 2;
+    	public static final int MEMBER_LEFT = 3;
+    	public static final int ADVERTISED_NAME_FOUND = 4;
+    	public static final int ADVERTISED_NAME_LOST = 5;    	
+    	public static final int CONNECTION_STATE_CHANED = 6;    	
+    	
+		public BackgroundHandler(Looper looper) {
+			super(looper);
+		}
+		
+    	@Override
+    	public void handleMessage(Message msg) {
+    		switch (msg.what) {
+				case BUS_DISCONNECTED: notifyBusDisconnected(); break;
+				case SESSION_LOST: notifySessionLost(); break;
+				case MEMBER_JOINED: notifyMemberJoined((String) msg.obj); break;
+				case MEMBER_LEFT: notifyMemberLeft((String) msg.obj); break;
+				case ADVERTISED_NAME_FOUND: notifyFoundAdvertisedName((String) msg.obj); break;
+				case ADVERTISED_NAME_LOST: notifyLostAdvertisedName((String) msg.obj); break;
+				case CONNECTION_STATE_CHANED: notifyConnectionStateChanged(msg.arg1); break;
+    		}
+    	}
+
+		private void notifyBusDisconnected() {
+			for (BusObserver obs : busObservers) {
+	            obs.busDisconnected();
+	        }	
+		}
+
+		private void notifyLostAdvertisedName(String channelName) {
+			for (BusObserver obs : busObservers) {
+	            obs.lostAdvertisedName(channelName);
+	        }			
+		}
+		
+		private void notifyFoundAdvertisedName(String channelName) {
+			for (BusObserver obs : busObservers) {
+	            obs.foundAdvertisedName(channelName);
+	        }			
+		}
+
+		private void notifyMemberJoined(String uniqueId) {
+			for (SessionObserver obs : sessionObservers) {
+	            obs.memberJoined(uniqueId);
+	        }	
+		}
+
+		private void notifyMemberLeft(String uniqueId) {
+			for (SessionObserver obs : sessionObservers) {
+	            obs.memberLeft(uniqueId);
+	        }
+		}
+
+		private synchronized void notifySessionLost() {
+			for (SessionObserver obs : sessionObservers) {
+	            obs.sessionLost();
+	        }
+		}
+		private void notifyConnectionStateChanged(int state) {
+			for (LobbyObserver obs : lobbyObservers) {
+				obs.connectionStateChanged(state);
+			}
+			
+		}
+    }
+    
     class HelperBusObserver implements BusObserver{
 
     	@Override
-    	public synchronized void notifyLostAdvertisedName(String channelName) {    		
+    	public void lostAdvertisedName(String channelName) {    		
     		instance.removeAdvertisedName(channelName);    		
     	}
     	
 		@Override
-		public void notifyFoundAdvertisedName(String channelName) {
+		public void foundAdvertisedName(String channelName) {
 			instance.addAdvertisedName(channelName);    				
 		}
 
 		@Override
-		public void notifyBusDisconnected() {
+		public void busDisconnected() {
 						
 		}
     }
-	
-    public static class Attributes{
-    	public static final String APP_NAME = "ApplicationName";
-    }
+
     
 	public final static int CONNECT_BUS = 0;
 	public final static int JOIN_CHANNEL = 1;
@@ -61,11 +132,16 @@ public class PTPHelper {
 	
 	public final static int DISCONNECTED = 7;
 	public final static int CONNECTED = 8;
+	public final static int SESSION_JOINED = 9;
+	public final static int SESSION_LEFT = 10;
+	public final static int SESSION_HOSTED = 11;
+	public final static int SESSION_CLOSED = 12;
 	
 	private static PTPHelper instance = null;
+	private BackgroundHandler backgroundHandler;
 	
 	public static void initHelper(String applicationName,Class<?> theInterfaceType, Context context,BusObject busObject,Object signalHandler, Class<? extends AbstractLobbyActivity> lobbyClass){
-		instance = new PTPHelper(applicationName,theInterfaceType,busObject,signalHandler,lobbyClass);	
+		instance = new PTPHelper(applicationName,theInterfaceType,busObject,signalHandler);	
 		instance.addBusObserver(instance.new HelperBusObserver());
 		PACKAGE_NAME = context.getPackageName();
         if(instance.isWifiEnabledAndShowInfo(context))
@@ -75,30 +151,39 @@ public class PTPHelper {
         boolean bound = context.bindService(service,new PTPServiceConnection(),Service.BIND_AUTO_CREATE);
         if (!bound) {
             Log.e(TAG, "onCreate(): failed to bind Service()");
-        }
+        }        
         new Intent(context,lobbyClass);
 	}
 	
+	public static void deinit(){
+		instance.finish();
+		instance = null;
+	}
+	
+	private void finish() {
+		disconnect();
+		quit();		
+	}
+
 	public static PTPHelper getInstance(){		
 		return instance;
 	}
 	
-	protected static final String TAG = "P2PHelper";
+	private static final String TAG = "P2PHelper";
 	
 	public static String PACKAGE_NAME;
-	protected String hostChannelName = "";
-	protected String channelName = "";
-	protected Queue<Integer> notificationQueue = new LinkedList<Integer>();
-	protected Class<? extends AbstractLobbyActivity> lobbyClass;
+	private String hostChannelName = "";
+	private String channelName = "";
+	private Queue<Integer> notificationQueue = new LinkedList<Integer>();
 	private String applicationName;
 	
-	private PTPHelper(String applicationName, Class<?> theInterfaceType,BusObject busObject,Object signalHandler, Class<? extends AbstractLobbyActivity> lobbyClass) {
+	private PTPHelper(String applicationName, Class<?> theInterfaceType,BusObject busObject,Object signalHandler) {
 		Log.d("P2PHelper", "onConstructor");
 		this.applicationName = applicationName;
 		this.busObjectInterfaceType = theInterfaceType;
 		this.busObject = busObject;
 		this.signalHandler  = signalHandler;
-		this.lobbyClass = lobbyClass;	        
+		backgroundHandler = new BackgroundHandler(Looper.getMainLooper());
 	}
 	
 	@TargetApi(Build.VERSION_CODES.GINGERBREAD)
@@ -132,78 +217,80 @@ public class PTPHelper {
 		return busObjectInterfaceType;		
 	}
 
-	public String getHostChannelName() {
+	public synchronized String getHostChannelName() {
 		return hostChannelName;
 	}
 	
-	public void setHostChannelName(String name){
+	public synchronized void setHostChannelName(String name){
 		this.hostChannelName = name; 
+		isHost = true;
 	}
-	public String getChannelName() {
+	public synchronized String getChannelName() {
 		return channelName;
 	}
 	
-	public void setClientChannelName(String name){
+	public synchronized void setClientChannelName(String name){
 		this.channelName = name; 
+		isHost = false;
 	}
 	
-	public synchronized void addObserver(HelperObserver obs) {
+	public synchronized void addObserver(ServiceHelperObserver obs) {
         Log.i(TAG, "addObserver(" + obs + ")");
 		if (helperObservers.indexOf(obs) < 0) {
 			helperObservers.add(obs);
 		}
 	}
-	public synchronized void removeObserver(HelperObserver obs) {
+	public synchronized void removeObserver(ServiceHelperObserver obs) {
         Log.i(TAG, "deleteObserver(" + obs + ")");
 		helperObservers.remove(obs);
 	}
 	
-	public synchronized void addBusObserver(BusObserver obs) {
+	public void addBusObserver(BusObserver obs) {
 		Log.i(TAG, "addObserver(" + obs + ")");
 		if (busObservers.indexOf(obs) < 0) {
 			busObservers.add(obs);
 		}
 	}
-	public synchronized void removeBusObserver(BusObserver obs) {
+	public void removeBusObserver(BusObserver obs) {
 		Log.i(TAG, "deleteObserver(" + obs + ")");
 		busObservers.remove(obs);
 	}
 	
-	public synchronized void addSessionObserver(SessionObserver obs) {
+	public void addSessionObserver(SessionObserver obs) {
 		Log.i(TAG, "addObserver(" + obs + ")");
 		if (sessionObservers.indexOf(obs) < 0) {
 			sessionObservers.add(obs);
 		}
 	}
-	public synchronized void removeSessionObserver(SessionObserver obs) {
+	public void removeSessionObserver(SessionObserver obs) {
 		Log.i(TAG, "deleteObserver(" + obs + ")");
 		sessionObservers.remove(obs);
 	}
 	
-	public synchronized void addLobbyObserver(LobbyObserver obs) {
+	public void addLobbyObserver(LobbyObserver obs) {
 		Log.i(TAG, "addObserver(" + obs + ")");
 		if (lobbyObservers.indexOf(obs) < 0) {
 			lobbyObservers.add(obs);
 		}
 	}
 	
-	public synchronized void removeLobbyObserver(LobbyObserver obs) {
+	public void removeLobbyObserver(LobbyObserver obs) {
 		Log.i(TAG, "deleteObserver(" + obs + ")");
 		lobbyObservers.remove(obs);
 	}
 	
 
-	protected void notifyObservers(int arg) {
+	protected void notifyHelperObservers(int arg) {
         Log.i(TAG, "notifyObservers(" + arg + ")");
         if(helperObservers.isEmpty()){
         	notificationQueue.add(arg);
         }
-        for (HelperObserver obs : helperObservers) {
+        for (ServiceHelperObserver obs : helperObservers) {
             Log.i(TAG, "notify observer = " + obs);
             obs.doAction(arg);
         }
 	}
-	private List<HelperObserver> helperObservers = new ArrayList<HelperObserver>();
+	private List<ServiceHelperObserver> helperObservers = new ArrayList<ServiceHelperObserver>();
 	private List<LobbyObserver> lobbyObservers = new ArrayList<LobbyObserver>();
 	private ArrayList<BusObserver> busObservers = new ArrayList<BusObserver>();
 	private ArrayList<SessionObserver> sessionObservers = new ArrayList<SessionObserver>();
@@ -216,45 +303,45 @@ public class PTPHelper {
 	private BusObject busObject;
 	private Object signalHandler;
 	private Object signalEmitter;
+	private boolean isHost;
 	
-	public synchronized void joinChannel() {
-		notifyObservers(PTPService.JOIN_SESSION);
+	public void joinChannel() {
+		notifyHelperObservers(PTPService.JOIN_SESSION);
 	}
 	
-	public synchronized void connectAndStartDiscover() {
+	public void connectAndStartDiscover() {
 		foundChannels.clear();
-		notifyObservers(PTPService.CONNECT);
-		notifyObservers(PTPService.START_DISCOVERY);		
+		notifyHelperObservers(PTPService.CONNECT);
+		notifyHelperObservers(PTPService.START_DISCOVERY);		
 	}
 	
-	public synchronized void disconnect() {	
-		notifyObservers(PTPService.CANCEL_DISCOVERY);
-		notifyObservers(PTPService.DISCONNECT);
+	public void disconnect() {	
+		notifyHelperObservers(PTPService.CANCEL_DISCOVERY);
+		notifyHelperObservers(PTPService.DISCONNECT);
 	}
 	
 	
-	public synchronized void leaveChannel() {
-		notifyObservers(PTPService.CANCEL_ADVERTISE);
-		notifyObservers(PTPService.LEAVE_SESSION);
+	public void leaveChannel() {
+		notifyHelperObservers(PTPService.CANCEL_ADVERTISE);
+		notifyHelperObservers(PTPService.LEAVE_SESSION);
 	}
 
-	public synchronized void hostInitChannel() {
-		notifyObservers(PTPService.UNBIND_SESSION);
-		notifyObservers(PTPService.RELEASE_NAME);
-		notifyObservers(PTPService.BIND_SESSION);
+	public void hostStartChannel() {
+		notifyHelperObservers(PTPService.UNBIND_SESSION);
+		notifyHelperObservers(PTPService.RELEASE_NAME);
+		notifyHelperObservers(PTPService.BIND_SESSION);
+		notifyHelperObservers(PTPService.REQUEST_NAME);
+		notifyHelperObservers(PTPService.ADVERTISE);
 		
 	}
-
-	public synchronized void hostStartChannel() {	
-		notifyObservers(PTPService.REQUEST_NAME);
-		notifyObservers(PTPService.ADVERTISE);
-	}
 	
-	public synchronized void hostStopChannel() {
-		notifyObservers(PTPService.UNBIND_SESSION);
+	public void hostStopChannel() {
+		notifyHelperObservers(PTPService.CANCEL_ADVERTISE);
+		notifyHelperObservers(PTPService.UNBIND_SESSION);
+		notifyHelperObservers(PTPService.RELEASE_NAME);
 	}
-	public synchronized void quit() {
-		notifyObservers(PTPService.EXIT);
+	public void quit() {
+		notifyHelperObservers(PTPService.EXIT);
 	}
 	
 	public BusObject getBusObject(){
@@ -269,25 +356,25 @@ public class PTPHelper {
 		return this.uniqueID;
 	}
 
-	public void setUniqueID(String id) {
+	public synchronized void setUniqueID(String id) {
 		this.uniqueID = id;
 	}
 	
-	public Object getSignalEmitter(){
+	public synchronized Object getSignalEmitter(){
 		return this.signalEmitter;
 	}
 
-	public void setSignalEmiter(Object signalEmitter){
+	public synchronized void setSignalEmitter(Object signalEmitter){
 		this.signalEmitter = signalEmitter;		
 	}
 	
 
-	public void addAdvertisedName(String name) {
+	private void addAdvertisedName(String name) {
 		foundChannels.add(name);
 	}
 
 
-	public void removeAdvertisedName(String name) {
+	private void removeAdvertisedName(String name) {
 		if(foundChannels.contains(name)){
 			foundChannels.remove(name);
 		}
@@ -307,73 +394,63 @@ public class PTPHelper {
 	}
 	
 	public boolean isHost(){
-		return hostChannelName.equals(channelName);
+		return isHost;
 	}
 	
-	public void setConnectionState(int state){
-		this.connectionState = state;		
-		notifyLobbyObserversStateChanged();
-	}
-	
-	private void notifyLobbyObserversStateChanged() {
-		for (LobbyObserver obs : lobbyObservers) {
-            obs.connectionStateChanged(connectionState);
-        }		
-	}
 
-	public int getConnectionState(){
+	public synchronized int getConnectionState(){
 		return connectionState;
 	}
 	
 	
-	public void acquireMissedNotifications() {
+	public synchronized void acquireMissedNotifications() {
 		while (!notificationQueue.isEmpty()) {
-			notifyObservers(notificationQueue.poll());			
+			notifyHelperObservers(notificationQueue.poll());			
 		}
 	}
 
 	public String getApplicationName() {
 		return applicationName;
 	}
-
-	public void setApplicationName(String applicationName) {
-		this.applicationName = applicationName;
+	
+	public synchronized void setConnectionState(int state){
+		this.connectionState = state;		
+		notifyLobbyObserversConnectionStateChanged();
+	}
+	
+	private void notifyLobbyObserversConnectionStateChanged() {
+		Message obtainedMessage = backgroundHandler.obtainMessage(BackgroundHandler.CONNECTION_STATE_CHANED, connectionState,0);
+		backgroundHandler.sendMessage(obtainedMessage);			
 	}
 
 	public synchronized void notifyBusDisconnected() {
-		for (BusObserver obs : busObservers) {
-            obs.notifyBusDisconnected();
-        }	
+		Message obtainedMessage = backgroundHandler.obtainMessage(BackgroundHandler.BUS_DISCONNECTED);
+		backgroundHandler.sendMessage(obtainedMessage);	
 	}
 
 	public synchronized void notifyLostAdvertisedName(String channelName) {
-		for (BusObserver obs : busObservers) {
-            obs.notifyLostAdvertisedName(channelName);
-        }			
+		Message obtainedMessage = backgroundHandler.obtainMessage(BackgroundHandler.ADVERTISED_NAME_LOST, channelName);
+		backgroundHandler.sendMessage(obtainedMessage);
 	}
 	
 	public synchronized void notifyFoundAdvertisedName(String channelName) {
-		for (BusObserver obs : busObservers) {
-            obs.notifyFoundAdvertisedName(channelName);
-        }			
+		Message obtainedMessage = backgroundHandler.obtainMessage(BackgroundHandler.ADVERTISED_NAME_FOUND, channelName);
+		backgroundHandler.sendMessage(obtainedMessage);			
 	}
 
-	public synchronized void notifyMemberJoined(String uniqueId) {
-		for (SessionObserver obs : sessionObservers) {
-            obs.notifyMemberJoined(uniqueId);
-        }	
+	public synchronized void notifyMemberJoined(String membersId) {
+		Message obtainedMessage = backgroundHandler.obtainMessage(BackgroundHandler.MEMBER_JOINED, membersId);
+		backgroundHandler.sendMessage(obtainedMessage);	
 	}
 
-	public synchronized void notifyMemberLeft(String uniqueId) {
-		for (SessionObserver obs : sessionObservers) {
-            obs.notifyMemberLeft(uniqueId);
-        }
+	public synchronized void notifyMemberLeft(String membersId) {
+		Message obtainedMessage = backgroundHandler.obtainMessage(BackgroundHandler.MEMBER_LEFT, membersId);
+		backgroundHandler.sendMessage(obtainedMessage);
 	}
 
 	public synchronized void notifySessionLost() {
-		for (SessionObserver obs : sessionObservers) {
-            obs.notifySessionLost();
-        }
+		Message obtainedMessage = backgroundHandler.obtainMessage(BackgroundHandler.SESSION_LOST);
+		backgroundHandler.sendMessage(obtainedMessage);
 	}
 	
 	public synchronized void addJoinRule(SessionJoinRule joinRule){

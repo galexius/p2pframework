@@ -23,7 +23,7 @@ import android.os.Message;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
-public class PTPService extends Service implements HelperObserver {
+public class PTPService extends Service implements ServiceHelperObserver {
 
 	
 	class PTPSessionListener extends SessionListener{
@@ -79,6 +79,7 @@ public class PTPService extends Service implements HelperObserver {
 			Log.e(TAG, "P2PHelper not initialized!");
 			return;
 		}
+		objectPath = "/"+ PTPHelper.getInstance().getApplicationName();
 		PTPHelper.getInstance().addObserver(this);
 		org.alljoyn.bus.alljoyn.DaemonInit.PrepareDaemon(getApplicationContext());
 		
@@ -86,7 +87,7 @@ public class PTPService extends Service implements HelperObserver {
         PTPHelper.getInstance().acquireMissedNotifications();
  	}
 		
-	public synchronized void doAction(int arg){
+	public void doAction(int arg){
 
 			switch(arg){
 				case CONNECT: backgroundHandler.connect();break;
@@ -107,8 +108,7 @@ public class PTPService extends Service implements HelperObserver {
 	}
 	
 	@SuppressLint("HandlerLeak")
-	private final class BackgroundHandler extends Handler {
-		
+	private final class BackgroundHandler extends Handler {	
 
 		public BackgroundHandler(Looper looper) {
 			super(looper);
@@ -231,8 +231,7 @@ public class PTPService extends Service implements HelperObserver {
 		        doLeaveSession();
 		        break;
 	        case EXIT:
-                getLooper().quit();
-                destroy();
+                doQuit();
                 break;
 			default:
 				break;
@@ -256,7 +255,7 @@ public class PTPService extends Service implements HelperObserver {
     
     private void doStopDiscovery() {
         Log.i(TAG, "doStopDiscovery()");
-    	assert(busAttachmentState == BusAttachmentState.CONNECTED);
+    	assert(busAttachmentState == BusAttachmentState.DISCOVERING);
       	bus.cancelFindAdvertisedName(packageName);
       	busAttachmentState = BusAttachmentState.CONNECTED;
     }
@@ -305,7 +304,7 @@ public class PTPService extends Service implements HelperObserver {
 		BusObject busObject = PTPHelper.getInstance().getBusObject(); 
 		Status status;
 		if(busObject != null){
-			status = bus.registerBusObject(PTPHelper.getInstance().getBusObject(), objectPath+ "/" + getDeviceID());
+			status = bus.registerBusObject(busObject, objectPath+ "/" + getDeviceID());
 			if (Status.OK != status) {			
 				Log.e(TAG, "Cannot register : " + status);
 				return;
@@ -329,7 +328,7 @@ public class PTPService extends Service implements HelperObserver {
 	}
 	
 
-	private boolean doDisconnect() {
+	private void doDisconnect() {
 		Log.i(TAG, "doDisonnect()");
 		assert (busAttachmentState == BusAttachmentState.CONNECTED);
 		bus.unregisterBusListener(busListener);
@@ -338,7 +337,6 @@ public class PTPService extends Service implements HelperObserver {
 		bus.disconnect();
 		busAttachmentState = BusAttachmentState.DISCONNECTED;
 		PTPHelper.getInstance().setConnectionState(PTPHelper.DISCONNECTED);
-		return true;
 	}
 
 	private void doRequestName() {
@@ -346,7 +344,8 @@ public class PTPService extends Service implements HelperObserver {
 		int stateRelation = busAttachmentState
 				.compareTo(BusAttachmentState.DISCONNECTED);
 		assert (stateRelation >= 0);
-
+		assert (hostChannelState == HostChannelState.BOUND);
+		
 		Status status = bus.requestName(packageName + "." +PTPHelper.getInstance().getHostChannelName(),
 				BusAttachment.ALLJOYN_REQUESTNAME_FLAG_DO_NOT_QUEUE);
 		if (status == Status.OK) {
@@ -358,17 +357,15 @@ public class PTPService extends Service implements HelperObserver {
 
 	private void doReleaseName() {
 		Log.i(TAG, "doReleaseName()");
-
-
 		int stateRelation = busAttachmentState
 				.compareTo(BusAttachmentState.DISCONNECTED);
 		assert (stateRelation >= 0);
 		assert (busAttachmentState == BusAttachmentState.CONNECTED || busAttachmentState == BusAttachmentState.DISCOVERING);
-
 		assert (hostChannelState == HostChannelState.NAMED);
 
 		bus.releaseName(PTPHelper.getInstance().getHostChannelName());
 		hostChannelState = HostChannelState.IDLE;
+		PTPHelper.getInstance().setConnectionState(PTPHelper.SESSION_CLOSED);
 	}
 	
     private void doAdvertise() {
@@ -379,6 +376,7 @@ public class PTPService extends Service implements HelperObserver {
         
         if (status == Status.OK) {
         	hostChannelState = HostChannelState.ADVERTISED;
+        	PTPHelper.getInstance().setConnectionState(PTPHelper.SESSION_HOSTED);
         } else {
         	Log.e(TAG, "doAdvertise() failed");
         	return;
@@ -404,7 +402,6 @@ public class PTPService extends Service implements HelperObserver {
 		Mutable.ShortValue mutableContactPort = new Mutable.ShortValue(contactPort);
 		SessionOpts sessionOpts = new SessionOpts(SessionOpts.TRAFFIC_MESSAGES,
 				true, SessionOpts.PROXIMITY_ANY, SessionOpts.TRANSPORT_WLAN);		
-		
 		sessionPortListener = new SessionPortListener(){
 			
 			public boolean acceptSessionJoiner(short sessionPort,
@@ -414,22 +411,23 @@ public class PTPService extends Service implements HelperObserver {
 						return PTPHelper.getInstance().canJoin(joiner);
 					}
 					return false;
-			}						
-			public void sessionJoined(short sessionPort, int id,String joiner) {
+			}
+			
+			public void sessionJoined(short sessionPort, int sessionId,String joiner) {
 					
 					Log.i(TAG, "SessionPortListener.sessionJoined("
-							+ sessionPort + ", " + id + ", " + joiner + ")");
+							+ sessionPort + ", " + sessionId + ", " + joiner + ")");
 					if(firstJoiner){
 						firstJoiner = false;
-						hostSessionId = id;
+						hostSessionId = sessionId;
 						
-						SignalEmitter emitter = new SignalEmitter(PTPHelper.getInstance().getBusObject(), id,
+						SignalEmitter emitter = new SignalEmitter(PTPHelper.getInstance().getBusObject(), sessionId,
 								SignalEmitter.GlobalBroadcast.Off);
-						hostInterface = emitter
+						Object hostInterface = emitter
 								.getInterface(PTPHelper.getInstance().getBusObjectInterfaceType());
-						PTPHelper.getInstance().setSignalEmiter(hostInterface);
+						PTPHelper.getInstance().setSignalEmitter(hostInterface);
 						PTPHelper.getInstance().notifyMemberJoined(joiner);
-						bus.setSessionListener(id, new PTPSessionListener());
+						bus.setSessionListener(sessionId, new PTPSessionListener());
 					}
 			}
 		};
@@ -494,15 +492,13 @@ public class PTPService extends Service implements HelperObserver {
 		SignalEmitter emitter = new SignalEmitter(PTPHelper.getInstance().getBusObject(), clientSessionId,
 				SignalEmitter.GlobalBroadcast.Off);
 		
-		clientInterface = emitter.getInterface(PTPHelper.getInstance().getBusObjectInterfaceType());
-		PTPHelper.getInstance().setSignalEmiter(clientInterface);
-		
+		Object clientInterface = emitter.getInterface(PTPHelper.getInstance().getBusObjectInterfaceType());
+		PTPHelper.getInstance().setSignalEmitter(clientInterface);
+		PTPHelper.getInstance().setConnectionState(PTPHelper.SESSION_JOINED);
 		
 	}
 
 
-	Object clientInterface = null;
-	Object hostInterface = null;
 	
 	private void doLeaveSession() {
 		Log.i(TAG, "doLeaveSession()");
@@ -511,6 +507,7 @@ public class PTPService extends Service implements HelperObserver {
 		}
 		clientSessionId = -1;
 		joinedToSelf = false;
+		PTPHelper.getInstance().setConnectionState(PTPHelper.SESSION_LEFT);
 	}
 
 
@@ -528,9 +525,7 @@ public class PTPService extends Service implements HelperObserver {
 
 	private void doUnbindSession() {
 		Log.i(TAG, "doUnbindSession()");
-
 		bus.unbindSessionPort(contactPort);
-		hostInterface = null;
 		hostChannelState = HostChannelState.NAMED;
 	}
 
@@ -556,21 +551,17 @@ public class PTPService extends Service implements HelperObserver {
 		backgroundHandler = new BackgroundHandler(busThread.getLooper());
 	}
 
-	
-	private void stopBusThread() {
-		backgroundHandler.exit();
-	}
-
-	public void destroy() {
-		Log.i(TAG, "onDestroy()");
+	public void doQuit() {
+		Log.i(TAG, "doQuit()");
 		backgroundHandler.disconnect();
-		stopBusThread();
+		backgroundHandler.getLooper().quit();
+		PTPHelper.getInstance().removeObserver(this);
 		this.stopSelf();
 	}
 	
 	@Override
 	public void onDestroy(){
-		destroy();
+		doQuit();
 		super.onDestroy();
 	}
 
