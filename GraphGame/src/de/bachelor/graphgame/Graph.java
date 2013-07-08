@@ -1,5 +1,9 @@
 package de.bachelor.graphgame;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,9 +12,11 @@ import org.alljoyn.bus.BusObject;
 import org.alljoyn.bus.annotation.BusSignalHandler;
 
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.os.Build;
 import android.util.Log;
 import de.ptpservice.PTPHelper;
+import de.uniks.jism.xml.XMLIdMap;
 
 class Graph implements GraphInterface, BusObject {
 
@@ -33,38 +39,44 @@ class Graph implements GraphInterface, BusObject {
     ArrayList<Edge> edges = new ArrayList<Edge>();
     ArrayList<IdChange> idChanges = new ArrayList<Graph.IdChange>();
     private List<GraphObserver> mObservers = new ArrayList<GraphObserver>();
+	private Context context;
+	private Level currentLevel;
+    
+    public Graph(Context context){
+		this.context = context;    	
+    }
+    
     
     public void setupPoints() {
     	Log.d("Graph", "setupPoints()");
-		Node node1 = new Node(0.1f,0.1f,1);
-		Node node2 = new Node(0.1f,0.9f,2);
-		Node node3 = new Node(0.3f,0.3f,3);
-		Node node4 = new Node(0.6f,0.1f,4);
-		Node node5 = new Node(0.9f,0.9f,5);
-		Node node6 = new Node(0.9f,0.5f,6);
-		
-		nodes.clear();
-		
-		nodes.add(node1);
-		nodes.add(node2);
-		nodes.add(node3);
-		nodes.add(node4);
-		nodes.add(node5);
-		nodes.add(node6);
-		
-		edges.clear();
-		
-		edges.add(new Edge(node1, node3));
-		edges.add(new Edge(node1, node4));
-		edges.add(new Edge(node1, node5));
-		edges.add(new Edge(node2, node3));
-		edges.add(new Edge(node2, node4));
-		edges.add(new Edge(node3, node5));
-		edges.add(new Edge(node4, node5));		
-		edges.add(new Edge(node3, node6));		
-		edges.add(new Edge(node4, node6));		
-		edges.add(new Edge(node5, node6));		
+    	String xmlAsString = getLevelXMLAsString();    	    	
+    	XMLIdMap map=new XMLIdMap();
+    	map.withCreator(new LevelCreator());
+    	map.withCreator(new EdgeCreator());
+    	map.withCreator(new NodeCreator());
+    	currentLevel = (Level) map.decode(xmlAsString);
+    	nodes = currentLevel.getAllNodes();
+    	edges = currentLevel.getAllEdges();
+
 	}
+    
+    private String getLevelXMLAsString()
+    {	
+        InputStream inputStream = context.getResources().openRawResource(R.raw.levels);
+
+        InputStreamReader inputreader = new InputStreamReader(inputStream);
+        BufferedReader buffreader = new BufferedReader(inputreader);
+        String line;
+        StringBuilder text = new StringBuilder();
+         try {
+           while (( line = buffreader.readLine()) != null) {
+               text.append(line);
+             }
+       } catch (IOException e) {
+           return null;
+       }
+         return text.toString();
+    }
     
     public void resetGraph(){
     	changedNodes.clear();
@@ -80,8 +92,8 @@ class Graph implements GraphInterface, BusObject {
 		
 		for (Node point : nodes) {
 			if(point.getOwner().isEmpty() || point.getOwner().equals(uniqueName)){
-				point.x += x;
-				point.y += y;
+				point.setX(point.getX() + x);
+				point.setY(point.getY() + y);
 				checkAndAdjust(point);
 			}
 		}
@@ -95,10 +107,10 @@ class Graph implements GraphInterface, BusObject {
 	}
 
 	private void checkAndAdjust(Node point) {
-		if(point.x > 1.0d) point.x = 1.0d;
-		if(point.y > 1.0d) point.y = 1.0d;
-		if(point.x < 0.0d) point.x = 0.0d;
-		if(point.y < 0.0d) point.y = 0.0d;
+		if(point.getX() > 1.0d) point.setX(1.0d);
+		if(point.getY() > 1.0d) point.setY(1.0d);
+		if(point.getX() < 0.0d) point.setX(0.0d);
+		if(point.getY() < 0.0d) point.setY(0.0d);
 	}
 
 	public ArrayList<Node> getAllNodes() throws BusException {
@@ -170,6 +182,15 @@ class Graph implements GraphInterface, BusObject {
 		return null;
 	}
 	
+	public Node getNodeById(int id){
+		for (Node node : nodes) {			
+			if(node.getId() == id){
+				return node;
+			}
+		}
+		return null;
+	}
+	
 	public boolean isGraphFinished(){
 		for(int i = 0;i < edges.size()-1; i++){
 			for( int j = i+1; j < edges.size(); j++){
@@ -177,14 +198,15 @@ class Graph implements GraphInterface, BusObject {
 				Point point2 = new Point();
 				Point point3 = new Point();
 				Point point4 = new Point();
-				point1.x  = edges.get(i).getFrom().x;
-				point1.y  = edges.get(i).getFrom().y;
-				point2.x  = edges.get(i).getTo().x;
-				point2.y  = edges.get(i).getTo().y;
-				point3.x  = edges.get(j).getFrom().x;
-				point3.y  = edges.get(j).getFrom().y;
-				point4.x  = edges.get(j).getTo().x;
-				point4.y  = edges.get(j).getTo().y;
+				
+				point1.x  = getNodeById(edges.get(i).getSrc()).getX();
+				point1.y  = getNodeById(edges.get(i).getSrc()).getY();
+				point2.x  = getNodeById(edges.get(i).getDest()).getX();
+				point2.y  = getNodeById(edges.get(i).getDest()).getY();
+				point3.x  = getNodeById(edges.get(j).getSrc()).getX();
+				point3.y  = getNodeById(edges.get(j).getSrc()).getY();
+				point4.x  = getNodeById(edges.get(j).getDest()).getX();
+				point4.y  = getNodeById(edges.get(j).getDest()).getY();
 				Line line1 = new Line();
 				line1.point1 = point1;						
 				line1.point2 = point2;

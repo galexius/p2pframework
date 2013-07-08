@@ -29,7 +29,7 @@ public class MainApplication extends Application implements GraphObserver{
 	
 	public void onCreate() {
         super.onCreate();
-        graph = new Graph();
+        graph = new Graph(this);
         graph.addObserver(this);  
         graph.setupPoints();
         
@@ -45,7 +45,7 @@ public class MainApplication extends Application implements GraphObserver{
 				case Graph.NODE_POSITION_CHANGED:
 					Node node;
 					while(( node = graph.getChangedNode()) != null){
-						remoteGraph.MoveNode(node.getId(), node.x, node.y, PTPHelper.getInstance().getUniqueID());
+						remoteGraph.MoveNode(node.getId(), node.getX(), node.getY(), PTPHelper.getInstance().getUniqueID());
 					}break;
 					
 				case Graph.POINT_OWNERSHIP_CHANGED:				

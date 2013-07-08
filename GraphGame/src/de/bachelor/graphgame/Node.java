@@ -2,8 +2,12 @@ package de.bachelor.graphgame;
 
 
 public class Node {
-	public double x;
-	public double y;
+	public static final String PROPERTY_X="x";
+	public static final String PROPERTY_Y="y";
+	public static final String PROPERTY_ID="id";
+	
+	private double x;
+	private double y;
 	private int id;
 	private String owner ="";
 	
@@ -34,5 +38,21 @@ public class Node {
 
 	public String getOwner() {
 		return owner;
+	}
+	
+	public void setX(double x){
+		this.x = x;
+	}
+	
+	public double getX(){
+		return x;
+	}
+	
+	public void setY(double y){
+		this.y = y;
+	}
+	
+	public double getY(){
+		return y;
 	}
 }

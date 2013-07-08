@@ -3,28 +3,35 @@ package de.bachelor.graphgame;
 
 
 public class Edge {
-	private Node from;
-	private Node to;
+	public static final String PROPERTY_SRC="src";
+	public static final String PROPERTY_DEST="dest";
+	
+	private int src;
+	private int dest;
 
-	public Edge(Node from, Node to){
-		this.setFrom(from);
-		this.setTo(to);
+	public Edge(){
+		
+	}
+	
+	public Edge(int from, int to){
+		this.setSrc(from);
+		this.setDest(to);
 		
 	}
 
-	public Node getTo() {
-		return to;
+	public int getDest() {
+		return dest;
 	}
 
-	public void setTo(Node to) {
-		this.to = to;
+	public void setDest(int to) {
+		this.dest = to;
 	}
 
-	public Node getFrom() {
-		return from;
+	public int getSrc() {
+		return src;
 	}
 
-	public void setFrom(Node from) {
-		this.from = from;
+	public void setSrc(int from) {
+		this.src = from;
 	}
 }

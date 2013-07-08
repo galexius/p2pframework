@@ -1,0 +1,20 @@
+<?xml version="1.0"?> 
+<Level>
+   <Node x="0.1" y="0.1" id="1"/>
+   <Node x="0.1" y="0.9" id="2"/>
+   <Node x="0.3" y="0.3" id="3"/>
+   <Node x="0.6" y="0.1" id="4"/>
+   <Node x="0.9" y="0.9" id="5"/>
+   <Node x="0.9" y="0.5" id="6"/>
+   
+   <Edge src="1" dest="3"/>
+   <Edge src="1" dest="4"/>
+   <Edge src="1" dest="5"/>
+   <Edge src="2" dest="3"/>
+   <Edge src="2" dest="4"/>
+   <Edge src="3" dest="5"/>
+   <Edge src="4" dest="5"/>
+   <Edge src="3" dest="6"/>
+   <Edge src="4" dest="6"/>
+   <Edge src="5" dest="6"/>
+</Level>
