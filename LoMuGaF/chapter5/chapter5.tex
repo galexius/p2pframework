@@ -1,1 +1,280 @@
 \chapter{Praktisches Anwendungsbeispiel: MauMau}
+\section{Spielidee}
+\begin{wrapfigure}{r}{0.45\textwidth}
+   \centering
+   \includegraphics[width=0.48\textwidth]{chapter5/maumau}
+   \caption{MauMau}
+   \label{fig:maumau}
+\end{wrapfigure}
+Das Spiel MauMau ist ein in Deutschland recht bekanntes Kartenspiel. Ziel dieses
+Kartenspiels ist es, alle seine Karten loszuwerden. Zusätzlich gibt es einige
+Regeln die man beachten muss. Um dieses Spiel spielen zu können benötigt
+man mindestens 2 Mitspieler und maximal 4 Spieler, da man bei dieser Version ein
+Skatblatt benutzt, welches nur 32 Karten umfasst. Am Anfang des Spiels, wenn
+alle sich verbunden haben bekommt jeder 6 zufällige Karten ausgeteilt und der
+Host,in dieser Version, darf anfangen. Dabei kann man pro Zug, wenn man dran ist
+eine Karte spielen. Falls noch keine Karte gespielt wurde, darf jede Karte
+gespielt werden. Daraufhin ist der nächste Spieler dran und muss eine den
+Regeln entsprechende Karte legen. Gewonnen hat somit der Spieler, welcher als Erstes alle seine
+Karten losgeworden ist. Das Bild ~\ref{fig:maumau} zeigt eine
+Bildschirmaufname von einer Spielpartie MauMau. Dabei sieht man im oberen
+Bereich eine Liste mit allen Teilnehmenden Spielern und dahin die Anzahl der
+Karten, die jeder dieser Spieler besitzt. In der Mitte sieht man die zuletzt
+gespielte Karte, welche einen König Karo darstellt. Die Karten ganz unten im
+Bild sind ein Auschnitt der Karten, die der Spieler momentan besitzt. Die
+eigenen Karten sind als eine Bildergallerie dargestellt und lassen sich somit
+durch eine gewöhnliche Fingebewegung scrollen.
+\newline
+Die Regeln in dieser implementierten Version sind folgende:
+\begin{itemize}
+  \item Man darf entweder die Spielfarbe oder die/den Zahl/Wert spielen, von der
+  Karte, welche zuvor gespielt worden ist. So dürfte man eine beliebige Neun
+  oder eine beliebige Karo Karte spielen, wenn davor eine eine Karo Neun
+  gespielt wurde.
+  \item Falls davor eine Acht gespielt wurde, muss man einen Zug aussetzen und
+  der nächste ist dran, oder man legt selber eine Acht, falls man eine hat und
+  somit würde der Nächste aussetzen.
+  \item Falls davor ein Ass gespielt wurde, muss man einen Zug aussetzen und
+  der nächste ist dran, oder man legt selber einen Ass, falls man einen hat und
+  somit würde der Nächste aussetzen. Also das gleiche wie bei Acht.
+  \item Spielt ein Spieler eine Sieben, so muss der nächste Spieler 2 Karten
+  ziehen, oder er hat eine Sieben und spielt sie anstatt. Falls anstatt des
+  Ziehens eine Sieben gelegt wurde muss der nächste Spieler dann schon 4 Karten
+  ziehen, bis keiner mehr eine Sieben spielen kann.
+  \item Falls man einen Buben spielt, darf eine Spielfarbe wählen, welche der
+  nächste Spieler dann spielen muss.
+  \item Wenn man eine Karte nicht spielen kann, z.B. falls man keine passende
+  Karte hat, muss man eine Karte ziehen. Wenn man dann immer noch keine passende
+  Karte hat, setzt man den Zug aus und der Nächste ist dran.
+  \item (Optional) man sagt laut MauMau, bevor man seine letzte Karte spielt.
+\end{itemize}
+\newpage
+
+\section{Anforderungen}
+Eine Liste mit den Anforderungen, welche zur Implementierung des Spiels
+notwendig sind, sieht folgendermaßen aus:
+\begin{itemize}
+  \item Man sieht alle Spieler, die zum Spiel verbunden sind.
+  \item Man sieht wie viel Karten jeder dieser Spieler besitzt.
+  \item Jeder Mitspieler sieht die zuletzt gespielte Karte.
+  \item Man kann nur die Karten spielen, welche vom Regelwerk her erlaubt sind.
+  \item Man spielt eine Karte, indem man das Bild der Karte berührt.
+  \item Wenn man einen Buben spielt, erscheint ein Dialog, bei den man die
+  Spielfarbe wählen kann.
+  \item Es gibt Buttons um Karten zu ziehen und um einen Zug auszusetzen, welche
+  der Situation entsprechend aktiviert/deaktiviert sind. 
+  \item Eine Nachricht erscheint, falls einer der Spieler gewonnen hat.
+\end{itemize}
+
+\section{Implementierung}
+\subsection{Projektkonfiguration}
+Die Projektkonfiguration unterscheiden sich bis auf die Namensgebungenen kaum
+von der im Kapitel 4.3.1. Somit wird hier nicht mehr darauf eingegangen.
+
+\subsection{MauMauApplication}
+Die \ib{MauMauApplication} Klasse erbt von \ib{Application} und ist somit die
+Klasse, welche am Anfang gestartet wird. In der \ib{onCreate()} Methode wird der
+\ib{GameManager} instanziiert und der \ib{PTPHelper} initialisiert.
+Wie der \ib{PTPHelper} genau initialisiert wird sieht man im Codeausschnitt
+~\ref{initHelperMauMau}.
+\newpage
+\begin{lstlisting}[caption=MauMau PTPHelper Initialisierung,label=initHelperMauMau] 
+PTPHelper.initHelper("MauMau",GameManagerInterface.class, this, new GameManagerDummyObject(), gameManager, MauMauLobbyView.class);
+\end{lstlisting}
+Es werden der Applicationsname, die Inteface Klasse und der \ib{Context},
+welches als \ib{this} angegeben ist, als ersten übergeben. Darauf folgt das
+\ib{BusObject}, welches nur eine leere Implementierung des Intefaces ist.
+Schließlich wird noch der \ib{gameManager}, welches den \ib{SignalHandler}
+representiert, und die \ib{MauMauLobbyView} Klasse übergeben. Der letzte
+Parameter ist die konkrete Implementierung der \ib{LobbyActivity}, die nur
+angibt, welche Views geöffnet werden sollen.
+Die \ib{MauMauApplication} implementiert auch den \ib{GameManagerObserver},
+welcher die Methode \ib{update(int)} definiert. Diese Methode wird von den
+\ib{GameManager} aufgerufen um der \ib{MauMauApplication} mitzuteilen,
+verschiedene Nachrichten an die Mitspieler zu senden. Über das Argument wird der
+Nachrichtentyp mitgeteilt und an den \ib{BackgroundHandler} weitergeleitet, der
+über einen eigenen Thread die Informationen vom \ib{GameManager} erfragt und
+weiterschickt. Ein Beispiel der Methode \ib{sendPlayedCard()} um
+die Funktionsweise verständlich zu machen, sieht man im Codeausschnitt
+~\ref{sendPlayCard}.
+\begin{lstlisting}[caption=sendCardPlayed Methode des BackgroundHandlers,label=sendPlayCard]
+ private void sendCardPlayed() {
+	Card playedCard = gameManager.getPlayedCard();
+	GameManagerInterface gameManagers = (GameManagerInterface) PTPHelper.getInstance().getSignalEmitter();
+	if(gameManagers!=null){
+		try {
+			gameManagers.PlayCard(playedCard.id, PTPHelper.getInstance().getUniqueID());
+		} catch (BusException e) {
+			e.printStackTrace();
+		}
+	}		
+}
+\end{lstlisting}
+Der \ib{BackgroundHandler} führt die Methode aus und holt sich in diesem Fall
+vom \ib{GameManager} die gespielte Karte. Daraufhin wird der \ib{SignalEmmiter}
+vom \ib{PTPHelper} geholt und darüber wird die gespielte Karten Anderen
+mitgeteilt. Weite Methoden des BackgroundHandlers sind \ib{notifyPeersAboutMe(),
+sendCardOwnerChanged(), sendOwnedCards()} und \ib{sendNextTurn()}.
+
+\subsection{GameManager}
+Der \ib{GameManager} ist das Herzstück des Spiels und beinhaltet das Datenmodel
+und alle Informationen, welche für das Spiel wichtig sind. Nachdem der
+GameManager instantiiert wurde, wird die \ib{reset()} Methode aufgerufen. Die
+\ib{reset()} Methode setzt alle Werte auf den Anfangswert und initialisiert alle
+Karten mit Werten und den entsprechenden Bitmaps. Die Bitmaps der Karten werden
+aus einem Bild entnommen auf dem alle Karten sortiert abgebildet sind, indem
+durch den Wert ein Offset ermittelt wird und daraus die Position des Bildes
+dieser Karte. Der Codeausschnitt ~\ref{getBitmap} zeigt wie die Bitmap genau
+erstellt werden.
+\begin{lstlisting}[caption=Bitmaps den Karten zuweisen,label=getBitmap]
+public Bitmap getBitmap(Context context,Card card){
+	if(allCards == null){
+		allCards = BitmapFactory.decodeResource(context.getResources(),
+             R.drawable.cards);
+	}			
+	int cardWidth = allCards.getWidth()/13;
+	int cardHeight = allCards.getHeight()/5;
+	int value = card.value;
+	if(value == 14) value = 1; //Ace is positioned at the beginning of the bitmap
+	Bitmap cardBitmap = Bitmap.createBitmap(allCards,(value-1)*(cardWidth), (card.suit)*(cardHeight),cardWidth, cardHeight);
+	return cardBitmap;			
+}
+\end{lstlisting}
+Der \ib{GameManager} besitzt einen sogenannten \ib{RuleEnforcer}, welcher dafür
+zuständig ist Situationsbedingt verschiedene Regeln anzuwenden. Der
+\ib{RuleEnforcer} besitzt zwei Listen von \ib{Rules}, wobei jedes dieser
+\ib{Rules} eine Methode \ib{ boolean isAllowed(Card)} implementiert. Eine Liste
+beinhaltet inklusive Regeln, also Regeln, die alle erfühlt sein müssen. Die
+zweite Liste beinhaltet die exklusiven Regeln, bei denen mind. eine Regeln
+erfühlt sein muss. Ein Beispiel dafür ist die Regel, dass man am Zug ist. Diese
+Regel muss immer gelten, wenn man eine Karte spielen will, so geht diese Regel
+in die inklusive Liste. Die Regeln, dass man eine Spielfarbe oder einen
+bestimmten Wert bedienen muss, gehören in die exklusive Liste, da nur eine
+dieser Regeln erfühlt sein muss um eine Karte spielen zu können. 
+Diese Liste wird z.B. am Ende jedes Zuges aktuallisiert, wie im Codeausschnitt
+~\ref{cardPlayedEvent} aus der Methode \ib{NextTurn} zu sehen ist.
+\newpage
+\begin{lstlisting}[caption=Aktuallisierung der Regeln,label=cardPlayedEvent]
+CardPlayedEvent cardPlayedEvent = new CardPlayedEvent(playedCard, playCardRuleEnforcer,this);
+cardPlayedEvent.updateRuleEnforcer();
+\end{lstlisting}
+Der \ib{GameManager} ist ein \ib{SignalHandler} und implementiert somit einige
+Methoden um mit den anderen Mitspielern zu kommunizieren.
+Die Auflistung der Methoden sieht man im Codeausschnitt ~\ref{gmInteface}.
+\begin{lstlisting}[caption=Methoden des GameManagerInteface,label=gmInteface]
+	@BusSignal
+	public void ChangeOwner(int cardId, String uniqueUserID) throws BusException;
+	@BusSignal
+	public void PlayCard(int cardId, String uniqueUserID) throws BusException;	
+	@BusSignal
+	public void NextTurn(String uniqueUserID,int specialCase) throws BusException;	
+	@BusSignal
+	public void HiIAm(String uniqueID,String playerName) throws BusException;	
+	@BusSignal
+	public void ByeIWas(String uniqueID,String playerName) throws BusException;
+\end{lstlisting}
+Die Methode \ib{HiIAm} wird von jeden Mitspieler aufgerufen, der sich zu einem
+Spiel verbindet, sodass alle diesen Spieler kennen und in die Mitspielerliste
+einfügen können.
+Die Methode \ib{ByIWas} hingegen wird aufgerufen um mitzuteilen, wenn ein
+Mitspieler die Runde verlässt und somit aus der Mitspielerliste entfernt werden
+kann.
+\ib{NextTurn} wird von dem Spieler aufgerufen, der gerade dran ist und den
+Spielzug beendet hat. Ein Parameter ist immer die \ib{uniqueID}, welche den
+Sender representiert, damit man weiß von wem die Nachricht stamm. Die
+\ib{NextTurn} Methode hat noch den zweiten Parameter nämlich den
+\ib{specialCase}, welcher bestimmte Situationen kennzeichnet. Es wird z.B. nur
+die letzte Karte gespeichert, die gespielt wurde. Somit kann man nicht mehr
+nachvollziehen ob 2 oder 3 Siebenen aufeinander gespielt wurden und der Spieler
+z.B. 6 Karten anstatt nur 2 ziehen soll. Diese Situation wird über diesen
+Parameter übergeben, also wenn \ib{specialCase=3} heißt es, dass die Sieben 3
+mal aufeinander gespielt wurde.
+Dann gibt es noch die \ib{ChangeOwner} Methode, die dafür zuständig ist den
+Kartenstatus synchron zu halten. D.h. wenn jemand eine Karte zieht muss jeder
+GameManager davon erfahren, sodass zwei Spieler nicht die selbe Karten ziehen
+können.
+Schließlich gibt es noch die \ib{PlayCard} Methode, welche allen Mitspielern
+mitteilt, welche Karte gespielt wurde und angezeigt werden kann.
+
+\subsection{GameActivity}
+Die \ib{GameActivity} ist zum Einen für die UI zuständig und zum Anderen für die
+graphische Darstellung des Spiels. Die \ib{onCreate()} Method beinhaltet die
+ganzen Initialisierung der Buttons und andere UI Elementen wie z.B. der
+\ib{Gallery}. Die \ib{Gallery} ist aus dem Android SDK und ist dafür gedacht
+mehrere Bilder darzustellen und stellt vorallem Funktionen bereit wie das
+Scrollen und Auswählen von diesen. Um die \ib{Gallery} mit Bildern zu füllen
+benötigt man einen \ib{BaseAdapter}, was im Prinzip das Model darstellt. Somit
+braucht man nur das Model updaten und die \ib{Gallery} zeigt den aktuellen
+Stand, z.B. alle Karten, die man gerade besitzt.
+Dann gibt es noch den \ib{OnItemClickListener}, welcher für die \ib{Gallery}
+implementiert wird. Dieser Listener implementiert die Aktionen, welche
+ausgeführt werden sollen, falls man eine Karte berührt. Ein Auschnitt aus der
+\ib{OnItemClick} Methode sieht man im Codeausschnitt ~\ref{onItemClick}:
+\begin{lstlisting}[caption=Karte spielen,label=onItemClick]
+ if(gameManager.canPlayCard(card)){
+   if(card.value == 11){	
+	 cardToPlay = card;
+	 showWishSuitWindow(card); 
+   }else{					   
+	 playCard(card);
+   }					
+ } 
+\end{lstlisting}
+
+\begin{wrapfigure}{r}{0.5\textwidth}
+   \centering
+   \includegraphics[width=0.48\textwidth]{chapter5/wishsuit}
+   \caption{Spielfarbe wünschen}
+   \label{fig:wishsuit}
+\end{wrapfigure}
+Hierbei wird zuerst der \ib{gameManager} gefragt ob die Karte überhaupt gespielt
+werden kann, indem es mit dem \ib{RuleEnforcer} geprüft wird.
+Danach wird noch geprüft ob sich bei der Karte um einen Buben handelt und ein
+Fenster angezeigt werden soll um sich eine Spielfarbe zu wünschen, was man z.B.
+auf dem Bild ~\ref{fig:wishsuit} sehen kann.
+Ansonsten wird die Karte einfach gespielt, in dem die Karten-ID dem
+\ib{GameManager} mitgeteilt wird.
+Die \ib{GameActivity} implementiert auch den \ib{GameManagerObserver} Inteface,
+sodass es auch eine \ib{update(int)} Methode gibt. Dadurch kriegt die
+\ib{GameActivity} z.B. mit ob eine neue Karte gespielt wurde oder sich ein neuer
+Spieler verbunden hat und die UI neu gerendert werden muss. Diese Nachrichten
+können jedoch auch vom BusThread kommen, wenn z.B. eine Nachricht im
+\ib{GameManager} von anderen Mitspielern eintrifft. Daher müssen alle UI
+bedingten Operationen an den UI Thread weitergeleitet werden. Wie das gemacht
+wird sieht man im Codeausschnitt ~\ref{runOnUiThread}
+\begin{lstlisting}[caption=Operationen auf dem UI Thread ausführen,label=runOnUiThread] 
+case GameManager.NEXT_TURN: runOnUiThread(new Runnable() {			
+	@Override
+	public void run() {
+		playerListAdapter.refresh();
+		playerListAdapter.notifyDataSetChanged();
+		updateButtonsState();
+	}
+});
+\end{lstlisting}
+Durch die Methode \ib{runOnUiThread} kann man beliebige Operationen auf dem UI
+Thread ausführen. Dieser Fall behandelt das Ende eines Zuges. Hier wird zum
+einen die Spielerliste aktuallisiert, da sie anzeigt wer gerade am Zug ist, und
+die Buttons werden entsprechend auf \ib{enabled/disabled} gesetzt, abhängig ob
+man gerade am Zug ist oder nicht.
+Es gibt bei Android auch die Möglichkeit auf den Zurückbutton zu drücken,was
+dafür sorgt,dass man in die vorherige View gelangt. Dies muss man jedoch dem
+\ib{GameManager} mitgeteilt werden, sowie dem \ib{PTPService}, da man dadurch
+das laufende Spiel verlässt. Der Codeausschnitt ~\ref{backButton} zeigt die
+Behandlung dieses Zurückbuttons.
+\begin{lstlisting}[caption=Behandlung des Zurückbutton,label=backButton]
+@Override
+public void onBackPressed(){
+  super.onBackPressed();
+  gameManager.reset();
+  PTPHelper.getInstance().leaveChannel();
+  PTPHelper.getInstance().disconnect();
+  PTPHelper.getInstance().connectAndStartDiscover();
+}
+\end{lstlisting}
+Dabei wird die \ib{onBackPressed()} Methode von der \ib{Activity} überschrieben.
+Weiterhin wird der \ib{gameManager} zurückgesetzt, sodass man alles wieder mit
+Anfangswerten initialisiert und man ein neues Spiel starten kann. Zum Schluss
+wird noch dem \ib{PTPHelper} mitgeteilt die laufende Session zu schliessen und
+eine neue Verbindung aufzubauen, sodass man im Anfangszustand sich befindet, da
+man durch die Zurücktaste in der Lobby landet.

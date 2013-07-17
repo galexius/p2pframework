@@ -2,8 +2,8 @@ package de.bachelor.maumau.rules;
 
 import android.annotation.TargetApi;
 import android.os.Build;
+import de.bachelor.maumau.Card;
 import de.bachelor.maumau.GameManager;
-import de.bachelor.maumau.GameManager.Card;
 import de.bachelor.maumau.GameManager.SpecialCases;
 
 @TargetApi(Build.VERSION_CODES.GINGERBREAD)

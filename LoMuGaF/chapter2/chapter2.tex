@@ -2,22 +2,24 @@
 
 \section{Konzepte}
 
-  Das PTP-Rahmenwerk basiert auf dem Peer-to-Peer Prinzip  und benötigt deswegen keinen weiteren Server. Weil durch
-  einen Serverbasierten Ansatz der Zustand des Spiels nur auf dem Server organisiert wird ist es eine
+  Die PTPLibrary basiert auf dem Peer-to-Peer Prinzip  und benötigt deswegen
+  keinen Server. Weil durch einen Serverbasierten Ansatz der Zustand des Spiels nur auf dem Server organisiert wird ist es eine
   gewisse Herausforderung bei einem Peer-to-Peer Ansatz alle Gerät synchron zu
-  halten. Der Entwickler hat nur Objekte, über die er die Kommunikation realisieren muss. Dabei handelt es sich zum einen um Objekte, die die eingehenden Signale behandeln und zum Anderen Objekte um Nachrichten an die anderen Spieler zu senden.
+  halten. Der Entwickler hat nur Objekte, über die er die Kommunikation
+  realisieren muss. Dabei handelt es sich zum einen um Objekte, die die eingehenden Signale behandeln und zum anderen Objekte um Nachrichten an die anderen Spieler zu senden.
  
 \begin{wrapfigure}{r}{0.5\textwidth}
    \centering
    \includegraphics[width=0.48\textwidth]{chapter1/emitterhandler}
    \caption{Kommunications-Konzept}
-   \label{fig:Wrap}
+   \label{fig:emitter}
 \end{wrapfigure}
    
-  Jedes der Geräte hat zum einen Handler sowie einen Emitter. Der Emitter
-  ist das Objekt welches die Signale an andere Geräte rausschickt und der Handler ist somit das Objekt, welches auf jedem Gerät die eingehende Nachricht behandelt. In den meisten Anwendungsfällen haben die Emitter und
+  Wie in der Abbildung ~\ref{fig:emitter} zu sehen, hat jedes der Geräte zum
+  einen einen Handler sowie einen Emitter.
+  Der Emitter ist das Objekt welches die Signale an andere Geräte rausschickt und der Handler ist somit das Objekt, welches auf jedem Gerät die eingehende Nachricht behandelt. In den meisten Anwendungsfällen haben die
   Handler auf allen Geräten die selbe Impelementierung. Zusätzlich wird eine
-  Session verwendung um die einzelnen Spielsitzungen oder Spielrunden in sich
+  Session verwendet um die einzelnen Spielsitzungen oder Spielrunden in sich
   geschlossen zu handhaben. Somit erstellt ein Host eine Session zu der sich die
   die Klienten verbinden können um an der Spielrunde teilnehmen zu können.
   Dadurch wird außerdem die Möglichkeit  gegeben mehrere Spiele simultan im
@@ -32,25 +34,30 @@
   entsprechend selbst organisieren.
   
 
-\begin{figure}[!htb]
-\minipage{0.5\textwidth}
-  \includegraphics[width=0.75\linewidth]{chapter2/Server-based-network}
-  \caption{Server basiertes Netzwerk}
-  \label{fig:server-based-network}
-\endminipage\hfill
-\minipage{0.5\textwidth}
-  \includegraphics[width=0.75\linewidth]{chapter2/P2P-network}
-  \caption{PtP basiertes Netzwerk}
-  \label{fig:server-based-network}
-\endminipage\hfill
+\begin{figure}[hbt!]
+\centering
+	\begin{subfigure}[b]{0.3\textwidth}
+	    \centering
+	    \includegraphics[width=\textwidth]{chapter2/Server-based-network}
+	    \caption{Server}
+	    \label{fig:server}
+    \end{subfigure}
+	\begin{subfigure}[b]{0.3\textwidth}
+	    \centering
+	    \includegraphics[width=\textwidth]{chapter2/P2P-network}
+	    \caption{Peer-to-Peer}
+	    \label{fig:p2p}
+    \end{subfigure}
+    \caption{(a) Server basiertes vs. (b) Peer-to-Peer basiertes Netzwerk}
+    \label{ptpserver}
 \end{figure}
 
  
- Die Bilder verdeutlichen nochmal das Gesagte. Durch das Weglassen eines fest
- zugeordneten Servers, erhält man eine Flexibilität, sodass nur Peers benötigt
- werden um das Spiel zu spielen. Es ergeben sich auch Probleme bei dieser Art
- der realisierung, die man mit einem Serverbasiertem system kaum hätte.
- Normalerweise bei einem Serverbasiertem Spiel wird der Zustand des Spiels auf
+ Die Bilder \ref{ptpserver} \ib{a} und \ib{b} verdeutlichen nochmal das Gesagte.
+ Durch das Weglassen eines fest zugeordneten Servers, erhält man eine Flexibilität, sodass nur Peers benötigt
+ werden um das Spiel zu spielen. Es ergeben sich jedoch auch Probleme bei dieser
+ Art der Realisierung, die man mit einem serverbasiertem system kaum hätte.
+ Normalerweise bei einem serverbasiertem Spiel wird der Zustand des Spiels auf
  dem Server geregelt und alle zu dem Server verbundenen Geräte brauchen den
  Server nur nach diesen Zustand zu fragen. Da die Berechnungen meistens auf dem
  Server liegen werden die verbundenen Geräte entlastet. 
@@ -58,8 +65,8 @@
  Gerät ermittelt werden und mit den anderen Geräten synchonisiert werden. Dies
  hat einen höheren Ressourcenaufwand und limitiert somit die Anzahl der
  möglichen Teilnehmer, da die Informationen mit allen Peers ausgetauscht werden
- um zu garantieren, dass alle den selben Zustand haben. Jedoch ist es auch sehr
- vom Anwendungfall abhängig, denn ein entsprechendes Gegenbeispiel für eine hohe
+ müssen, um zu garantieren dass alle den selben Zustand haben. Jedoch ist es
+ auch sehr vom Anwendungfall abhängig, denn ein entsprechendes Gegenbeispiel für eine hohe
  Peersanzahl zeigten Tauschbörsen wie Torrent oder Napster um nur zwei bekannte
  Beispiele zu nennen. Somit liegt die Herausforderung bei den Entwicklern, da
  sie zum einen Entscheiden müssen wie viele Spieler maximal zulässig sind und
@@ -70,7 +77,7 @@
   
   Android ist das Linux-basierte Betriebssystem für mobile Endgeräte, welches
   von Google 2011 offiziell zur Verfügung gestellt wurde. Android selbst gilt
-  als sogenannte frei Software, welche bis auf den System-Kern unter der
+  als sogenannte freie Software, welche bis auf den System-Kern unter der
   Apache-Lizens steht. Diese Tatsache unter Anderen ermöglichte eine rasante
   Verbreitung dieses Betriebsystems auf vielen Geräten unterschiedlicher
   Hersteller.
@@ -169,7 +176,7 @@ Das Android Manifest ist eine XML-Datei, welche sich im Wurzelverzeichniss des
 Projektes befindet. Sie beschreibt welche Rechte die Anwendung benötigt, sowie
 alle Activities und Services, die während der Laufzeit gestartet werden. So
 müssen alle Berechtigungen z.B. folgendermaßen angegeben werden:
-\begin{lstlisting}
+\begin{lstlisting}[caption=Android Manifest XML]
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" >
     </uses-permission>
 \end{lstlisting}
@@ -180,10 +187,10 @@ SDK Version, das Icon der Application, sowie Themes und andere relevante Daten.
 
 \section{AllJoyn}
 
-\begin{wrapfigure}{r}{0.25\textwidth}
+\begin{wrapfigure}{l}{0.3\textwidth}
    \centering
    \includegraphics[width=0.2\textwidth]{chapter2/img-alljoyn-logo}
-   \caption[Von Text umflossenes Bild]{AllJoyn}
+   \caption[alljoyn]{AllJoyn}
    \label{fig:Wrap}
 \end{wrapfigure} 
 AllJoyn ist ein Open-Source Peer-to-Peer Rahmenwerk welches es erlaubt
@@ -193,52 +200,77 @@ Apache v.2 Licenz. Besonderer Augenmerk dieses Framework besteht in der
 Tatsache, dass es verschiedene Betriebssysteme unterstützt und eine Vielzahl von
 Programmiersprachen, darunter C$\sharp$, C++, Java sowie Objective C. Somit lassen sich
 Anwendungen auf Peer-to-Peer Basis auf Windows,MacOS,Linux,Android und iOS
-entwickeln und mit einander verbinden.
+entwickeln und miteinander verbinden.
 Es bietet weiterhin die Unterstützung für
 Bluetooth, Wifi und Ethernet. Vorallem ermöglicht AllJoyn die Verbindung von
 Mobilen-Endgeräten im Wifi-Netz ohne sich selbst um das Finden und Verbinden
-kümmern zu müssen. Außerdem bietet AllJoyn für jedes Betriebssystem ein SDK an,
-welches alle notwendigen Bibliotheken sowie einige Beispielanwendungen
-beinhaltet. 
+kümmern zu müssen. Das AllJoyn Rahmenwerk übernimmt somit alle Aufgaben auf der
+Netzwerkschicht. Außerdem bietet AllJoyn für jedes Betriebssystem ein SDK an,
+welches alle notwendigen Bibliotheken sowie einige Beispielanwendungen beinhaltet. 
 
 \subsection{Bussystem}
-
 
 \begin{wrapfigure}{c}{0.50\textwidth}
    \centering
    \includegraphics[width=0.50\textwidth]{chapter2/img-developer-proxy}
-   \caption[Von Text umflossenes Bild]{Bussystem}
-   \label{fig:Wrap}
+   \caption[Bussystem]{Bussystem}
+   \label{fig:Bussystem}
 \end{wrapfigure} 
 Das Prinzip von AllJoyn basiert auf einem Bussystem zu dem sich einzelne
-Anwendung verbinden können.  
+Anwendung verbinden können und ist in der Abbildung ~\ref{fig:Bussystem}
+nochmal visuell verdeutlichts.
 Jedes dieser Anwendung muss einen sogenannten BusAttachement erstellen und den
 entsprechenden EventHandler implementieren über den dann die Nachrichten von
 anderen Anwendungen behandelt werden. Über einen ProxyObjekt lassen sich dann
-entweder Methoden auf einem bestimmten Gerät aufrufen oder auf allen Geräten,
-die zu dem Bus verbunden sind und das entsprechende Interface implementieren.
-
-\newpage
+entweder Methoden auf einem bestimmten Gerät aufrufen. Das ProxyObject ist das
+Object was dazu benötigt wird um mit anderen Teilnehmer zu kommunizieren. Es
+lässt sich auch dazu verwenden einen SignalEmmiter zu erstellen und damit
+Nachrichten an alle Teilnehmer zu schicken, die zu dem Bus verbunden
+sind und das entsprechende Interface implementieren.
+Der Bus selbst ist ein sogenannter Daemon, also ein Hintergrundservice, welcher
+auf dem Gerät läuft und sich um netzwerktechnischen Aufgaben kümmert. Dieser
+wird z.B. über einen Aufruf in der Anwendung gestartet und bietet durch das
+BusAttachement eine Schnittstelle für Anwendungen um damit zu interagieren. 
 
 \subsection{BusAttachement}
-Um mit dem Bussystem zu kommunizieren, erstellt man einen BusAttachement:
-\begin{lstlisting}
+Um mit dem Bussystem zu kommunizieren, muss man einen \ib{BusAttachement}
+erstellen, wie im Codeausschnitt ~\ref{busAttachement} dargestellt.
+\begin{lstlisting}[caption=BusAttachement, label=busAttachement]
 bus = new BusAttachment("name",BusAttachment.RemoteMessage.Receive)
 \end{lstlisting}
-Der ``applicationName'' Parameter ist notwendig um verschiedene BusAttachements zu den entsprechenden Anwendungen zu
-zuordnet, falls mehrere Anwendungen über den selben Bus kommunizieren. Als
-Zweitparameter lässt sich noch angeben ob das BusAttachement eingehende
-Nachrichten verwerfen oder behandeln soll.
+Der \ib{name} Parameter ist notwendig um verschiedene BusAttachements zu den
+entsprechenden Anwendungen zuzuordnen, falls mehrere Anwendungen über den
+selben Bus kommunizieren. Es ist nämlich möglich mehrere Anwendungen mit
+AllJoyn auf dem selben Gerät laufen zu lassen und dass sie miteinander
+kommunizieren. Als Zweitparameter lässt sich noch angeben ob das BusAttachement
+eingehende Nachrichten verwerfen oder behandeln soll. Durch den Parameter
+\ib{BusAttachement.RemoteMessage.Receive} wird aufgefordert, eingehende
+Nachrichten nicht zu verwerfen, sondern an die jeweiligen SignalHandler
+weiterzuleiten.
+
+\begin{wrapfigure}{r}{0.5\textwidth}
+   \centering
+   \includegraphics[width=0.50\textwidth]{chapter2/bus}
+   \caption[Bus]{Bus}
+   \label{fig:Bus}
+\end{wrapfigure} 
+Die Abbildung ~\ref{fig:Bus} verdeutlicht nochmal die Funktionsweise des
+BusAttachements. Die mit den Buchstaben \ib{A,B,C} dargestellten Rechtecke
+representieren jeweils einen BusAttachements, welche zu einen gemeinsame Bus
+verbunden sind, welcher durch eine dicke durchgezogene Linie dargestellt ist.
+Dieser Bus stellt intern eine logische Verbindung mit den anderen Smartphone
+her, sodass jedes BusAttachement mit anderen BusAttachements kommunizieren kann.
+\newpage
 
 \subsection{Interface}
 Die Kommunikation bei AllJoyn funktioniert über Interfaces, also eine konkrete
 Beschreibung der Methoden über die Nachrichten verschickt werden. So muss zum
 einen über dem Interfacenamen die folgende Annotation stehen:
-\begin{lstlisting}
+\begin{lstlisting}[caption=BusInteface Annotation]
 @BusInterface (name = "de.package.MyInterface")
 public interface MyInterface{}
 \end{lstlisting}
-Das Interface wird benötigt um über das BusAttachement an die ProxyObjekt zu
+Das Interface wird benötigt um über das BusAttachement an die ProxyObjekte zu
 kommen. Weiterhin muss das Inteface auch die Methoden entsprechend deklarieren.
 \begin{lstlisting}
 @BusMethod
@@ -259,6 +291,7 @@ bus.registerBusObject(busObject, "/objectPath");
 \end{lstlisting}
 Somit können alle Anwendungen über den Pfad auf das Bus-Objekt zugreifen und
 darauf Methoden aufrufen oder Properties abfragen.
+\newpage
 
 \subsection{SignalHandler}
 Ein SignalHandler ist ein Object welches die Behandlung von eingehenden
@@ -269,13 +302,13 @@ ist und bei SignalHandler handelt es sich um Objecte die auf Nachrichten
 reagieren die an alle Geräte geschickt werden wie bei einem Broadcast. 
 Falls es sich bei dem Inteface um einen SignalHandler handelt müssen die
 Methoden @BusSignal als Annotationen beinhalten
-\begin{lstlisting}
+\begin{lstlisting}[caption=SingalHandler Annotation]
 @BusSignal
 public int MyHandler() throws BusException;
 \end{lstlisting}
 Zusätzlich muss man bei der Implementierung eine weitere Annotation hinzufügen
 um den Nachrichtentyp explizit zu definieren.
-\begin{lstlisting}
+\begin{lstlisting}[caption=BusSignalHandler Annotation]
 @Override
 @BusSignalHandler(iface = "de.packege.MyInterface", signal = "MyHandler") 
 public void MyHandler() throws BusException {}
@@ -286,7 +319,7 @@ Ein SignalEmitter ist das Objekt das dazu verwendet wird Nachrichten an alle
 Teilnehmer zu senden. Der SignalEmitter kann dazu verwendet werden um an das
 Inteface zu kommen welches auch von den SignalHandlern implementiert wird. Es
 ist im Prinzip der Proxy zu allen Teilnehmern. Den SignalEmitter bekommen man durch den folgenden Aufruf:
-\begin{lstlisting}
+\begin{lstlisting}[caption=SignalEmitter]
 emitter = new SignalEmitter(busObject, id, SignalEmitter.GlobalBroadcast.Off);
 myInterface = (MyInterface) emitter.getInterface(MyInterface.class);
 \end{lstlisting}
@@ -307,7 +340,7 @@ mitteilen. Um diese Mitteilungen auch zu empfangen, müssen die Teilnehmer einen
 BusListener implementieren, welcher dann auf solche Nachrichten horcht.
 Somit hat einer der Teilnehmer die Aufgabe des Hosts und erstellt einen Channel
 und teilt diesen dann den Anderen mit:
-\begin{lstlisting}
+\begin{lstlisting}[caption=Session erstellen]
 bus.bindSessionPort(contactPort, sessionOpts, sessionPortListener);
 bus.requestName("myChannelName");
 bus.advertiseName("myChannelName");
@@ -316,12 +349,11 @@ Das Erstellen der Session benötigt unter einigen Einstellungen, wie die
 Portnummer,Transportprotokol usw, auch den SessionPortListener, welcher z.B. das
 Verbinden von anderen Teilnehmern behandelt und bestimmte Aktionen dann
 ausführen kann. Typische Methoden eines SessionPortListeners wären z.B.
-\begin{lstlisting}
+\begin{lstlisting}[caption=SessionPortListener Methoden]
 public boolean acceptSessionJoiner(short sessionPort,
 								String joiner, SessionOpts sessionOpts) {}
 					
 public void sessionJoined(short sessionPort, int id, String joiner) {}
-
 \end{lstlisting}
 Der Host braucht dann die Implementierung der Methoden um das Verbinden zu der
 Session zu Kontrollieren.

@@ -2,7 +2,7 @@ package de.bachelor.maumau.rules;
 
 import java.util.ArrayList;
 
-import de.bachelor.maumau.GameManager.Card;
+import de.bachelor.maumau.Card;
 
 public class RuleEnforcer {
 

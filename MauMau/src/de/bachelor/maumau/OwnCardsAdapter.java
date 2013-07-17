@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Gallery;
 import android.widget.ImageView;
-import de.bachelor.maumau.GameManager.Card;
 
 @SuppressWarnings("deprecation")
 public class OwnCardsAdapter extends BaseAdapter {

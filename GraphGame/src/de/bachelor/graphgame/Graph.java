@@ -4,18 +4,19 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.alljoyn.bus.BusException;
 import org.alljoyn.bus.BusObject;
-import org.alljoyn.bus.annotation.BusSignalHandler;
 
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.util.Log;
 import de.ptpservice.PTPHelper;
+import de.uniks.jism.xml.XMLEntity;
 import de.uniks.jism.xml.XMLIdMap;
 
 class Graph implements GraphInterface, BusObject {
@@ -30,7 +31,7 @@ class Graph implements GraphInterface, BusObject {
 	}
 		
 	public static final int NODE_POSITION_CHANGED = 1;
-	public static final int POINT_OWNERSHIP_CHANGED = 2;
+	public static final int NODE_OWNERSHIP_CHANGED = 2;
 	public static final int GRAPH_CHANGED = 3;
 	
 	private static final String TAG = "Graph";
@@ -41,6 +42,7 @@ class Graph implements GraphInterface, BusObject {
     private List<GraphObserver> mObservers = new ArrayList<GraphObserver>();
 	private Context context;
 	private Level currentLevel;
+	private XMLIdMap nodeXMLMap = null;
     
     public Graph(Context context){
 		this.context = context;    	
@@ -87,8 +89,7 @@ class Graph implements GraphInterface, BusObject {
     
 	@TargetApi(Build.VERSION_CODES.GINGERBREAD)
 	@Override
-	@BusSignalHandler(iface = "com.example.firstapp.GraphInterface", signal = "MoveNode")
-	public synchronized void MoveNode(int id, double x, double y, String uniqueName) throws BusException {
+	public synchronized void MoveNode(int id, double x, double y, String uniqueName)  {
 		
 		for (Node point : nodes) {
 			if(point.getOwner().isEmpty() || point.getOwner().equals(uniqueName)){
@@ -99,8 +100,15 @@ class Graph implements GraphInterface, BusObject {
 		}
 		if(uniqueName.equals(PTPHelper.getInstance().getUniqueID())){
 			Node changedNode = new Node(x,y,id);
-			changedNodes.add(changedNode);
-			notifyObservers(NODE_POSITION_CHANGED);
+			
+			XMLIdMap map=new XMLIdMap();
+	    	map.withCreator(new NodeCreator());	
+	    	XMLEntity entity = map.encode(changedNode);
+	    	try {
+				PTPHelper.getInstance().sendDataToAllPeers(NODE_POSITION_CHANGED, entity.toString().getBytes(PTPHelper.ENCODING_UTF8));
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}
 			return;
 		}
 		notifyObservers(GRAPH_CHANGED);
@@ -123,14 +131,23 @@ class Graph implements GraphInterface, BusObject {
 	}
 
 	@Override
-	@BusSignalHandler(iface = "com.example.firstapp.GraphInterface", signal = "ChangeOwnerOfNode")
-	public synchronized void ChangeOwnerOfNode(int id, String owner, String uniqueID) throws BusException {
+	public synchronized void ChangeOwnerOfNode(int id, String owner, String uniqueID) {
 		for (Node node : nodes) {
 			if(node.getId() == id){
 				node.setOwner(owner);
 				if(uniqueID.equals(PTPHelper.getInstance().getUniqueID())){
-					addIdOfChangedPoint(new IdChange(id,owner));
-					notifyObservers(POINT_OWNERSHIP_CHANGED);
+					Node nodeToChange = new Node();
+					nodeToChange.setid(id);
+					nodeToChange.setOwner(owner);
+					
+					XMLIdMap map=new XMLIdMap();
+			    	map.withCreator(new NodeCreator());	
+			    	XMLEntity entity = map.encode(nodeToChange);
+			    	try {
+						PTPHelper.getInstance().sendDataToAllPeers(NODE_OWNERSHIP_CHANGED, entity.toString().getBytes(PTPHelper.ENCODING_UTF8));
+					} catch (UnsupportedEncodingException e) {
+						e.printStackTrace();
+					}			    	
 					return;
 				}
 				notifyObservers(GRAPH_CHANGED);
@@ -252,6 +269,14 @@ class Graph implements GraphInterface, BusObject {
 	class Point{
 		public double x;
 		public double y;
+	}
+
+	public Node getNodeFromXML(String dataAsString) {
+		if(nodeXMLMap == null){
+			nodeXMLMap = new XMLIdMap();
+	    	nodeXMLMap.withCreator(new NodeCreator());
+		}
+    	return (Node) nodeXMLMap.decode(dataAsString);		
 	}
 
 }

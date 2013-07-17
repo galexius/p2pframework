@@ -2,11 +2,14 @@ package de.ptpservice;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
 import org.alljoyn.bus.BusObject;
+import org.alljoyn.bus.annotation.BusSignal;
+import org.alljoyn.bus.annotation.BusSignalHandler;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
@@ -24,13 +27,27 @@ import android.widget.Toast;
 import de.ptpservice.views.AbstractLobbyActivity;
 import de.ptpservice.views.LobbyObserver;
 
-
-
 public class PTPHelper {
     static {
         Log.i("P2PHelper","System.loadLibrary(\"alljoyn_java\")");
         System.loadLibrary("alljoyn_java");
-    } 
+    }
+    
+    class PTPBusObject implements PTPBusObjectInterface,BusObject{
+		@Override
+		@BusSignal
+		public void SendDataToAllPeers(String sentFrom,int arg,byte[] data) {}    	
+    }    
+    
+    class PTPBusHandler implements PTPBusObjectInterface, BusObject {
+    	@Override
+    	@BusSignalHandler(iface = "de.ptpservice.PTPBusObjectInterface", signal = "SendDataToAllPeers")
+    	public void SendDataToAllPeers(String sentFrom,int arg, byte[] data) {
+    		notifyDataListenersAllPeers(sentFrom,arg,data);
+    	}
+    }
+
+    
     
     @SuppressLint("HandlerLeak")
 	class BackgroundHandler extends Handler{
@@ -137,11 +154,13 @@ public class PTPHelper {
 	public final static int SESSION_HOSTED = 11;
 	public final static int SESSION_CLOSED = 12;
 	
+	public final static String ENCODING_UTF8 = "UTF-8";
+	
 	private static PTPHelper instance = null;
 	private BackgroundHandler backgroundHandler;
 	
-	public static void initHelper(String applicationName,Class<?> theInterfaceType, Context context,BusObject busObject,Object signalHandler, Class<? extends AbstractLobbyActivity> lobbyClass){
-		instance = new PTPHelper(applicationName,theInterfaceType,busObject,signalHandler);	
+	public static void initHelper(String applicationName, Context context, Class<? extends AbstractLobbyActivity> lobbyClass){
+		instance = new PTPHelper(applicationName);	
 		instance.addBusObserver(instance.new HelperBusObserver());
 		PACKAGE_NAME = context.getPackageName();
         if(instance.isWifiEnabledAndShowInfo(context))
@@ -155,6 +174,8 @@ public class PTPHelper {
         new Intent(context,lobbyClass);
 	}
 	
+	
+
 	public static void deinit(){
 		instance.finish();
 		instance = null;
@@ -177,12 +198,12 @@ public class PTPHelper {
 	private Queue<Integer> notificationQueue = new LinkedList<Integer>();
 	private String applicationName;
 	
-	private PTPHelper(String applicationName, Class<?> theInterfaceType,BusObject busObject,Object signalHandler) {
+	private PTPHelper(String applicationName) {
 		Log.d("P2PHelper", "onConstructor");
 		this.applicationName = applicationName;
-		this.busObjectInterfaceType = theInterfaceType;
-		this.busObject = busObject;
-		this.signalHandler  = signalHandler;
+		this.busObjectInterfaceType = PTPBusObjectInterface.class;
+		this.busObject = new PTPBusObject();
+		this.signalHandler  = new PTPBusHandler();
 		backgroundHandler = new BackgroundHandler(Looper.getMainLooper());
 	}
 	
@@ -201,7 +222,7 @@ public class PTPHelper {
 	    return false;
 	}
 	
-	 private boolean isWifiAPEnabled(WifiManager wifi) {
+	 public boolean isWifiAPEnabled(WifiManager wifi) {
 	        boolean state = false;
 	        try {
 	            Method method2 = wifi.getClass().getMethod("isWifiApEnabled");
@@ -279,8 +300,17 @@ public class PTPHelper {
 		lobbyObservers.remove(obs);
 	}
 	
+	public void sendDataToAllPeers(int arg,byte[] data){
+		if(signalEmitter==null){
+			Log.e(TAG, "SignalEmitter not set yet");
+			return;
+		}
+		PTPBusObjectInterface emitter = (PTPBusObjectInterface) signalEmitter;
+		emitter.SendDataToAllPeers(uniqueID, arg, data);
+	}
+	
 
-	protected void notifyHelperObservers(int arg) {
+	private void notifyHelperObservers(int arg) {
         Log.i(TAG, "notifyObservers(" + arg + ")");
         if(helperObservers.isEmpty()){
         	notificationQueue.add(arg);
@@ -290,19 +320,30 @@ public class PTPHelper {
             obs.doAction(arg);
         }
 	}
-	private List<ServiceHelperObserver> helperObservers = new ArrayList<ServiceHelperObserver>();
-	private List<LobbyObserver> lobbyObservers = new ArrayList<LobbyObserver>();
+
+	private void notifyDataListenersAllPeers(String sentFrom,int arg, byte[] data) {		
+		for (DataListener listener : dataListeners) {
+			Log.i(TAG, "notify dataListener = " + listener);
+			listener.dataSentToAllPeers(sentFrom, arg, data);
+		}
+	}
+
+	
+	private ArrayList<ServiceHelperObserver> helperObservers = new ArrayList<ServiceHelperObserver>();
+	private ArrayList<LobbyObserver> lobbyObservers = new ArrayList<LobbyObserver>();
 	private ArrayList<BusObserver> busObservers = new ArrayList<BusObserver>();
 	private ArrayList<SessionObserver> sessionObservers = new ArrayList<SessionObserver>();
-	private List<String> foundChannels = new ArrayList<String>();
-	private List<SessionJoinRule> joinRules = new ArrayList<SessionJoinRule>();
+	private ArrayList<DataListener> dataListeners = new ArrayList<DataListener>();
+	private ArrayList<String> foundChannels = new ArrayList<String>();
+	private ArrayList<SessionJoinRule> joinRules = new ArrayList<SessionJoinRule>();
+	private HashMap<String,Object> proxyObjectsMap = new HashMap<String,Object>();
 
 	private String uniqueID  = "";
 	private String playerName = "";
 	private int connectionState;
 	private BusObject busObject;
 	private Object signalHandler;
-	private Object signalEmitter;
+	private Object signalEmitter = null;
 	private boolean isHost;
 	
 	public void joinChannel() {
@@ -463,6 +504,37 @@ public class PTPHelper {
 		if (joinRules.indexOf(joinRule) >= 0) {
 			joinRules.remove(joinRule);
 		}
+	}
+	public synchronized void addProxyObject(String peerID,Object proxyObject){
+		if (!proxyObjectsMap.containsKey(peerID)) {
+			proxyObjectsMap.put(peerID, proxyObject);
+		}
+	}
+	
+	public synchronized void addDataListener(DataListener dataListener){
+		if (dataListeners.indexOf(dataListener) < 0) {
+			dataListeners.add(dataListener);
+		}
+	}
+	
+	public synchronized void removeDataListener(DataListener dataListener){
+		if (dataListeners.indexOf(dataListener) >= 0) {
+			dataListeners.remove(dataListener);
+		}
+	}
+	
+	public synchronized void removeAllDataListeners(){
+		dataListeners.clear();
+	}
+	
+	public synchronized void removeProxyObjectForPeerID(String peerID){
+		if (proxyObjectsMap.containsKey(peerID)) {
+			proxyObjectsMap.remove(peerID);
+		}
+	}
+	
+	public synchronized void removeAllProxyObjects(){
+		proxyObjectsMap.clear();
 	}
 	
 	public synchronized void removeAllJoinRules(){

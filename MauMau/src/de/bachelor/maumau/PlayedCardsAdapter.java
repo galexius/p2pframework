@@ -5,7 +5,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import de.bachelor.maumau.GameManager.Card;
 
 public class PlayedCardsAdapter extends BaseAdapter {
 	private final Context context;

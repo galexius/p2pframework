@@ -1,5 +1,6 @@
 package de.bachelor.maumau;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -7,10 +8,6 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.Stack;
-
-import org.alljoyn.bus.BusException;
-import org.alljoyn.bus.BusObject;
-import org.alljoyn.bus.annotation.BusSignalHandler;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -25,9 +22,10 @@ import de.bachelor.maumau.rules.SameSuitRule;
 import de.bachelor.maumau.rules.SameValueRule;
 import de.bachelor.maumau.rules.YourTurnRule;
 import de.ptpservice.PTPHelper;
+import de.uniks.jism.xml.XMLIdMap;
 
 @TargetApi(Build.VERSION_CODES.GINGERBREAD)
-public class GameManager implements BusObject, GameManagerInterface {
+public class GameManager {
 		private static final String TAG = "GM";	
 		
 		public class SpecialCases{			
@@ -43,28 +41,8 @@ public class GameManager implements BusObject, GameManagerInterface {
 			public final static int SKIP_TURN = 9;			
 		}
 		
-		public class Card{
-			public final static int CLUB = 0;
-			public final static int DIAMOND = 1;
-			public final static int HEART = 2;			
-			public final static int SPADE = 3;
-			public int value;
-			public int suit;
-			public int id;
-			public String owner;
-			
-			public String getValueString(){
-				switch(value) {
-					case 14: return "A";
-					case 11: return "J";
-					case 12: return "D";
-					case 13: return "K";
-					default : return ""+value;
-				}
-			}
-		}		
-		
 		private static final String PLAYED_CARD = "PlayedCard";
+		
 		public static final int DECK_CHANGED = 0;
 		public static final int PLAYERS_STATE_CHANGED = 1;
 		public static final int CARD_PLAYED = 2;
@@ -85,7 +63,6 @@ public class GameManager implements BusObject, GameManagerInterface {
 		private Map<String,String> joinedPlayers = new HashMap<String,String>();
 		private Random random = new Random(System.currentTimeMillis());
 		private Bitmap allCards = null;
-		private MauMauApplication application;
 		private List<GameManagerObserver> observers = new ArrayList<GameManagerObserver>();
 		private Stack<Integer> ownedCardIds = new Stack<Integer>();
 		private RuleEnforcer playCardRuleEnforcer = new RuleEnforcer();
@@ -96,7 +73,6 @@ public class GameManager implements BusObject, GameManagerInterface {
 		private boolean cardPlayedThisTurn;
 		
 		public GameManager(MauMauApplication application){
-			this.application = application;		
 			getPlayCardRuleEnforcer().addInclusiveRule(new YourTurnRule(this));
 			getPlayCardRuleEnforcer().addExclusiveRule(new SameSuitRule(this));
 			getPlayCardRuleEnforcer().addExclusiveRule(new SameValueRule(this));
@@ -152,30 +128,42 @@ public class GameManager implements BusObject, GameManagerInterface {
 			int cardPosition = random.nextInt(notOwnedCards.size()-1);
 			Card card = notOwnedCards.get(cardPosition);
 			card.owner = PTPHelper.getInstance().getUniqueID();
-			ownedCardIds.push(card.id);
-			application.update(OWNER_CHANGED);
+			sendCardOwnerChanged(card);
 			notifyObservers(DRAW_CARDS);
 			
 			this.specialCase = SpecialCases.DEFAULT;
 			return card;
-		}		
+		}	
 		
-		@Override
-		@BusSignalHandler(iface = "de.bachelor.maumau.GameManagerInterface", signal = "ChangeOwner")
-		public synchronized void ChangeOwner(int cardId, String uniqueUserID) throws BusException{
+		private String getXMLStringForCard(Card card){			 	    	
+	    	XMLIdMap map=new XMLIdMap();
+	    	map.withCreator(new CardCreator());
+	    	return map.encode(card).toString();
+		}
+		
+		private void sendCardOwnerChanged(Card card) {
+			String xmlStringForCard = getXMLStringForCard(card);
+			try {
+				PTPHelper.getInstance().sendDataToAllPeers(OWNER_CHANGED, xmlStringForCard.getBytes(PTPHelper.ENCODING_UTF8));
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}	
+		}
+
+		public synchronized void ChangeOwner(int cardId, String uniqueUserID){
 			Card cardById = getCardById(cardId);
 			cardById.owner = uniqueUserID;
 			drawCardsIfNeeded();
 			notifyObservers(PLAYERS_STATE_CHANGED);
 		}
 		
-		@Override
-		@BusSignalHandler(iface = "de.bachelor.maumau.GameManagerInterface", signal = "NextTurn")
-		public synchronized void NextTurn(String uniqueID,int specialCase){
+		public synchronized void NextTurn(String previousID,int specialCase){
 			this.specialCase = specialCase;
-			CardPlayedEvent cardPlayedEvent = new CardPlayedEvent(this.playedCard, playCardRuleEnforcer,this);
-			cardPlayedEvent.updateRuleEnforcer();
-			currentPlayersID = uniqueID;
+			if(playedCard!=null){
+				CardPlayedEvent cardPlayedEvent = new CardPlayedEvent(this.playedCard, playCardRuleEnforcer,this);
+				cardPlayedEvent.updateRuleEnforcer();
+			}
+			currentPlayersID = getNextPlayersId(previousID);
 			cardsDrawnThisTurn = false;
 			notifyObservers(PLAYERS_STATE_CHANGED);
 		}
@@ -208,9 +196,7 @@ public class GameManager implements BusObject, GameManagerInterface {
 			}
 		}
 
-		@Override
-		@BusSignalHandler(iface = "de.bachelor.maumau.GameManagerInterface", signal = "PlayCard")
-		public synchronized void PlayCard(int cardId, String uniqueUserID) throws BusException{
+		public synchronized void PlayCard(int cardId, String uniqueUserID) {
 			Card card = getCardById(cardId);
 			this.setLastCardPlayedBy(uniqueUserID);
 			card.owner = PLAYED_CARD;
@@ -221,14 +207,21 @@ public class GameManager implements BusObject, GameManagerInterface {
 			playedCard = card;
 			if(uniqueUserID.equals(PTPHelper.getInstance().getUniqueID())){
 				cardPlayedThisTurn = true;
-				notifyObservers(CARD_PLAYED);	
+				sendCardPlayed(card);
 				nextTurn();
-			}else{
-				removeObserver(application);
-				notifyObservers(CARD_PLAYED);
-				addObserver(application);
 			}
+			
+			notifyObservers(CARD_PLAYED);
 			notifyObservers(PLAYERS_STATE_CHANGED);			
+		}
+
+		private void sendCardPlayed(Card card) {
+			try {
+				PTPHelper.getInstance().sendDataToAllPeers(CARD_PLAYED, (card.id+"").getBytes(PTPHelper.ENCODING_UTF8));
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}	
+			
 		}
 
 		private Card getCardById(int cardId) {
@@ -260,17 +253,22 @@ public class GameManager implements BusObject, GameManagerInterface {
 			return playedCard;
 		}
 
-		@Override
-		@BusSignalHandler(iface = "de.bachelor.maumau.GameManagerInterface", signal = "HiIAm")
 		public synchronized void HiIAm(String uniqueID,String playerName) {
 			Log.i(TAG, "HiIAm: " + uniqueID + " , " + playerName);			
 			if(joinedPlayers.get(uniqueID) == null ){
 				
 				joinedPlayers.put(uniqueID, playerName);
 				notifyObservers(PLAYERS_STATE_CHANGED);
-				notifyObservers(TELL_OWNED_CARDS);
+				notifyOthersAboutYourself();
+				sendOwnedCards();
 			}
-		}		
+		}	
+		
+		private void sendOwnedCards() {
+			for (Card card : getOwnCards()) {
+				sendCardOwnerChanged(card);
+			}	
+		}
 		
 		private void notifyObservers(int arg) {
 			for (GameManagerObserver observer : observers) {
@@ -278,13 +276,21 @@ public class GameManager implements BusObject, GameManagerInterface {
 			}
 		}
 
-		@Override
-		@BusSignalHandler(iface = "de.bachelor.maumau.GameManagerInterface", signal = "ByeIWas")
-		public synchronized void ByeIWas(String uniqueID,String playerName) {
+		public synchronized void ByeIWas(String uniqueID) {
 			if(joinedPlayers.get(uniqueID) !=null ){
 				joinedPlayers.remove(uniqueID);
+				releaseCardsForUserID(uniqueID);
 				notifyObservers(PLAYERS_STATE_CHANGED);
 			}
+		}
+
+		private void releaseCardsForUserID(String uniqueID) {
+			for (Card card : deckOfCards) {
+				if(uniqueID.equals(card.owner)){
+					card.owner = "";
+				}
+			}
+			
 		}
 
 		public Map<String,String> getJoinedPlayers() {
@@ -322,7 +328,7 @@ public class GameManager implements BusObject, GameManagerInterface {
 			
 			cardsDrawnThisTurn = false;
 			cardPlayedThisTurn = false;
-			String nextPlayersID = getPlayersIdByOffsetOfMine(1);
+			String nextPlayersID = getNextPlayersId(PTPHelper.getInstance().getUniqueID());
 			setAndNotifyNextTurn(nextPlayersID);
 		}
 
@@ -343,6 +349,15 @@ public class GameManager implements BusObject, GameManagerInterface {
 		private void setAndNotifyNextTurn(String uniqueID) {
 			currentPlayersID = uniqueID;
 			notifyObservers(NEXT_TURN);
+			sendNextTurn();
+		}
+
+		private void sendNextTurn() {
+			try {
+				PTPHelper.getInstance().sendDataToAllPeers(NEXT_TURN, (""+specialCase).getBytes(PTPHelper.ENCODING_UTF8));
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}			
 		}
 
 		public RuleEnforcer getPlayCardRuleEnforcer() {
@@ -369,17 +384,17 @@ public class GameManager implements BusObject, GameManagerInterface {
 			return cardsDrawnThisTurn;
 		}
 		
-		public String getPlayersIdByOffsetOfMine(int offset){
+		public String getNextPlayersId(String currentID){
 			Set<String> keySet = getJoinedPlayers().keySet();
 		 	ArrayList<String> arrayList = new ArrayList<String>(keySet);
 		 	int myIdPosition = -1;
 		    for(int i = 0; i < arrayList.size(); i++){
-		    	if(arrayList.get(i).equals(PTPHelper.getInstance().getUniqueID())) {
+		    	if(arrayList.get(i).equals(currentID)) {
 		    		myIdPosition = i;
 		    		break;
 		    	}
 			}		    
-		    int playersIdPosition  = (myIdPosition + offset) % arrayList.size();
+		    int playersIdPosition  = (myIdPosition + 1) % arrayList.size();
 		    if(playersIdPosition < 0){
 		    	playersIdPosition += arrayList.size();
 		    }
@@ -403,6 +418,15 @@ public class GameManager implements BusObject, GameManagerInterface {
 			playCardRuleEnforcer.addExclusiveRule(new SameSuitRule(this));
 			playCardRuleEnforcer.addExclusiveRule(new SameValueRule(this));
 			playCardRuleEnforcer.addExclusiveRule(new NoCardsPlayedRule(this));
+		}
+
+		public void notifyOthersAboutYourself() {			
+			try {
+				HiIAm(PTPHelper.getInstance().getUniqueID(), PTPHelper.getInstance().getPlayerName());
+				PTPHelper.getInstance().sendDataToAllPeers(PLAYERS_STATE_CHANGED, PTPHelper.getInstance().getPlayerName().getBytes(PTPHelper.ENCODING_UTF8));
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}			
 		}
 
 

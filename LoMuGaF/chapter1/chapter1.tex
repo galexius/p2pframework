@@ -1,7 +1,7 @@
 \chapter{Einleitung}
 
 Spiele auf mobilen Endgeräten gibt es unzählige. Jedoch sind die
-meisten dieser Spiele entweder Einzelspielerspiele oder sind Serverbasierte
+meisten dieser Spiele entweder Einzelspielerspiele oder sind serverbasierte
 Mehrspielerspiele, deren Server nur über eine aktive Internetverbindung erreicht
 werden kann. Trotz der mittlerweile gut ausgebauten Netzabdeckung und guter Internetgeschwindigkeit auf Smartphones, kann das
 Spielerlebniss durch eine schwankende Internetgeschwindigkeit getrübt werden,
@@ -14,56 +14,44 @@ befindet und sich die Roaminggebühren sparen will. Gerade in solchen Situationen
 ist die Möglichkeit miteinander eine Mehrspielerpartie zu starten ohne eine
 Internetverbindung zu haben sehr willkommen. 
 Um die Entwicklung solcher Spiele vorran zu treiben und es den Entwickler soweit
-wie möglich zu erleichtern, sollte im Rahmen dieser Arbeit ein Rahmenwerk
-entwickelt werden, welches im Folgenden als PTP-Rahmenwerk genannt wird.
-Das PTP steht als Abkürzung von Peer-to-Peer, welches als Prinzip noch genauer
-erklärt wird. Es sollen die kommunikatonsbedingen Herausforderungen mit dem
-PTP-Rahmenwerk gelöst werden, sodass die Entwickler sich nur um die Implementierung der Spiele selbst
-gedanken machen müssen. Die Entwickler hätten nur die Aufgabe sich um die
+wie möglich zu erleichtern, sollte im Rahmen dieser Arbeit eine Bibliothek
+entwickelt werden, welches im Folgenden als PTP-Library genannt wird.
+Das PTP steht als Abkürzung für Peer-to-Peer, welches als Prinzip noch genauer
+erklärt wird. Es sollen die kommunikatonsbedingten Herausforderungen mit der
+PTP-Library gelöst werden, sodass die Entwickler sich nur um die Implementierung
+der Spiele selbst gedanken machen müssen. Die Entwickler hätten nur die Aufgabe sich um die
 Synchronisierung der spielbezogenen Daten zu kümmern und die Übertragen der
-Daten an die einzelnen Gerät würde sozusagen vom PTP-Rahmenwerk übernommen.
+Daten an die einzelnen Gerät würde sozusagen von der PTP-Bibliothek übernommen.
 Damit die Entwicklung solcher Spiele für die Hobbyentwickler keine finanziellen
-Hürden stellt, wurde das PTP-Rahmenwerk mit dem Android SDK entwickelt. Da das
+Hürden stellt, wurde die PTP-Library mit dem Android SDK entwickelt. Da das
 Android SDK kostenlos für jeden Entwickler zur Verfügung steht, kann jeder Entwickler, der
 über ein Android Gerät verfügt gleich mit der Entwicklung des Spieles loslegen.
-Natürlich lässt sich das PTP-Rahmenwerk auch für praktische Anwendungen, wie z.B.
-Textmessanger, verwenden, jedoch wird im Rahmen dieser Ausarbeitung nur
+Natürlich lässt sich die PTP-Library auch für praktische Anwendungen, wie
+z.B. Textmessanger, verwenden, jedoch wird im Rahmen dieser Ausarbeitung nur
 auf die Realisierung von Spielen eingegangen.
 
-\section{Ziel und Aufgabenstellung der Arbeit}
-
-Ziel dieser Arbeit ist es die Lokalisierung und Verbindung der Geräte vom
-PTP-Rahmenwerk übernehmen zu lassen. Somit hat der Entwickler sich nur um die
-Implementierung der Schnittstellen-Objekte zu kümmern über die die
-Kommunikation abläuft. Das PTP-Rahmenwerk soll auf dem Android SDK aufbauen, da es
-sich hierbei um eine kostenlos verfügbaren Entwicklungsframework handelt.
-Weiterhin sind zwei Spiele als praktische Beispiele mithilfe dieses
-PTP-Rahmenwerkes zu implementierung um zum einen die Vorgehensweise zu
-demonstrieren und zum Anderen die Realisierbarkeit zu testen.
   
-\section{Lösungsweg der Aufgabenstellung}  
+\section{Lösungsansatz}  
   
 Um sich die ganzen Herausforderung bei der Realisierung Endgerät-zu-Endgerät
 Kommunikation zu ersparen wurde ein weiteres Rahmenwerk namens
 AllJoyn verwendet, welches die die Verbindung und die Kommunikation zum
 größten Teil schon übernimmt. Somit blieb zum Einen eine geschickte
-Integration von AllJoyn in das PTP-Rahmenwerk, weiterhin mussten die vielen,
+Integration von AllJoyn in die PTP-Library. Weiterhin mussten die vielen,
 gerade auf den ersten Blick komplizierten, Konfigurationen des AllJoyn
 Rahmenwerks durch eine einfache Schnittstelle erweitert werden. Außerdem
 musste ein Multithreaded Handler-System verwendet werden um UI-Prozesse des
 Spiels nicht durch die Hintergrundprozesse der Gerätekommunikation zu
 behindern. Als praktische Anwendungsbeispiele wurde ein Echtzeitpuzzlespiel
-und ein Turnbased Kartenspiel namens MauMau implementiert.
+und ein Zugbasiertes Kartenspiel namens MauMau implementiert.
    
 \section{Gliederung}
 
 Die Arbeit beinhaltet zu Anfang die Erklärung der verwendeten Rahmenwerke
 AndroidSDK und AllJoyn. Dabei werden die Konzepte dieser Rahmenwerke grob
-beschrieben. Als nächstes wird das Konzept und die Impelementierung des
-Multiplayer Spieleframeworks, welches das Hauptaugenmerk dieser Arbeit ist,
-beschrieben. Daraufhin wird beschrieben wie die zwei Spielebeispiele realisiert
+beschrieben. Dann wird das Konzept und die Implementierung der
+PTP-Library, welches das Hauptaugenmerk dieser Arbeit ist,
+beschrieben. Daraufhin wird beschrieben, wie die zwei Spielebeispiele realisiert
 wurden, sowie Herausforderung, die während der Implementierung entstanden.
-Zum Schluss gibt es noch eine theoretische Auseinandersetzung mit dem Prinzip
-der Wlan basierten P2P-Spiele.
 
 

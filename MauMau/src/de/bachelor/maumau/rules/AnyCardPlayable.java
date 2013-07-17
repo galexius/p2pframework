@@ -1,7 +1,7 @@
 package de.bachelor.maumau.rules;
 
+import de.bachelor.maumau.Card;
 import de.bachelor.maumau.GameManager;
-import de.bachelor.maumau.GameManager.Card;
 
 public class AnyCardPlayable implements RuleInterface {
 	

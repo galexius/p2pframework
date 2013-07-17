@@ -5,6 +5,7 @@ public class Node {
 	public static final String PROPERTY_X="x";
 	public static final String PROPERTY_Y="y";
 	public static final String PROPERTY_ID="id";
+	public static final String PROPERTY_OWNER = "owner";
 	
 	private double x;
 	private double y;

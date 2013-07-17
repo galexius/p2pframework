@@ -3,9 +3,7 @@
 
 % Seitenabstände
 \usepackage[bindingoffset=1cm, left=2.5cm, right=2.5cm, top=2.5cm, bottom=2.5cm]{geometry}
-\usepackage{listings}
-\lstloadlanguages{[AspectJ]Java}
-\lstset{language=Java}
+
 % Kopfzeilen
 \usepackage{fancyhdr}
 \pagestyle{fancy}
@@ -39,7 +37,7 @@
 
 
 % Bilder einbinden
-\usepackage{graphicx, wrapfig}
+\usepackage{graphicx, wrapfig, subcaption,caption}
 
 % Fix zur Bildereinbindung
 \renewcommand{\textfraction}{0}
@@ -49,14 +47,17 @@
 \usepackage[hyphens]{url}
 \usepackage{hyperref}
 \hypersetup{colorlinks, citecolor=black, linkcolor=black, urlcolor=black}
-
+\definecolor{light-gray}{gray}{0.95}
 
 % Quellcode einbinden
 \usepackage{listings}
+\renewcommand{\lstlistingname}{Codeausschnitt}
+\lstloadlanguages{[AspectJ]Java}
 % \renewcommand{\lstlistlistingname}{Quellcodeverzeichnis}
-\lstset{aboveskip=\bigskipamount, backgroundcolor=\color{lightyellow}, basicstyle=\ttfamily\small, breaklines, breakautoindent, captionpos=b, columns=flexible, extendedchars, float=hbp, frame=single, keywordstyle=\bfseries, language=C, numbers=left, numberstyle=\tiny, showspaces=false, showstringspaces=false, showtabs=false, stringstyle=, tabsize=2}
+\lstset{aboveskip=\bigskipamount, backgroundcolor=\color{light-gray},
+basicstyle=\ttfamily\small, breaklines, breakautoindent, captionpos=b,
+columns=flexible, extendedchars, float=hbp, frame=single,
+keywordstyle=\bfseries, language=Java, numbers=left, numberstyle=\tiny,
+showspaces=false, showstringspaces=false, showtabs=false, stringstyle=, tabsize=2}
 
-
-% Abkürzungsverzeichnis
-\usepackage[printonlyused]{acronym}
 \newcommand{\ib}[1]{\textit{\textbf{#1}}}

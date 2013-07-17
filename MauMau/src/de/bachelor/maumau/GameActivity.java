@@ -1,8 +1,6 @@
 package de.bachelor.maumau;
 
 
-import org.alljoyn.bus.BusException;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
@@ -20,7 +18,6 @@ import android.widget.Gallery;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.Toast;
-import de.bachelor.maumau.GameManager.Card;
 import de.bachelor.maumau.GameManager.SpecialCases;
 import de.bachelor.maumau.rules.CardsDrawnEvent;
 import de.ptpservice.PTPHelper;
@@ -58,7 +55,7 @@ public class GameActivity extends Activity implements GameManagerObserver {
 	  application = (MauMauApplication) getApplication();
 	  gameManager = application.getGameManager();
 	  startButton.setVisibility(PTPHelper.getInstance().isHost() && !gameStarted && gameManager.getJoinedPlayers().size() > 1 ? View.VISIBLE: View.GONE);
-	  gameManager.HiIAm(PTPHelper.getInstance().getUniqueID(), PTPHelper.getInstance().getPlayerName());
+	  gameManager.notifyOthersAboutYourself();
 	  gameManager.addObserver(this);
 	  	 
 	  ownCardsAdapter = new OwnCardsAdapter(this,gameManager);
@@ -113,11 +110,7 @@ public class GameActivity extends Activity implements GameManagerObserver {
 	}
 	
 	public void playCard(Card cardToPlay) {
-		try {
-			gameManager.PlayCard(cardToPlay.id, PTPHelper.getInstance().getUniqueID());
-		} catch (BusException e) {
-			e.printStackTrace();
-		}
+		gameManager.PlayCard(cardToPlay.id, PTPHelper.getInstance().getUniqueID());
 		ownCardsAdapter.notifyDataSetChanged();
 		playedCardsAdapter.notifyDataSetChanged();
 		
@@ -139,6 +132,7 @@ public class GameActivity extends Activity implements GameManagerObserver {
 	@Override
 	public void onBackPressed(){
 	  super.onBackPressed();
+	  gameManager.notifyOthersAboutYourself();
 	  gameManager.reset();
 	  PTPHelper.getInstance().leaveChannel();
 	  PTPHelper.getInstance().disconnect();

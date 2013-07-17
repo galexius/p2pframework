@@ -1,18 +1,18 @@
 \chapter{Implementierung}
 
 Es gibt viele verschiedene Spielprinzipien und daher sollte soweit es geht mit
-dem PTPRahmenwerk den späteren Entwicklern so viel Freiheit gelassen werden wie
+der PTPLibrary den späteren Entwicklern so viel Freiheit gelassen werden wie
 möglich.
 Jedoch gibt es viele Abläufe, die sich immer wieder wiederholen. So hat man den
 typschen Ablauf, dass man das Spiel startet und man sich in einer Lobby
 befindet. Danach kann man entweder ein Spiel erstellen und sich zu einem bereits
-erstellten Spiel verbinden. Diesen Ablauf wird durch das PTPRahmenwerk
+erstellten Spiel verbinden. Diesen Ablauf wird durch die PTPLibrary
 übernommen, sodass man sich hinterher darum nicht mehr kümmern muss.
 Der Entwickler hätte dann nur noch die Aufgabe sich um die Activities zu
 kümmern, die das Spiel representieren und die Verbindung und Vermittlung würde
-das PTPRahmenwerk übernehmen. Um das Framework benutzen zu können müsste der
-Entwickler dann nur noch eine Jar-Datei als Bibliothek in sein Projekt einbinden und er
-könnte loslegen.
+die PTPLibrary übernehmen. Um das Bibliothek benutzen zu können müsste der
+Entwickler dann die PTPLibrary als Bibliothek in sein Projekt einbinden und er
+könnte loslegen. 
 
 \section{PTPHelper}
 Der PTPHelper ist eine Schnittstelle zwischen dem Spiel und
@@ -27,25 +27,28 @@ Android Rahmenwerk unvorteilhaft, da sich dessen API recht oft ändert und die
 Entwicklung in der Zukunft erschweren kann. Durch das Singleton kann der
 Entwickler entscheiden, wann er den Service startet und wie er damit
 interagieren will. So kann er z.B.
-den Einzelspielermodus vollkommen ohne den Helper realisieren und erst bei Multiplayermodus den Service starten. Um den PTPHelper zu
-initialisieren muss der Entwickler in seinem Code den Folgenden Befehl ausführen:
+den Einzelspielermodus vollkommen ohne der Benutzung des PTPHelpers realisieren
+und erst bei Multiplayermodus den Service starten. Um den PTPHelper zu
+initialisieren muss der Entwickler in seinem Code den folgenden Befehl aus dem
+Codeausschnitt ~\ref{initHelper} ausführen.\newpage
 
-\begin{lstlisting}
+\begin{lstlisting}[caption=Helper initialisieren,label=initHelper]
 PTPHelper.initHelper(MyInterface.class, context, proxyObject, signalHandler, MyLobby.class);
 \end{lstlisting}
 
-Daraufhin kann er über den Getter an die initialisierte Instanz kommen.
-
-\begin{lstlisting}
+Daraufhin kann er über den Getter an die initialisierte Instanz kommen, wie im
+Codeausschnitt ~\ref{getInstance} gezeigt.
+\begin{lstlisting}[caption=Getter für die initialisierte Instanz,label=getInstance] 
 PTPHelper.getInstance();
 \end{lstlisting}
 Man muss jedoch beachten, das der Hintergrundservice noch nicht vollständig
 gestartet werden kann, da es sich hierbei um einen asynchronen Ablauf handelt.
-Um den Zustand des Hintergrundservices zu erfragen kann man über die Methode
-\begin{lstlisting}
+Um den Zustand des Hintergrundservices zu erfahren kann man über den
+Methodenaufruf, wie im Codeausschnitt ~\ref{connectionState} gezeigt, erfragen.
+\begin{lstlisting}[caption=Verbindungstatus erfragen,label=connectionState]
 PTPHelper.getIntance().getConnectionState();
 \end{lstlisting}
-erfragen. Dabei handelt es sich um einen Integer, welcher die Werte CONNECTED=7
+Dabei handelt es sich um einen Integer, welcher die Werte CONNECTED=7
 und DISCONNECTED=8 annehmen kann. Bei der Initialisierung wird der P2PService im
 Hintergrund gestartet welcher die Verbindung zum Bussystem aufbaut, daher sind die ganzen Parameter notwendig. Es wird zum einen die Interface Klasse benötigt über das die Kommunikation mit den anderen Peers realisiert wird und gibt den Typ für die generische P2PHelper Klasse vor.
 Der context ist die Activity oder die Application an die der Service gebunden wird. 
@@ -58,27 +61,27 @@ bei der Verbindung mit dem Bus beim Bus registriert werden müssen, damit sie
 gleich auf Nachrichten reagieren können und das ProxyObject gleich einem
 konkreten Endpunkt zugewiesen werden kann.
 Damit der Service nur so lange läuft wie die Application wird der Service
-gebunden. Dies geschieht über den folgenden Befehlsaufruf:
-\begin{lstlisting}
+gebunden an diese gebunden, siehe Codeausschnitt ~\ref{bindService}.\newpage
+
+\begin{lstlisting}[caption=Service binden,label=bindService]
 Intent service = new Intent(context,PTPService.class);
 boolean bound = context.bindService(service,new PTPServiceConnection(),Service.BIND_AUTO_CREATE);
 \end{lstlisting}
-
 Bei dem PTPServiceConnection Objekt handelt es sich im Grunde nur um einen
 Listener, welcher benachrichtigt wird, wenn die Verbindung zum Service aufgebaut
-oder getrennt ist. Der Flag \textit{\textbf{Service.BIND\_AUTO\_CREATE}}
-besagt, dass nach dem Binden des Services der Service automatisch über die Methode onCreate() erstellt werden soll.
-\newline
+oder getrennt ist. Der Flag \ib{Service.BIND\_AUTO\_CREATE}
+besagt, dass nach dem Binden des Services der Service automatisch über die
+Methode \ib{onCreate()} erstellt werden soll.
 
-Das PTPRahmenwerk ist dazu ausgelegt nur im WLAN zu funkionieren, somit wird bei
+Die PTPLibrary ist dazu ausgelegt nur im WLAN zu funkionieren, somit wird bei
 der Initialisierung geprüft ob das Gerät über eine WiFi Verbindung verfügt.
-Dies wird über den WiFiManager realisiert.
-
-\begin{lstlisting}
+Dies wird über den WiFiManager realisiert, wie im Codeausschnitt
+~\ref{wifiManager} dargestellt.
+\begin{lstlisting}[caption=WifiManager,label=wifiManager]
 WifiManager wifiManager =(WifiManager)context.getSystemService(Context.WIFI_SERVICE);
 WifiInfo currentWifi = wifiManager.getConnectionInfo(); 
 if((currentWifi==null || currentWifi.getSSID()== null || currentWifi.getSSID().isEmpty()){
-	//Show there is no WiFi-Connection message
+	//Zeige, dass es keine WiFi Verbindung gibt
 }
 \end{lstlisting}
 Im Falle dessen, dass es keine WiFi-Verbindung gibt, wird die Initialisierung
@@ -86,20 +89,20 @@ abgebrochen und der Service wird nicht gestartet.
 Android ermöglicht es zusätzlich ein AccessPoint zu erstellen, worüber sich
 andere Geräte verbinden können. Die Information über diesen Zustand wird jedoch
 nicht ohne Weiteres über den WiFi-Mananger herausgegeben, sodass man an diese
-Information nur über Java-Reflection gelangt:
+Information nur über Java-Reflection gelangt. Wie das funktioniert wird im
+Codebeispiel ~\ref{reflect} verdeutlicht.
 
-\begin{lstlisting}
-
+\begin{lstlisting}[caption=Access Point Status erfragen,label=reflect]
 Method method = wifiManager.getClass().getMethod("isWifiApEnabled");
 state = (Boolean) method.invoke(wifiManager);
-
 \end{lstlisting}
 Nach dem jedoch der Helper initialisiert ist und der Service gestartet, kann man
 über den Helper den Service mitteilen sich z.B. zu einem Channel zu verbinden
 oder einen Channel zu erstellen.
-Dies geschickt über einfache Methodenaufrufe:
+Dies geschickt über einfache Methodenaufrufe, wie im Beispiel ~\ref{clientHost}
+gezeigt.
 
-\begin{lstlisting}
+\begin{lstlisting}[caption=Host/Client Sessions Handhabung,label=clientHost]
 //Host
 PTPHelper.getInstance().setHostChannelName(name)
 PTPHelper.getInstance().hostStartChannel()
@@ -114,106 +117,82 @@ möglichliche Events entsprechend reagieren zu können.
 Zu den Observern gehören die Interfaces LobbyObserver, BusObserver,
 SessionObserver und der HelperObserver, welche der Entwickler selber Implementieren kann.
 Zu den LobbyObservern gehört z.B. auch die AbstractLobbyActivity und
-implementiert die Methode \textit{\textbf{conncetionStateChanged(int state)}},
+implementiert die Methode \ib{conncetionStateChanged(int state)},
 welche aufgerufen wird, wenn der Service eine Verbindung aufbaut oder trennt.
 Der BusObserver hört auf den Bus selbst und definiert die folgenden Methoden:
-\begin{lstlisting}
+\begin{lstlisting}[caption=BusObserver]
 public void foundAdvertisedName(String channelName);
 public void lostAdvertisedName(String channelName);
 public void busDisconnected();
 \end{lstlisting}
 Dadurch kann man zusätzlich noch auf das Öffnen und Schließen der Spiele
-reagieren, falls die im PTPRahmenwerk vorimplementierte Behandlung, für den Entwickler nicht ausreichend
-ist. Der BusObserver ist z.B. im PTPHelper schon einmal implementiert und er
-sorgt dafür, dass neu erstellte Spiele in einer Liste
-\textit{\textbf{foundChannels}} gespeichert werden und entsprechend auch
+reagieren, falls die in der PTPLibrary vorimplementierte Behandlung, für den
+Entwickler nicht ausreichend ist. Die \ib{foundAdvertisedName} Methode wird
+aufgerufen, wenn eine neue Session gefunden wurde und \ib{lostAdvertisedName}
+wenn eine bekannte Session geschlossen wurde oder nicht mehr erreichbar ist.
+Die \ib{busDisconnected} Methode wird aufgerufen, wenn das BusAttachement
+keine Verbindung zum Bus mehr hat. Der BusObserver ist z.B.
+im PTPHelper schon einmal implementiert und er sorgt dafür, dass neu erstellte Spiele in einer Liste
+\ib{foundChannels} gespeichert werden und entsprechend auch
 entfernt. Dies ist notwendig um in der Lobby alle gerade offenen Spiele anzeigen
 zu können.
 \newline
 Der SessionObserver definiert Methoden um auf Events zu reagieren,
-die im Bezug zu einer Session stehen. Die zu implementierenden Methoden sind:
-\begin{lstlisting}
+die im Bezug zu einer Session stehen. Der Codeausschnitt ~\ref{sessionObserver}
+zeigt die Methoden, welche das Interface definiert.
+\newpage
+\begin{lstlisting}[caption=SessionObserver,label=sessionObserver]
 public void memberJoined(String uniqueId);
 public void memberLeft(String uniqueId);
 public void sessionLost();
 \end{lstlisting}
 Dies ermöglicht es dem Entwickler bestimmte Aktionen auszuführen, falls neue
-Spieler sich zum Host verbinden oder sich vom Host trennen.
-Schließlich gibt es noch den ServiceHelperObserver, welcher z.B. vom PTPService
-implementiert wird. Dieser Observer hört auf den Helper, welcher über die
-Methode \textit{\textbf{doAction(int action)}} verschieden Aktionen mitteilt, die über
-den Helper ausgeführt werden. So hat z.B. der Methodenaufruf
-\begin{lstlisting}
+Spieler sich zur Session verbinden \ib{(memberJoined)}, sich von der Session
+trennen \ib{(memberLeft)} oder man selbst die Verbindung zur Session verliert
+\ib{(sessionLost)}. Schließlich gibt es noch den \ib{ServiceHelperObserver},
+welcher z.B.vom PTPService implementiert wird. Dieser Observer hört auf den
+Helper, welcher über die Methode \ib{doAction(int action)} verschieden Aktionen
+mitteilt, die über den Helper ausgeführt werden. So hat z.B. der Methodenaufruf
+aus Codeausschnitt ~\ref{joinChannel}
+\begin{lstlisting}[caption=verbinde zur Session,label=joinChannel]
 PTPHelper.getInstance().joinChannel();
 \end{lstlisting}
 zur Folge, dass der PTPHelper den Service über den Observer mitteilt sich zu
-einem Channel zu verbinden, was im Genaueren so aussieht:
-\begin{lstlisting}
-	public synchronized void joinChannel() {
-		notifyHelperObservers(PTPService.JOIN_SESSION);
-	}
-\end{lstlisting}
-Ein entsprechend umfangreicheres Beispiel dafür ist die Methode
-\begin{lstlisting}
-PTPHelper.getInstance().hostStartChannel();
-\end{lstlisting}
-Diese Methode hat nämlich viele solcher Aktionen zusammengefasst.
-\begin{lstlisting}
-public synchronized void hostStartChannel() {
-	notifyHelperObservers(PTPService.UNBIND_SESSION);
-	notifyHelperObservers(PTPService.RELEASE_NAME);
-	notifyHelperObservers(PTPService.BIND_SESSION);
-	notifyHelperObservers(PTPService.REQUEST_NAME);
-	notifyHelperObservers(PTPService.ADVERTISE);	
+einem Channel zu verbinden, was im Genaueren so aussieht der Codeausschnitt
+~\ref{joinChannel2}
+\begin{lstlisting}[caption=JoinSession,label=joinChannel2]
+public synchronized void joinChannel() {
+	notifyHelperObservers(PTPService.JOIN_SESSION);
 }
 \end{lstlisting}
-Diese Methode sorgt zum einen dafür, dass ein bereits erstellter Channel
-geschlossen wird um Konflikte zu vermeiden. Daraufhin wird ein neuer Channel
-erstellt, ein Channelname angefragt und zum Schluss über das Netzwerk allen
-Teilnehmern mitgeteilt.
-Die oben genannten Observer sind mithilfe eine \ib{Handlers} vom
+Die oben genannten Observer sind mithilfe eines \ib{Handlers} vom
 Hintergrundthread abgekoppelt. Dies verhindert, dass der Entwickler bei der
-Implementierung der Observer sich gedanken um Threadkollisionen machen muss.
+Implementierung der Observer sich kaum Gedanken um Threadkollisionen machen
+muss.
 Der PTPHelper besitzt nämlich einen \ib{BackgroundHandler}, welcher im
-Konstruktor erstellt und an den UI Thread gekoppelt wird.
-\begin{lstlisting}
+Konstruktor erstellt und an den UI Thread gekoppelt wird, siehe Codeausschnitt 
+~\ref{uiBackgroundThread}.
+\begin{lstlisting}[caption=UI Thread BackgroundHandler,label=uiBackgroundThread]
 backgroundHandler = new BackgroundHandler(Looper.getMainLooper());
 \end{lstlisting}
 Sobald der Hintergrundprozess aus dem PTPService die Observer benachrichtigen
 will und z.B. die Methode \ib{notifyMemberJoined(String)} ausführt, wird diese
-Nachricht an den \ib{BackgroundHandler} geleitet.
-\begin{lstlisting}
-Message obtainedMessage = backgroundHandler.obtainMessage(BackgroundHandler.MEMBER_JOINED, membersId);
+Nachricht an den \ib{BackgroundHandler} geleitet, wie das funktioniert zeigt
+der Codeausschnitt ~\ref{forwardMessage}.
+\begin{lstlisting}[caption=Nachricht an den BackgroundHandler leiten,label=forwardMessage] 
+Message obtainedMessage = backgroundHandler.obtainMessage(BackgroundHandler.MEMBER_JOINED, membersId); 
 backgroundHandler.sendMessage(obtainedMessage);	
 \end{lstlisting}
 Der \ib{BackgroundHandler} reagiert über die Methode
 \ib{handleMessage(Message)} auf die Nachricht, indem jedoch die Methode auf dem
 UI Thread ausgeführt wird.
-\begin{lstlisting}
-public void handleMessage(Message msg) {
-	switch (msg.what) {
-		...
-		case MEMBER_JOINED: notifyMemberJoined((String) msg.obj); break;
-		...
-	}
-}
-...
-private void notifyMemberJoined(String uniqueId) {
-	for (SessionObserver obs : sessionObservers) {
-        obs.memberJoined(uniqueId);
-    }	
-}
-\end{lstlisting}
 
-Dann gibt es noch das SessionJoinRule Interface, welches
-die folgende Methode definiert.
-\begin{lstlisting}
-public boolean canJoin(String joinersUniqueId);
-\end{lstlisting}
+Dann gibt es noch das \ib{SessionJoinRule} Interface, welches
+die \ib{boolean canJoin(String joinersUniqueId)} Methode definiert.
 Darüber kann der Entwickler bestimmte Regeln festlegen, die darüber entscheiden
 ob ein Mitspieler sich zu einem Spiel verbinden kann oder nicht. Dabei werden
 beim Verbinden eines Spielers alle diese Regeln durchlaufen und nur wenn alle
-davon \textbf{\textit{true}} zurückliefern, darf der Spieler beitreten.
+davon \ib{true} zurückliefern, darf der Spieler beitreten.
 
 
 \section{LobbyActivity}
@@ -227,33 +206,26 @@ mitbringt, sodass man sich darum nicht mehr selbst kümmern muss.
  \end{wrapfigure}  
 Sie bietet eine UI-Oberfläche, welche es ermöglicht einen Namen für den Spieler
 anzugeben, ein Spiel zu eröffnen oder sich zu einem Spiel zu verbinden. Auf dem
-Bild sieht man die zwei Einträge \textbf{\textit{game}} und
-\textbf{\textit{game2}} bei dem es sich um zwei gerade offene Spiele handelt. Um
+Bild sieht man die zwei Einträge \ib{game} und
+\ib{game2} bei dem es sich um zwei gerade offene Spiele handelt. Um
 sich zu denen zu verbinden muss man nur den Namen berühren und schon verbindet
 sich zu dem Spiel. Da es sich jedoch um eine abstrakte Klasse handelt, muss man
-nämlich die folgenden zwei Methoden implementieren.
-\begin{lstlisting}
-	protected Class<?> getJoinChannelView();
-	protected Class<?> getHostChannelView();
-\end{lstlisting}
+nämlich die Methoden \ib{getJoinChannelView} und \ib{getHostChannelView}
+implementieren.
 Bei diesen Methoden handelt es sich um eine definition der Klassen, die die
 Activity beschreiben, welche geöffnet werden soll, wenn eine gegebene Aktion
 durchgeführt wird. Das heißt wenn ein neues Spiel erstellt wird, so muss die
-Methode \textbf{\textit{getHostChannelView()}} die Activity Klasse definieren,
+Methode \ib{getHostChannelView()} die Activity Klasse definieren,
 welche geöffnet werden soll, wenn ein Spiel geöffnet wird. Es spricht natürlich
 auch nichts dagegen die beiden Methoden die selbe Activity übergeben zu lassen,
 solange die Activity die logische Auseinandersetzung mit dem Host und Clienten
 übernimmt.
 Die Behandlung der Buttons \ib{create} und \ib{refresh} werden durch die
-entsprechenden Methoden representiert:
-\begin{lstlisting}
-public void refresh(View view);    
-public void create(View view);
-\end{lstlisting}
+Methoden \ib{refresh(View)} und \ib{create(View)} representiert.
 Die Methode \ib{create} z.B. überprüft zuerst ob der Spielername und der
-Spielname angegeben sind und startet darauf die Session über die folgenden
-Befehle:
-\begin{lstlisting}
+Spielname angegeben sind und startet darauf die Session, wie im Codeausschnitt
+~\ref{startSession} aufgeführt.
+\begin{lstlisting}[caption=Session starte,label=startSession]
 PTPHelper.getInstance().setHostChannelName(channelName);
 PTPHelper.getInstance().setPlayerName(playerName);
 PTPHelper.getInstance().hostStartChannel();
@@ -262,41 +234,20 @@ updateUIState(PTPHelper.SESSION_HOSTED);
 Der letzte Befehl graut alle UI Elemente aus, sodass während man verbindet keine
 weiteren Aktionen ausgeführt werden können. Das Verbinden zu einen Spiel
 geschieht ähnlich, jedoch über einen \ib{ClickListener}, da es sich bei den
-Einträgen um eine Liste handelt, welche bei der Berührung den \ib{ClickListener
-} entsprechend aufrufen.
-Da die Verbindung ein asynchroner Prozess ist muss über den Observer auf den
-Verbindungsstatuswechsel reagiert werden.
-Dies geschieht durch die folgende Implementierung:
-\begin{lstlisting}
-public void connectionStateChanged(final int connectionState){
-	updateUIState(connectionState);
-	if(connectionState == PTPHelper.SESSION_HOSTED){
-		Intent intent = new Intent(LobbyActivity.this, getHostChannelView());
-		LobbyActivity.this.startActivity(intent);
-	}
-	if(connectionState == PTPHelper.SESSION_JOINED){
-		Intent intent = new Intent(LobbyActivity.this, getJoinChannelView());
-		LobbyActivity.this.startActivity(intent);
-	}
-}
-\end{lstlisting}
-Somit wird die View oder die Activity des Spiels erst geöffnet, wenn vom
-Hintergrundservice die Benachrichtigung kommt, dass die Session erstellt ist
-oder einer Session begetreten wurde.
-\newline
+Einträgen um eine Liste handelt, welche bei der Berührung den \ib{ClickListener} entsprechend aufrufen.
 Natürlich kann der Entwickler auch seine eigene Lobby implementieren, dazu muss
-er nur die Klasse \textbf{\textit{AbstractLobbyActivity}} implementieren, welche
-nur die definition der Methode \textbf{\textit{connectionStateChanged(int)}} aus
+er nur die Klasse \ib{AbstractLobbyActivity} implementieren, welche
+nur die definition der Methode \ib{connectionStateChanged(int)} aus
 dem LobbyObserver besitzt und vom PTPHelper aufgerufen wird, wenn sich der
 Verbindungszustand ändert.
 
 
 \section{PTPService}
-Die PTPService Klasse besitzt die eigentliche Funktionalität des Rahmenwerks und
-ist dafür verantwortlich die Verbindung mit dem Bus zu erstellen und entsprechen
-zu konfigurieren. Der PTPService ist eine Unterklasse von Service aus dem
+Die PTPService Klasse besitzt die eigentliche Funktionalität der Bibliothek und
+ist dafür verantwortlich die Verbindung mit dem Bus zu erstellen und
+entsprechend zu konfigurieren. Der PTPService ist eine Unterklasse von Service aus dem
 Android SDK, welche im Hintergrund gestartet wird und in einem seperaten Thread
-läuft. Der Service wird von der Android selber gestartet und es gibt keine
+läuft. Der Service wird von der Android VM selber gestartet und es gibt keine
 direkten Zugriff auf die Instanz von dieser Service Klasse, somit ist man darauf
 angewiesen die Kommunikation mit einem Nachrichtensystem zu realisieren. Android
 bietet hierfür ein Nachrichtensystem an um mit dem Service zu kommunizieren.
@@ -311,25 +262,17 @@ registriert. Daraufhin kann der PTPService Nachrichten erhalten um Aktionen, wie
 sich zu einem Spiel zu verbinden oder Eins zu erstellen, ausführen.
 Damit das Bussystem von AllJoyn initialisiert wird, bevor man damit interagieren
 kann, muss man den folgenden Befehl ausführen:
-\begin{lstlisting}
+\begin{lstlisting}[caption=Daemon initialisieren]
 org.alljoyn.bus.alljoyn.DaemonInit.PrepareDaemon(getApplicationContext());
 \end{lstlisting}
 Der AllJoyn Daemon ist ein Hintergrundprozess, welcher sich um die
-verbindungstechnischen Abläufe kümmert. Daraufhin wird der HandlerThread
-gestartet, welcher sich um die Nachrichten von PTPHelper kümmert. Dies geschieht
-über die folgende Methode:
-\begin{lstlisting}
-private void startBusThread() {
-	HandlerThread busThread = new HandlerThread("BackgroundHandler");
-	busThread.start();
-	backgroundHandler = new BackgroundHandler(busThread.getLooper());
-}
-\end{lstlisting}
-Der BackgroundHandler ist eine Unterklasse vom Handler aus dem Android SDK,
-welcher dafür genutzt wird Aufgaben an andere Threads zu übergeben.
-So hat der BackgroundHandler die folgenden Methoden implementiert:
-\begin{lstlisting}
-	public void exit() {}
+verbindungstechnischen Abläufe kümmert. 
+Daraufhin wird der HandlerThread gestartet, welcher sich um die Nachrichten von
+PTPHelper kümmert. Dabei wird wie beim PTPHelper ein BackgroundHandler
+initialisiert, jedoch mit einem neu erstellem Thread.
+Der Codeauschnitt ~\ref{backgroundMethods}
+\begin{lstlisting}[caption=Methoden des BackgroundHandlers, label=backgroundMethods] 
+    public void exit() {}
 	public void connect() {	}		
 	public void disconnect() {}
 	public void startDiscovery() {}
@@ -345,54 +288,21 @@ So hat der BackgroundHandler die folgenden Methoden implementiert:
 \end{lstlisting}
 Jede dieser Methoden tut im Grunde nichts Anderes als den Befehl in eine
 Nachricht zu packen und an den anderen Thread zu schicken, welcher zuvor bei der
-Methode \textbf{\textit{startBusThread()}} erstellt wurde.
-Ein Beispiel für die Implementierung einer dieser Methoden ist die Methode
-\textbf{\textit{connect()}} :
-\begin{lstlisting}
-public void connect() {
-		Message msg = backgroundHandler.obtainMessage(CONNECT);
-		backgroundHandler.sendMessage(msg);
-}
-
-...
-
-public void handleMessage(Message msg) {
-			switch (msg.what) {
-			case CONNECT:
-	            doConnect();
-            	break;
-	        case DISCONNECT:
-		        doDisconnect();
-		    	break;
-		    ....
-}
-\end{lstlisting}
-Die weitere Methode \textit{\textbf{handleMessage(Message msg)}} implementiert
-die Behandlung der Nachricht vom anderen Thread. Somit führt die Nachricht
-\textit{\textbf{CONNECT}} dazu, dass der BusThread die Methode
-\textit{\textbf{doConnect()}} ausführt.
+Methode \ib{startBusThread()} erstellt wurde.
 Die Methoden vom BackgroundHandler werden wiederum über die Methode
-\textit{\textbf{doAction(int)}} ausgeführt, welche durch den HelperObserver
-definiert ist.
-Diese Methode ist folgendermaßen implementiert:
-\begin{lstlisting}
-public void doAction(int arg){
-	switch(arg){
-		case CONNECT: backgroundHandler.connect();break;
-		case DISCONNECT: backgroundHandler.disconnect();break;
-		....
-}
-\end{lstlisting}
-Als nächstes wird auf die einzelnen Methoden eingegangen die vom BusThread
-ausgeführt werden.
+\ib{doAction(int)} ausgeführt, welche durch den HelperObserver
+definiert ist. Dabei wird das Argument über einen
+Switchcase ausgewertet und daraufhin die entsprechende Methode ausgeführt.
+
+In den nächsten Unterkapiteln wird auf die einzelnen Methoden eingegangen,
+welche sich im PTPService befinden und vom BackgroundHandler ausgeführt werden.
 \subsection{doConnect() und doDisconnect()}
-Die \textit{\textbf{doConnect()}} Methode ist dafür verantwortlich eine
+Die \ib{doConnect()} Methode ist dafür verantwortlich eine
 Verbindung mit dem Bus herzustellen indem es ein BusAttachement erstellt, den
-SignalHandler und das BusObject registriert. Das BusAttachement wird
-folgendermaßen erstellt:
-\begin{lstlisting}
-bus = new BusAttachment(package + "appName",
-BusAttachment.RemoteMessage.Receive);
+SignalHandler und das BusObject registriert. Der Codeauschnitt
+~\ref{newBusAttachement} zeigt wie das BusAttachement erstellt wird.
+\begin{lstlisting}[caption=BusAttachement erstellen,label=newBusAttachement]
+bus = new BusAttachment(package + "appName",BusAttachment.RemoteMessage.Receive);
 \end{lstlisting}
 Dabei wird als erster Parameter der BusAttachement Name übergeben. Der Name ist
 dafür notwendig mehrere BusAttachement bestimmten Anwendungen zuzuordnet, da die
@@ -403,8 +313,8 @@ Der zweite Parameter bestimmt ob eingehende Nachrichten empfangen und behandelt
 oder einfach verworfen werden sollen.
 Danach wird in der Methode der BusListener registriert, welcher dafür zuständig
 ist auf geöffnete Spiele zu reagieren. Diese Nachrichten werden dann an die
-Observer weiter geschickt.
-\begin{lstlisting}
+Observer weiter geschickt, siehe Codeausschnitt ~\ref{busListenerImpl}
+\begin{lstlisting}[caption=BusListener Nachrichten,label=busListenerImpl]
 @Override
 public void foundAdvertisedName(String fullName, short transport, String namePrefix) {
 	if(namePrefix.equals(packageName))
@@ -420,13 +330,14 @@ public void busDisconnected() {
 	PTPHelper.getInstance().notifyBusDisconnected();
 }
 \end{lstlisting}
-die Methode \textbf{\textit{getSimpleName(String)}} tut nichts anderes, als aus
+\newpage
+Die Methode \ib{getSimpleName(String)} tut nichts anderes, als aus
 einem vollständigen Namen, welcher sich aus dem Packagenamen und dem
 Channelnamen zusammensetzt, nur den Channelname zu extrahieren und an die
 Observer weiterzuschicken. Da der Packagename sich innerhalb der Anwendung nicht
 ändert, wird auch nur der Channelname verwendet. Daraufhin wird der BusObject
-registriert, was über die folgenden Befehle geschieht:
-\begin{lstlisting}
+registriert, was im Codeausschnitt ~\ref{regBusObject} zu sehen ist.
+\begin{lstlisting}[caption=BusObject registrieren,label=regBusObject]
 Status status;
 BusObject busObject = PTPHelper.getInstance().getBusObject(); 
 if(busObject != null){
@@ -439,64 +350,48 @@ if(busObject != null){
 \end{lstlisting}
 Dabei wird der BusObject genommen welcher bei der Initialisierung vom PTPHelper
 übergeben wurde. Der BusObject wird später dazu benötigt einen sogenannte
-SignalEmmiter er bekommen, über welchen man Nachrichten an andere Peers schicken
-kann. Der Pfad, unter welchen der BusObject abgelegt wird, muss innerhalb des
-BusSystems einzigartig sein, um Konflikte zwischen den Bus Objekten zu
-vermeiden. Wie man an dem Beispiel sieht, ist der Pfad wie bei deinen normalen
+SignalEmmiter zu bekommen, über welchen man Nachrichten an andere Teilnehmer
+schicken kann. Der Pfad, unter welchen der BusObject abgelegt wird, muss innerhalb des
+BusSystems einzigartig sein, um Konflikte zwischen den BusObjekten zu
+vermeiden. Wie man an dem Beispiel sieht, ist der Pfad wie bei einen normalen
 Dateisystem organisiert und wird über das Slashzeichen getrennt. Um die
 Einzigartigkeit jedes Bus Objektes zu ermöglichen wurde als Teilpfad die Geräte
-ID benutzt. Diese lässt sich über die folgende Methode herausbekommen:
-\begin{lstlisting}
+ID benutzt. Wie man an die Geräte ID kommt, zeigt der Codeausschnitt
+~\ref{deviceID}.
+\begin{lstlisting}[caption=Geräte ID,label=deviceID]
 private String getDeviceID(){
 	TelephonyManager telephonyManager = (TelephonyManager) getBaseContext().getSystemService(Context.TELEPHONY_SERVICE);
 	return telephonyManager.getDeviceId();
 }
 \end{lstlisting}
 Jedoch muss man dazu noch in dem AndroidManifest die notwendige Erlaubniss
-hinzufügen, nämlich:
-\begin{lstlisting}
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" >
-    </uses-permission>
-\end{lstlisting}
-Darufhin wird die \textit{\textbf{bus.connect()}} Methode aufgerufen um mit dem
+\ib{READ\_PHONE\_STATE} hinzufügen.
+Darufhin wird die \ib{bus.connect()} Methode aufgerufen um mit dem
 Bus zu verbinden. Wenn die Verbindung erfolgreich war, was man über den
-Status als Rückgabewert erfährt, wird der SignalHandler registriert.
-\begin{lstlisting}
-bus.registerSignalHandlers(PTPHelper.getInstance().getSignalHandler());
-\end{lstlisting}
+Status als Rückgabewert erfährt, wird der SignalHandler registriert, welcher
+zuvor bei der Initialisierung des PTPHelper übergeben wurde.
 Schließlich wird die UniqueID des BusAttachements an den PTPHelper übergeben,
-welcher einen Busweiten einzigartigen String darstellt, sowie auch der Zustand
-der Verbindung auf \textbf{\textit{CONNECTED}} gesetzt.
-\begin{lstlisting}
+welcher einen busweiten einzigartigen String darstellt, sowie auch der Zustand
+der Verbindung auf \ib{CONNECTED} gesetzt, siehe Codeausschnitt ~\ref{setState}
+\begin{lstlisting}[caption=UniqueID und Verbindungstatus setzen,label=setState]
 PTPHelper.getInstance().setUniqueID(bus.getUniqueName());
 PTPHelper.getInstance().setConnectionState(PTPHelper.CONNECTED);
 \end{lstlisting}
-
-Die \textbf{\textit{doDisconnect()}} Methode ist im Prinzip dafür verantworlich
-alle Handler und das BusObject abzumelden und die Verbindung zu trennen:
-\begin{lstlisting}
-bus.unregisterBusListener(busListener);
-bus.unregisterBusObject(PTPHelper.getInstance().getBusObject());
-bus.unregisterSignalHandlers(PTPHelper.getInstance().getSignalHandler());
-bus.disconnect();
-\end{lstlisting}
+Die \ib{doDisconnect()} Methode ist im Prinzip dafür verantworlich
+alle Handler und das BusObject abzumelden und die Verbindung zu trennen.
 
 \subsection{doStartDiscovery() und doStopDiscovery()}
-Die Methode \textit{\textbf{doStartDiscovery()}} wird meist zu begin nach dem
-die Verbindung aufgebaut ist ausgeführt. Die ist dafür verantworlich dem
+Die Methode \ib{doStartDiscovery()} wird meist zu begin, nach dem
+die Verbindung aufgebaut ist, ausgeführt. Die ist dafür verantworlich dem
 BusAttachement mitzuteilen auf offene Spiele zu horchen und die dem Observer
-mitzuteilen. Dies geschieht über den einfachen Methodenaufruf:
-\begin{lstlisting}
-Status status = bus.findAdvertisedName(packageName);
-\end{lstlisting}
-Wobei der \textit{\textbf{packageName}} das Prefix für den Name darstellt. Somit
+mitzuteilen. Dies geschieht über den einfachen Methodenaufruf
+\ib{bus.findAdvertisedName(packageName)}.
+Wobei der \ib{packageName} das Prefix für den Name darstellt. Somit
 würde das BusAttachement auf alle offene Spiele reagieren, welche den Prefix mit
-dem \textit{\textbf{packageName}} haben. Um dann das Entdecken von offenen
+dem \ib{packageName} haben. Um dann das Entdecken von offenen
 Spielen auch zu beenden kann wird die Methode
-\ib{doStopDiscovery()} ausgeführt:
-\begin{lstlisting}
-bus.cancelFindAdvertisedName(packageName);
-\end{lstlisting}
+\ib{doStopDiscovery()} ausgeführt, welche dann die Methode
+\ib{bus.cancelFindAdvertisedName(packageName)} ausführt.
 
 \subsection{doBindSession() und doUnbindSession()}
 Die \ib{doBindSession()} Methode wird dafür benötigt um eine neue Session zu
@@ -510,21 +405,22 @@ Nachrichten verpackt verschickt werden.
 In diesem Fall wird nur die Verbindung über Wlan zugelassen, es soll sich um
 eine Multipointverbindung handeln, die Daten sollen als Nachrichten
 verschickt werden und es dürfen alle sich zu der Session verbinden, also auch
-von anderen Geräten aus.
-\begin{lstlisting}
+von anderen Geräten aus. Wie die Konfiguration vorgenommen wird sieht man im
+Codeausschnitt ~\ref{portConfig}
+\begin{lstlisting}[caption=Sessionkonfiguration,label=portConfig]
 Mutable.ShortValue mutableContactPort = new Mutable.ShortValue(contactPort);
 SessionOpts sessionOpts = new SessionOpts(SessionOpts.TRAFFIC_MESSAGES,
 				true, SessionOpts.PROXIMITY_ANY, SessionOpts.TRANSPORT_WLAN);		
 \end{lstlisting}
-Als \ib{contactPort} wird als Standartwert 100 genommen.
+Als \ib{contactPort} wird der Standartwert 100 genommen.
 Neben den Konfigurationsparametern benötigt man auch einen
 \ib{SessionPortListener}, welcher sich um die Verbindungsanfragen von anderen
 Geräten kümmert, sowie bei einer erfolgreichen Verbindung die nötigen Schritte
-einleitet. der \ib{SessionPortListener} implementiert zum einen die folgende
-Methode:
-\begin{lstlisting}
-public boolean acceptSessionJoiner(short sessionPort,
-					String joiner, SessionOpts sessionOpts) {
+einleitet. Der \ib{SessionPortListener} implementiert eine Methode, die im
+Codeausschnitt ~\ref{acceptJoiner}:
+\begin{lstlisting}[caption=SessionPortListener implementierung,label=acceptJoiner] 
+public boolean acceptSessionJoiner(short
+sessionPort, String joiner, SessionOpts sessionOpts) {
 		if(sessionPort == contactPort){					
 			return PTPHelper.getInstance().canJoin(joiner);
 		}
@@ -533,50 +429,51 @@ public boolean acceptSessionJoiner(short sessionPort,
 \end{lstlisting}
 Dabei wird zuerst geprüft ob der SessionPort übereinstimmt und danach werden die
 möglicherweise definierten \ib{SessionJoinRules} durchlaufen. Erst wenn alle die
-Regeln \ib{true} zurückliefern wird das Beitreten zur Session gewährt. Die
-zweite Methode umfasst ein etwas kompliziertes Szenario. AllJoyn erlaubt es
-nicht einen Host, welcher eine Session bindet, sich zu dieser auch zu verbinden.
-Um jedoch als Host auch am Spiel teilnehmen zu können wird dieses Verhalten
-durch einen Umweg erreicht:
-\begin{lstlisting}
-public void sessionJoined(short sessionPort, int sessionId,String joiner) {		
-		if(firstJoiner){
-			firstJoiner = false;
-			hostSessionId = sessionId;			
-			SignalEmitter emitter = new SignalEmitter(PTPHelper.getInstance().getBusObject(), sessionId,
-					SignalEmitter.GlobalBroadcast.Off);
-			hostInterface = emitter
-					.getInterface(PTPHelper.getInstance().getBusObjectInterfaceType());
-			PTPHelper.getInstance().setSignalEmiter(hostInterface);
-			PTPHelper.getInstance().notifyMemberJoined(joiner);
-			bus.setSessionListener(sessionId, new PTPSessionListener());
-		}
+Regeln \ib{true} zurückliefern wird das Beitreten zur Session gewährt. 
+
+\begin{lstlisting}[caption=Als Host den SignalEmitter bekommen,label=hostSignalEmitter] 
+public void sessionJoined(short sessionPort,int sessionId,String joiner){
+if(firstJoiner){
+	firstJoiner = false;
+	hostSessionId = sessionId;
+	SignalEmitter emitter = new SignalEmitter(PTPHelper.getInstance().getBusObject(), sessionId, SignalEmitter.GlobalBroadcast.Off);
+	hostInterface = emitter.getInterface(PTPHelper.getInstance().getBusObjectInterfaceType());
+	PTPHelper.getInstance().setSignalEmiter(hostInterface);
+	PTPHelper.getInstance().notifyMemberJoined(joiner);
+	bus.setSessionListener(sessionId, new PTPSessionListener());
+	}
 }
 \end{lstlisting}
-Durch diese Methode erfährt man die bis dahin unbekannte \ib{SessionID}, da sie
-durch das Binden der Session nicht mitgeteilt wird. Daraufhin kann man mit
+Die zweite Methode umfasst ein etwas kompliziertes Szenario.
+AllJoyn erlaubt es nicht einen Host, welcher eine Session bindet, sich zu dieser auch zu verbinden.
+\newpage
+Um jedoch als Host auch am Spiel teilnehmen zu können wird dieses Verhalten
+durch einen Umweg erreicht.
+Durch die Methode aus dem Codeausschnitt ~\ref{hostSignalEmitter} erfährt man
+die bis dahin unbekannte \ib{SessionID}, da sie durch das Binden der Session nicht mitgeteilt wird. Daraufhin kann man mit
 der \ib{SessionID} einen \ib{SignalEmitter} erstellen, der als Endpunkt fungiert
 und das Verschicken von Nachrichten ermöglicht. Zusätzlich lässt sich der
 \ib{PTPSessionPortListener} an die Session binden. Somit ist es
  dem Host nur möglich zu funktionieren, wenn sich der erste
-Teilnehmer verbunden hat. Anschließend wird der \ib{SessionPortListener} beim
-Bus registriert:
-\begin{lstlisting}
+Teilnehmer verbunden hat.Zum schluss wird
+der \ib{SessionPortListener} beim Bus registriert und eine Session erstellt,
+siehe Codeausschnitt ~\ref{bindSessionPort}.
+\begin{lstlisting}[caption=Session erstellen,label=bindSessionPort]
 bus.bindSessionPort(mutableContactPort, sessionOpts, sessionPortListener);
 \end{lstlisting}
-In der Methode \ib{doUnbindSession()} wird durch den einfachen Methodenaufruf,
-die Session, welche an den \ib{contactPort} gebunden ist, geschlossen:
-\begin{lstlisting}
-bus.unbindSessionPort(contactPort);
-\end{lstlisting}
+
+In der Methode \ib{doUnbindSession()} wird durch den einfachen Methodenaufruf
+\ib{bus.unbindSessionPort(contactPort)}, die Session, welche an den
+\ib{contactPort} gebunden ist, geschlossen:
+
 \subsection{doRequestName() und doReleaseName()}
 Die Methoden \ib{doRequestName()} und \ib{doReleaseName()} sind dazu da um die
 Spielnamen, welche man dann später durch das \ib{Advertising} an andere
 Teilnehmer mitteilen kann, vom Bus zugewiesen zu bekommen. Man kann nämlich nur
 Namen mitteilen, welche man auch zugewiesen bekommen hat, denn es kann ja
-vorkommen, dass ein Name schon vergeben ist. Dies geschieht über den folgenden
-Aufruf:
-\begin{lstlisting}
+vorkommen, dass ein Name schon vergeben ist. Der Codeausschnitt
+~\ref{requestName} zeigt die genaue Implementierung.
+\begin{lstlisting}[caption=Name für Session anfordern,label=requestName]
 bus.requestName(packageName + "." +PTPHelper.getInstance().getHostChannelName(),
 				BusAttachment.ALLJOYN_REQUESTNAME_FLAG_DO_NOT_QUEUE);
 \end{lstlisting}
@@ -587,14 +484,12 @@ werden soll. Eine andere Möglichkeit bestehe nämlich den vorhandenen Namen
 einfach zu ersetzen.
 Durch \ib{doReleaseName()} wird der Name dann wieder freigegeben, sodass er
 wieder von Anderen verwendet werden kann.
-\begin{lstlisting}
-bus.releaseName(PTPHelper.getInstance().getHostChannelName());
-\end{lstlisting}
 \subsection{doAdvertise() und doCancelAdvertise()}
 Das sogenannte \ib{Advertising} wird dazu benutzt um anderen Teilnehmern den
 Spielnamen mitzuteilen. Somit wird über einen einfachen Befehl die Mitteilung
-gestartet und beendet:
-\begin{lstlisting}
+gestartet und beendet. Zur Verdeutlichung siehe Codeausschnitt
+~\ref{advertising}.
+\begin{lstlisting}[caption=Session Name mitteilen,label=advertising]
 String wellknownName =packageName+"."+PTPHelper.getInstance().getHostChannelName();  
 bus.advertiseName(wellknownName, SessionOpts.TRANSPORT_WLAN);
 ...
@@ -605,19 +500,11 @@ Dabei werden zum einen der Name des Spiels übergeben, als auch das
 Transportmedium, in diesem fall Wlan.
 \subsection{doJoinSession() und doLeaveSession()}
 Die Methode \ib{doJoinSession()} ist sogesehen das entsprechende Gegenbeispiel
-zu der \ib{doBindSession()} Methode. Diese Methode wird von dem beitretenden
-Teilnehmer ausgeführt. Wie schon erwähnt ist das Beitreten zu einer Session für
-den Host nicht zulässig, somit wird in diesen Fall die Methode frühzeitig
-verlassen. 
-\begin{lstlisting}
-if (hostChannelState != HostChannelState.IDLE) {
-	if (joinedToSelf) {
-		return;
-	}
-}
-\end{lstlisting}
-Für einen normalen Teilnehmer wird der folgende Code ausgeführt:
-\begin{lstlisting}
+zu der \ib{doBindSession()} Methode. Diese Methode wird von den beitretenden
+Teilnehmer ausgeführt. 
+Im Codeausschnitt ~\ref{joinSession} sieht man die genauere Vorgehensweise beim
+Bestreten einer Session.
+\begin{lstlisting}[caption=Session beitreten,label=joinSession]
 String wellKnownName = packageName + "." + PTPHelper.getInstance().getChannelName();
 SessionOpts sessionOpts = new SessionOpts(SessionOpts.TRAFFIC_MESSAGES,
 		true, SessionOpts.PROXIMITY_ANY, SessionOpts.TRANSPORT_WLAN);
@@ -630,37 +517,23 @@ Hierbei werden über die /ib{SessionOpts} wie bei der \ib{doBindSession()}
 Methode die ganzen Parameter für die Session festgelegt. Bei der \ib{sessionId}
 handelt es sich um einen veränderbaren integer Wert, welcher bei der Ausführung
 der Methode zugewiesen wird. Schließlich wird noch ein \ib{SessionListener} als
-Parameter übergeben. Dieser ist dafür verantwortlich Aktivitäten in der Session
-an den PTPHelper mitzuteilen, was über die folgenden Methoden geschieht:
-\begin{lstlisting}
-public void sessionLost(int sessionId) {
-	PTPHelper.getInstance().notifySessionLost();
-}
-
-public void sessionMemberAdded(int sessionId, String uniqueName) {
-	PTPHelper.getInstance().notifyMemberJoined(uniqueName);
-}
-
-public void sessionMemberRemoved(int sessionId, String uniqueName) {
-	PTPHelper.getInstance().notifyMemberLeft(uniqueName);
-}
-\end{lstlisting}
-Die Information über die SessionId wird dem PTPHelper nicht mitgeteilt, da sie
-für den Entwickler, welcher den Observer gegebenenfalls implementiert, nicht von
+Parameter übergeben. Auch dieser Listener leitet die Nachrichten an die
+Observer, welche im PTPHelper abgespeichert sind, weiter. 
+Jedoch wird die Information über die SessionId dem PTPHelper nicht
+mitgeteilt, da sie für den Entwickler, welcher den Observer gegebenenfalls implementiert, nicht von
 Interesse sein sollte.
 Falls die Verbindung erfolgreich war wird anschließend ein \ib{SignalEmitter}
-erstellt und dieser an den PTPHelper übergeben.
-\begin{lstlisting}
-SignalEmitter emitter = new SignalEmitter(PTPHelper.getInstance().getBusObject(), clientSessionId,
-			SignalEmitter.GlobalBroadcast.Off);	
-Object clientInterface = emitter.getInterface(PTPHelper.getInstance().getBusObjectInterfaceType());
-PTPHelper.getInstance().setSignalEmitter(clientInterface);
+erstellt und dieser an den PTPHelper übergeben, wie im Codeausschnitt
+~\ref{clientSignalEmitter} aufgeführt.
+\begin{lstlisting}[caption=SignalEmitter bekommen als Client,label=clientSignalEmitter] 
+SignalEmitter emitter = new SignalEmitter(PTPHelper.getInstance().getBusObject(), clientSessionId, SignalEmitter.GlobalBroadcast.Off); Object clientInterface = emitter.getInterface(PTPHelper.getInstance().getBusObjectInterfaceType()); PTPHelper.getInstance().setSignalEmitter(clientInterface);
 PTPHelper.getInstance().setConnectionState(PTPHelper.SESSION_JOINED);
 \end{lstlisting}
 \subsection{doQuit()}
 Schließlich gibt es noch die \ib{doQuit()} Methode, die aufgerufen wird,
-den der Service beendet werden soll. Diese sieht wie folgt aus:
-\begin{lstlisting}
+den der Service beendet werden soll. Der Codeausschnitt ~\ref{quit} zeigt den
+Inhalt dieser Methode.
+\begin{lstlisting}[caption=doQuit Methode,label=quit]
 backgroundHandler.disconnect();
 backgroundHandler.getLooper().quit();
 PTPHelper.getInstance().removeObserver(this);

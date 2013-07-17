@@ -6,7 +6,7 @@ public class NodeCreator implements XMLEntityCreator{
 
 	@Override
 	public String[] getProperties() {
-		return new String[]{Node.PROPERTY_X,Node.PROPERTY_Y,Node.PROPERTY_ID};
+		return new String[]{Node.PROPERTY_X,Node.PROPERTY_Y,Node.PROPERTY_ID, Node.PROPERTY_OWNER};
 	}
 
 	@Override
@@ -17,13 +17,16 @@ public class NodeCreator implements XMLEntityCreator{
 	@Override
 	public Object getValue(Object entity, String attribute) {
 		if(Node.PROPERTY_X.equals(attribute)){
-			return ((Node)entity).getX();
+			return ""+((Node)entity).getX();
 		}
 		if(Node.PROPERTY_Y.equals(attribute)){
-			return ((Node)entity).getY();
+			return ""+((Node)entity).getY();
 		}
 		if(Node.PROPERTY_ID.equals(attribute)){
-			return ((Node)entity).getId();
+			return ""+((Node)entity).getId();
+		}
+		if(Node.PROPERTY_OWNER.equals(attribute)){
+			return ((Node)entity).getOwner();
 		}
 		return null;
 	}
@@ -42,6 +45,10 @@ public class NodeCreator implements XMLEntityCreator{
 		}
 		if(Node.PROPERTY_ID.equals(attribute)){
 			node.setid(Integer.valueOf((String)value));
+			valueSet = true;
+		}
+		if(Node.PROPERTY_OWNER.equals(attribute)){
+			node.setOwner((String)value);
 			valueSet = true;
 		}
 		return valueSet;

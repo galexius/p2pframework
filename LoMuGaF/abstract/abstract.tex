@@ -4,20 +4,23 @@
 \addcontentsline{toc}{chapter}{Zusammenfassung}
 \markboth{Zusammenfassung}{Zusammenfassung}
 
-  Diese Arbeit umfasst die Implementierung eines Rahmenwerks für
-  Mehrspielerspiele auf Basis des P2P-Rahmenwerks Alljoyn und zwei weiteren
-  Spielen, welche mithilfe des Rahmenwerks erstellt worden sind und als
-  praktische Beispiele dienen. Das Rahmenwerk wird auf Basis des Android SDK
-  realisiert und sollte eine Kommunikation zwischen mehreren Geräten soweit
-  vereinfachen, dass man sich bei der Implementierung weiterer Spiele nur um die
-  Spielmechanik Gedanken machen muss und die Lobby-Funktionalität, wie das
-  Erstellen und das Verbinden zum Spiel vom Rahmenwerk übernommen wird.
-  
-  Als weiteres Kriterium gilt die Fähigkeit, Spiele im lokalen Wlan sichtbar
-  zu machen und so eine Mehrspielerpartie zu ermöglichen ohne einen dedizierten
-  externen Server, sowie einer Internetverbindung zu benötigen. Es sollte zum
-  Spielen nur mindestens zwei Androidgeräte benötigen, die sich im selben
-  Netzwerk befinden.
+  Diese Arbeit umfasst die Implementierung einer Bibliothek für Mehrspielerspiele auf
+  Peer-to-Peer-Basis \ref{ptp}.
+  Peer-to-Peer bedeutet das für die Kommunikation kein Server verwendet wird. Dies wird jedoch
+  noch genauer im Kapitel \ref{sec:ptp} erläutert. Für die Realisierung
+  der Verbindung zwischen den Geräten wurde das Rahmenwerk AllJoyn \ref{alljoyn}
+  verwendet, welcher im Kapitel \ref{sec:alljoyn} erläutert wird.
+  Weiterhin wurden zwei Spiele mithilfe dieser Bibliothek implementiert
+  und dienen als praktische Beispiele.
+  Die Bibliothek ist für Android \ref{Android} Geräte bestimmt und wird daher
+  auf Basis des Android SDK \ref{andSdk} realisiert.
+  Die Bibliothek sollte eine Kommunikation zwischen mehreren Geräten soweit
+  vereinfachen, dass bei der Implementierung weiterer Spiele nur um die
+  Spielmechanik Gedanken gemacht werden muss. Selbst die
+  Lobby-Funktionalität, wie das Erstellen und das Verbinden zum Spiel, wird
+  von der Bibliothek übernommen.
+  Im weiteren Verlauf wird die implementierte Bibliothek als \ib{PTPLibrary}
+  genannt.
   
   \vspace{0.5cm}
 
