@@ -128,6 +128,14 @@ public abstract class LobbyActivity extends AbstractLobbyActivity {
 			Intent intent = new Intent(LobbyActivity.this, getJoinChannelView());
 			LobbyActivity.this.startActivity(intent);
 		}
+		if(connectionState == PTPHelper.SESSION_NAME_EXISTS){
+			Context context = getApplicationContext();
+	    	CharSequence text = getResources().getText(R.string.game_exists);
+	    	int duration = Toast.LENGTH_SHORT;
+
+	    	Toast toast = Toast.makeText(context, text, duration);
+	    	toast.show();
+		}
     }
 	private void updateUIState(int connectionState) {
 		boolean connected = connectionState == PTPHelper.CONNECTED || connectionState == PTPHelper.SESSION_CLOSED || connectionState == PTPHelper.SESSION_LEFT;

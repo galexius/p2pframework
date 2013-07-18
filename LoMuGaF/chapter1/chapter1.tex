@@ -1,30 +1,24 @@
 \chapter{Einleitung}
 
 Spiele auf mobilen Endgeräten gibt es unzählige. Jedoch sind die
-meisten dieser Spiele entweder Einzelspielerspiele oder sind serverbasierte
-Mehrspielerspiele, deren Server nur über eine aktive Internetverbindung erreicht
-werden kann. Trotz der mittlerweile gut ausgebauten Netzabdeckung und guter Internetgeschwindigkeit auf Smartphones, kann das
-Spielerlebniss durch eine schwankende Internetgeschwindigkeit getrübt werden,
-vorallem dann wenn eine volle 3G Geschwindigkeit nicht garantiert ist. So sind
-z.B.
-Actionspiele meist nur über eine Hotspot Verbindung spielbar. Außerdem gibt es
-Situationen bei denen man keine oder nur eine beschränkte Internetverbindung
+meisten dieser Spiele entweder Solospiele, also Spiele für einen Spieler, oder
+sind für mehrere Spieler, aber unter Verwendung eines Servers. Trotz der mittlerweile gut ausgebauten Netzabdeckung und guter Internetgeschwindigkeit auf Smartphones, kann das
+Spielerlebniss durch eine schwankende Internetgeschwindigkeit getrübt werden. So
+sind z.B. Actionspiele meist nur über eine Wlan Verbindung spielbar. Außerdem
+gibt es Situationen bei denen man keine oder nur eine beschränkte Internetverbindung
 hat, z.B. wenn man mit dem Zug unterwegs ist oder sich gerade in Ausland
-befindet und sich die Roaminggebühren sparen will. Gerade in solchen Situationen
-ist die Möglichkeit miteinander eine Mehrspielerpartie zu starten ohne eine
-Internetverbindung zu haben sehr willkommen. 
+befindet und sich die Roaminggebühren sparen will.
 Um die Entwicklung solcher Spiele vorran zu treiben und es den Entwickler soweit
 wie möglich zu erleichtern, sollte im Rahmen dieser Arbeit eine Bibliothek
-entwickelt werden, welches im Folgenden als PTP-Library genannt wird.
-Das PTP steht als Abkürzung für Peer-to-Peer, welches als Prinzip noch genauer
-erklärt wird. Es sollen die kommunikatonsbedingten Herausforderungen mit der
+entwickelt werden. Es sollen die kommunikatonsbedingten Herausforderungen mit der
 PTP-Library gelöst werden, sodass die Entwickler sich nur um die Implementierung
 der Spiele selbst gedanken machen müssen. Die Entwickler hätten nur die Aufgabe sich um die
-Synchronisierung der spielbezogenen Daten zu kümmern und die Übertragen der
-Daten an die einzelnen Gerät würde sozusagen von der PTP-Bibliothek übernommen.
+Synchronisierung der spielbezogenen Daten zu kümmern. Die Übertragen der
+Daten an die einzelnen Gerät würde von der PTP-Library übernommen.
 Damit die Entwicklung solcher Spiele für die Hobbyentwickler keine finanziellen
-Hürden stellt, wurde die PTP-Library mit dem Android SDK entwickelt. Da das
-Android SDK kostenlos für jeden Entwickler zur Verfügung steht, kann jeder Entwickler, der
+Hürden stellt, wurde die PTP-Library mit dem Android SDK \cite{andsdk}
+entwickelt.
+Da das Android SDK kostenlos für jeden Entwickler zur Verfügung steht, kann jeder Entwickler, der
 über ein Android Gerät verfügt gleich mit der Entwicklung des Spieles loslegen.
 Natürlich lässt sich die PTP-Library auch für praktische Anwendungen, wie
 z.B. Textmessanger, verwenden, jedoch wird im Rahmen dieser Ausarbeitung nur
@@ -33,23 +27,23 @@ auf die Realisierung von Spielen eingegangen.
   
 \section{Lösungsansatz}  
   
-Um sich die ganzen Herausforderung bei der Realisierung Endgerät-zu-Endgerät
-Kommunikation zu ersparen wurde ein weiteres Rahmenwerk namens
+Um sich die ganzen Herausforderung bei der Realisierung von Peer-to-Peer
+\cite{ptp} Kommunikation zu ersparen wurde ein weiteres Rahmenwerk namens
 AllJoyn verwendet, welches die die Verbindung und die Kommunikation zum
 größten Teil schon übernimmt. Somit blieb zum Einen eine geschickte
 Integration von AllJoyn in die PTP-Library. Weiterhin mussten die vielen,
 gerade auf den ersten Blick komplizierten, Konfigurationen des AllJoyn
-Rahmenwerks durch eine einfache Schnittstelle erweitert werden. Außerdem
-musste ein Multithreaded Handler-System verwendet werden um UI-Prozesse des
-Spiels nicht durch die Hintergrundprozesse der Gerätekommunikation zu
-behindern. Als praktische Anwendungsbeispiele wurde ein Echtzeitpuzzlespiel
-und ein Zugbasiertes Kartenspiel namens MauMau implementiert.
+Rahmenwerks durch eine einfache Schnittstelle erweitert werden. Die
+Netzwerkverbindung läuft in einem seperaten Thread und muss daher
+mithilfe von \ib{Handlern} \ref{subsec:handler} von dem \ib{UI-Thread}
+\ref{subsec:uithread} abgekoppelt werden, sodass sich die beiden Threads nicht
+behindern. Als praktische Anwendungsbeispiele wurde ein Echtzeitpuzzlespiel und ein Zugbasiertes Kartenspiel namens MauMau implementiert.
    
 \section{Gliederung}
 
 Die Arbeit beinhaltet zu Anfang die Erklärung der verwendeten Rahmenwerke
 AndroidSDK und AllJoyn. Dabei werden die Konzepte dieser Rahmenwerke grob
-beschrieben. Dann wird das Konzept und die Implementierung der
+erläutert. Dann wird das Konzept und die Implementierung der
 PTP-Library, welches das Hauptaugenmerk dieser Arbeit ist,
 beschrieben. Daraufhin wird beschrieben, wie die zwei Spielebeispiele realisiert
 wurden, sowie Herausforderung, die während der Implementierung entstanden.

@@ -1,54 +1,53 @@
-\BOOKMARK [0][-]{chapter*.1}{Zusammenfassung}{}% 1
-\BOOKMARK [0][-]{chapter*.2}{Erkl\344rung}{}% 2
-\BOOKMARK [0][-]{chapter.1}{Einleitung}{}% 3
-\BOOKMARK [1][-]{section.1.1}{L\366sungsansatz}{chapter.1}% 4
-\BOOKMARK [1][-]{section.1.2}{Gliederung}{chapter.1}% 5
-\BOOKMARK [0][-]{chapter.2}{Grundlagen}{}% 6
-\BOOKMARK [1][-]{section.2.1}{Konzepte}{chapter.2}% 7
-\BOOKMARK [1][-]{section.2.2}{Peer-to-Peer}{chapter.2}% 8
-\BOOKMARK [1][-]{section.2.3}{Android SDK}{chapter.2}% 9
-\BOOKMARK [2][-]{subsection.2.3.1}{Activity}{section.2.3}% 10
-\BOOKMARK [2][-]{subsection.2.3.2}{Service}{section.2.3}% 11
-\BOOKMARK [2][-]{subsection.2.3.3}{Application}{section.2.3}% 12
-\BOOKMARK [2][-]{subsection.2.3.4}{Context}{section.2.3}% 13
-\BOOKMARK [2][-]{subsection.2.3.5}{View}{section.2.3}% 14
-\BOOKMARK [2][-]{subsection.2.3.6}{UI-Thread}{section.2.3}% 15
-\BOOKMARK [2][-]{subsection.2.3.7}{AndroidManifest}{section.2.3}% 16
-\BOOKMARK [1][-]{section.2.4}{AllJoyn}{chapter.2}% 17
-\BOOKMARK [2][-]{subsection.2.4.1}{Bussystem}{section.2.4}% 18
-\BOOKMARK [2][-]{subsection.2.4.2}{BusAttachement}{section.2.4}% 19
-\BOOKMARK [2][-]{subsection.2.4.3}{Interface}{section.2.4}% 20
-\BOOKMARK [2][-]{subsection.2.4.4}{ProxyObjecte}{section.2.4}% 21
-\BOOKMARK [2][-]{subsection.2.4.5}{BusObject}{section.2.4}% 22
-\BOOKMARK [2][-]{subsection.2.4.6}{SignalHandler}{section.2.4}% 23
-\BOOKMARK [2][-]{subsection.2.4.7}{SignalEmitter}{section.2.4}% 24
-\BOOKMARK [2][-]{subsection.2.4.8}{Session}{section.2.4}% 25
-\BOOKMARK [0][-]{chapter.3}{Implementierung}{}% 26
-\BOOKMARK [1][-]{section.3.1}{PTPHelper}{chapter.3}% 27
-\BOOKMARK [1][-]{section.3.2}{LobbyActivity}{chapter.3}% 28
-\BOOKMARK [1][-]{section.3.3}{PTPService}{chapter.3}% 29
-\BOOKMARK [2][-]{subsection.3.3.1}{doConnect\(\) und doDisconnect\(\)}{section.3.3}% 30
-\BOOKMARK [2][-]{subsection.3.3.2}{doStartDiscovery\(\) und doStopDiscovery\(\)}{section.3.3}% 31
-\BOOKMARK [2][-]{subsection.3.3.3}{doBindSession\(\) und doUnbindSession\(\)}{section.3.3}% 32
-\BOOKMARK [2][-]{subsection.3.3.4}{doRequestName\(\) und doReleaseName\(\)}{section.3.3}% 33
-\BOOKMARK [2][-]{subsection.3.3.5}{doAdvertise\(\) und doCancelAdvertise\(\)}{section.3.3}% 34
-\BOOKMARK [2][-]{subsection.3.3.6}{doJoinSession\(\) und doLeaveSession\(\)}{section.3.3}% 35
-\BOOKMARK [2][-]{subsection.3.3.7}{doQuit\(\)}{section.3.3}% 36
-\BOOKMARK [0][-]{chapter.4}{Praktisches Anwendungsbeispiel: Graphenspiel}{}% 37
-\BOOKMARK [1][-]{section.4.1}{Spielidee}{chapter.4}% 38
-\BOOKMARK [1][-]{section.4.2}{Anforderungen}{chapter.4}% 39
-\BOOKMARK [1][-]{section.4.3}{Implementierung}{chapter.4}% 40
-\BOOKMARK [2][-]{subsection.4.3.1}{Projektkonfiguration}{section.4.3}% 41
-\BOOKMARK [2][-]{subsection.4.3.2}{MainApplication}{section.4.3}% 42
-\BOOKMARK [2][-]{subsection.4.3.3}{Graph}{section.4.3}% 43
-\BOOKMARK [2][-]{subsection.4.3.4}{DrawView}{section.4.3}% 44
-\BOOKMARK [0][-]{chapter.5}{Praktisches Anwendungsbeispiel: MauMau}{}% 45
-\BOOKMARK [1][-]{section.5.1}{Spielidee}{chapter.5}% 46
-\BOOKMARK [1][-]{section.5.2}{Anforderungen}{chapter.5}% 47
-\BOOKMARK [1][-]{section.5.3}{Implementierung}{chapter.5}% 48
-\BOOKMARK [2][-]{subsection.5.3.1}{Projektkonfiguration}{section.5.3}% 49
-\BOOKMARK [2][-]{subsection.5.3.2}{MauMauApplication}{section.5.3}% 50
-\BOOKMARK [2][-]{subsection.5.3.3}{GameManager}{section.5.3}% 51
-\BOOKMARK [2][-]{subsection.5.3.4}{GameActivity}{section.5.3}% 52
-\BOOKMARK [0][-]{chapter.6}{Fazit}{}% 53
-\BOOKMARK [0][-]{appendix.A}{Literaturverzeichnis}{}% 54
+\BOOKMARK [0][-]{chapter.1}{Einleitung}{}% 1
+\BOOKMARK [1][-]{section.1.1}{L\366sungsansatz}{chapter.1}% 2
+\BOOKMARK [1][-]{section.1.2}{Gliederung}{chapter.1}% 3
+\BOOKMARK [0][-]{chapter.2}{Grundlagen}{}% 4
+\BOOKMARK [1][-]{section.2.1}{Konzepte}{chapter.2}% 5
+\BOOKMARK [1][-]{section.2.2}{Peer-to-Peer}{chapter.2}% 6
+\BOOKMARK [1][-]{section.2.3}{Android SDK}{chapter.2}% 7
+\BOOKMARK [2][-]{subsection.2.3.1}{Activity}{section.2.3}% 8
+\BOOKMARK [2][-]{subsection.2.3.2}{Service}{section.2.3}% 9
+\BOOKMARK [2][-]{subsection.2.3.3}{Application}{section.2.3}% 10
+\BOOKMARK [2][-]{subsection.2.3.4}{Context}{section.2.3}% 11
+\BOOKMARK [2][-]{subsection.2.3.5}{View}{section.2.3}% 12
+\BOOKMARK [2][-]{subsection.2.3.6}{Handler}{section.2.3}% 13
+\BOOKMARK [2][-]{subsection.2.3.7}{UI-Thread}{section.2.3}% 14
+\BOOKMARK [2][-]{subsection.2.3.8}{AndroidManifest}{section.2.3}% 15
+\BOOKMARK [1][-]{section.2.4}{AllJoyn}{chapter.2}% 16
+\BOOKMARK [2][-]{subsection.2.4.1}{Bussystem}{section.2.4}% 17
+\BOOKMARK [2][-]{subsection.2.4.2}{BusAttachement}{section.2.4}% 18
+\BOOKMARK [2][-]{subsection.2.4.3}{Interface}{section.2.4}% 19
+\BOOKMARK [2][-]{subsection.2.4.4}{ProxyObjecte}{section.2.4}% 20
+\BOOKMARK [2][-]{subsection.2.4.5}{BusObject}{section.2.4}% 21
+\BOOKMARK [2][-]{subsection.2.4.6}{SignalHandler}{section.2.4}% 22
+\BOOKMARK [2][-]{subsection.2.4.7}{SignalEmitter}{section.2.4}% 23
+\BOOKMARK [2][-]{subsection.2.4.8}{Session}{section.2.4}% 24
+\BOOKMARK [0][-]{chapter.3}{Implementierung}{}% 25
+\BOOKMARK [1][-]{section.3.1}{PTPHelper}{chapter.3}% 26
+\BOOKMARK [1][-]{section.3.2}{LobbyActivity}{chapter.3}% 27
+\BOOKMARK [1][-]{section.3.3}{PTPService}{chapter.3}% 28
+\BOOKMARK [2][-]{subsection.3.3.1}{doConnect\(\) und doDisconnect\(\)}{section.3.3}% 29
+\BOOKMARK [2][-]{subsection.3.3.2}{doStartDiscovery\(\) und doStopDiscovery\(\)}{section.3.3}% 30
+\BOOKMARK [2][-]{subsection.3.3.3}{doBindSession\(\) und doUnbindSession\(\)}{section.3.3}% 31
+\BOOKMARK [2][-]{subsection.3.3.4}{doRequestName\(\) und doReleaseName\(\)}{section.3.3}% 32
+\BOOKMARK [2][-]{subsection.3.3.5}{doAdvertise\(\) und doCancelAdvertise\(\)}{section.3.3}% 33
+\BOOKMARK [2][-]{subsection.3.3.6}{doJoinSession\(\) und doLeaveSession\(\)}{section.3.3}% 34
+\BOOKMARK [2][-]{subsection.3.3.7}{doQuit\(\)}{section.3.3}% 35
+\BOOKMARK [0][-]{chapter.4}{Praktisches Anwendungsbeispiel: Graphenspiel}{}% 36
+\BOOKMARK [1][-]{section.4.1}{Spielidee}{chapter.4}% 37
+\BOOKMARK [1][-]{section.4.2}{Anforderungen}{chapter.4}% 38
+\BOOKMARK [1][-]{section.4.3}{Implementierung}{chapter.4}% 39
+\BOOKMARK [2][-]{subsection.4.3.1}{Projektkonfiguration}{section.4.3}% 40
+\BOOKMARK [2][-]{subsection.4.3.2}{MainApplication}{section.4.3}% 41
+\BOOKMARK [2][-]{subsection.4.3.3}{Graph}{section.4.3}% 42
+\BOOKMARK [2][-]{subsection.4.3.4}{DrawView}{section.4.3}% 43
+\BOOKMARK [0][-]{chapter.5}{Praktisches Anwendungsbeispiel: MauMau}{}% 44
+\BOOKMARK [1][-]{section.5.1}{Spielidee}{chapter.5}% 45
+\BOOKMARK [1][-]{section.5.2}{Anforderungen}{chapter.5}% 46
+\BOOKMARK [1][-]{section.5.3}{Implementierung}{chapter.5}% 47
+\BOOKMARK [2][-]{subsection.5.3.1}{Projektkonfiguration}{section.5.3}% 48
+\BOOKMARK [2][-]{subsection.5.3.2}{MauMauApplication}{section.5.3}% 49
+\BOOKMARK [2][-]{subsection.5.3.3}{GameManager}{section.5.3}% 50
+\BOOKMARK [2][-]{subsection.5.3.4}{GameActivity}{section.5.3}% 51
+\BOOKMARK [0][-]{chapter.6}{Fazit}{}% 52
+\BOOKMARK [0][-]{appendix.A}{Literaturverzeichnis}{}% 53

@@ -12,6 +12,7 @@ int string button_create 0x7f040006
 int string button_refresh 0x7f040007
 int string channel_name 0x7f040002
 int string default_player_name 0x7f040009
+int string game_exists 0x7f04000a
 int string hello_world 0x7f040005
 int string player_name 0x7f040008
 int string title_activity_display_message 0x7f040004

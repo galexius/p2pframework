@@ -11,5 +11,6 @@
     <string name="button_refresh">Refresh</string>
     <string name="player_name">Player name</string>
     <string name="default_player_name">Player</string>
+    <string name="game_exists">game name does already exist</string>
 
 </resources>

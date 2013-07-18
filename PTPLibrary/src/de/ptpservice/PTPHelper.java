@@ -153,6 +153,7 @@ public class PTPHelper {
 	public final static int SESSION_LEFT = 10;
 	public final static int SESSION_HOSTED = 11;
 	public final static int SESSION_CLOSED = 12;
+	public static final int SESSION_NAME_EXISTS = 13;
 	
 	public final static String ENCODING_UTF8 = "UTF-8";
 	
@@ -191,6 +192,7 @@ public class PTPHelper {
 	}
 	
 	private static final String TAG = "P2PHelper";
+	
 	
 	public static String PACKAGE_NAME;
 	private String hostChannelName = "";

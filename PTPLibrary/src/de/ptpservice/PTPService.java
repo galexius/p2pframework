@@ -345,13 +345,30 @@ public class PTPService extends Service implements ServiceHelperObserver {
 				.compareTo(BusAttachmentState.DISCONNECTED);
 		assert (stateRelation >= 0);
 		assert (hostChannelState == HostChannelState.BOUND);
+		if (hostChannelState != HostChannelState.BOUND) return;
 		
+		
+		if(PTPHelper.getInstance().getFoundChannels().contains(PTPHelper.getInstance().getHostChannelName())){
+			PTPHelper.getInstance().setConnectionState(PTPHelper.SESSION_NAME_EXISTS);
+			Log.e(TAG, "cannot request name " );
+			doUnbindSession();
+			hostChannelState = HostChannelState.IDLE;
+			PTPHelper.getInstance().setConnectionState(PTPHelper.CONNECTED);
+			return;
+		}
 		Status status = bus.requestName(packageName + "." +PTPHelper.getInstance().getHostChannelName(),
 				BusAttachment.ALLJOYN_REQUESTNAME_FLAG_DO_NOT_QUEUE);
 		if (status == Status.OK) {
 			hostChannelState = HostChannelState.NAMED;
 		} else {
-			Log.e(TAG, "cannot request name");
+			if(status.compareTo(Status.DBUS_REQUEST_NAME_REPLY_EXISTS) == 0){
+				PTPHelper.getInstance().setConnectionState(PTPHelper.SESSION_NAME_EXISTS);
+				
+			}
+			Log.e(TAG, "cannot request name " + status.toString() );
+			doUnbindSession();
+			hostChannelState = HostChannelState.IDLE;
+			PTPHelper.getInstance().setConnectionState(PTPHelper.CONNECTED);
 		}
 	}
 
@@ -362,7 +379,10 @@ public class PTPService extends Service implements ServiceHelperObserver {
 		assert (stateRelation >= 0);
 		assert (busAttachmentState == BusAttachmentState.CONNECTED || busAttachmentState == BusAttachmentState.DISCOVERING);
 		assert (hostChannelState == HostChannelState.NAMED);
-
+		
+		if (busAttachmentState != BusAttachmentState.CONNECTED || busAttachmentState != BusAttachmentState.DISCOVERING) return;
+		if(hostChannelState != HostChannelState.NAMED) return;
+		
 		bus.releaseName(PTPHelper.getInstance().getHostChannelName());
 		hostChannelState = HostChannelState.IDLE;
 		PTPHelper.getInstance().setConnectionState(PTPHelper.SESSION_CLOSED);
@@ -370,7 +390,9 @@ public class PTPService extends Service implements ServiceHelperObserver {
 	
     private void doAdvertise() {
         Log.i(TAG, "doAdvertise()");
-     
+        if(hostChannelState != HostChannelState.NAMED) return;
+        
+        assert (hostChannelState == HostChannelState.NAMED);
     	Log.i(TAG, "Advertised name: " + PTPHelper.getInstance().getHostChannelName() );
         Status status = bus.advertiseName(packageName+"."+PTPHelper.getInstance().getHostChannelName(), SessionOpts.TRANSPORT_WLAN);
         

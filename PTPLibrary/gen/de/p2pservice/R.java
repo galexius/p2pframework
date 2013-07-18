@@ -31,6 +31,7 @@ public final class R {
         public static int button_refresh=0x7f040007;
         public static int channel_name=0x7f040002;
         public static int default_player_name=0x7f040009;
+        public static int game_exists=0x7f04000a;
         public static int hello_world=0x7f040005;
         public static int player_name=0x7f040008;
         public static int title_activity_display_message=0x7f040004;
