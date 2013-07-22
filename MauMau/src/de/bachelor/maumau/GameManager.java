@@ -1,6 +1,5 @@
 package de.bachelor.maumau;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -143,11 +142,7 @@ public class GameManager {
 		
 		private void sendCardOwnerChanged(Card card) {
 			String xmlStringForCard = getXMLStringForCard(card);
-			try {
-				PTPHelper.getInstance().sendDataToAllPeers(OWNER_CHANGED, xmlStringForCard.getBytes(PTPHelper.ENCODING_UTF8));
-			} catch (UnsupportedEncodingException e) {
-				e.printStackTrace();
-			}	
+			PTPHelper.getInstance().sendDataToAllPeers(OWNER_CHANGED, new String[]{xmlStringForCard});
 		}
 
 		public synchronized void ChangeOwner(int cardId, String uniqueUserID){
@@ -216,12 +211,7 @@ public class GameManager {
 		}
 
 		private void sendCardPlayed(Card card) {
-			try {
-				PTPHelper.getInstance().sendDataToAllPeers(CARD_PLAYED, (card.id+"").getBytes(PTPHelper.ENCODING_UTF8));
-			} catch (UnsupportedEncodingException e) {
-				e.printStackTrace();
-			}	
-			
+			PTPHelper.getInstance().sendDataToAllPeers(CARD_PLAYED, new String[]{(card.id+"")});			
 		}
 
 		private Card getCardById(int cardId) {
@@ -353,11 +343,7 @@ public class GameManager {
 		}
 
 		private void sendNextTurn() {
-			try {
-				PTPHelper.getInstance().sendDataToAllPeers(NEXT_TURN, (""+specialCase).getBytes(PTPHelper.ENCODING_UTF8));
-			} catch (UnsupportedEncodingException e) {
-				e.printStackTrace();
-			}			
+			PTPHelper.getInstance().sendDataToAllPeers(NEXT_TURN, new String[]{(""+specialCase)});
 		}
 
 		public RuleEnforcer getPlayCardRuleEnforcer() {
@@ -421,12 +407,8 @@ public class GameManager {
 		}
 
 		public void notifyOthersAboutYourself() {			
-			try {
 				HiIAm(PTPHelper.getInstance().getUniqueID(), PTPHelper.getInstance().getPlayerName());
-				PTPHelper.getInstance().sendDataToAllPeers(PLAYERS_STATE_CHANGED, PTPHelper.getInstance().getPlayerName().getBytes(PTPHelper.ENCODING_UTF8));
-			} catch (UnsupportedEncodingException e) {
-				e.printStackTrace();
-			}			
+				PTPHelper.getInstance().sendDataToAllPeers(PLAYERS_STATE_CHANGED, new String[]{PTPHelper.getInstance().getPlayerName()});
 		}
 
 

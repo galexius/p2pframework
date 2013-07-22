@@ -36,13 +36,13 @@ public class PTPHelper {
     class PTPBusObject implements PTPBusObjectInterface,BusObject{
 		@Override
 		@BusSignal
-		public void SendDataToAllPeers(String sentFrom,int arg,byte[] data) {}    	
+		public void SendDataToAllPeers(String sentFrom,int arg,String[] data) {}    	
     }    
     
     class PTPBusHandler implements PTPBusObjectInterface, BusObject {
     	@Override
     	@BusSignalHandler(iface = "de.ptpservice.PTPBusObjectInterface", signal = "SendDataToAllPeers")
-    	public void SendDataToAllPeers(String sentFrom,int arg, byte[] data) {
+    	public void SendDataToAllPeers(String sentFrom,int arg, String[] data) {
     		notifyDataListenersAllPeers(sentFrom,arg,data);
     	}
     }
@@ -82,15 +82,15 @@ public class PTPHelper {
 	        }	
 		}
 
-		private void notifyLostAdvertisedName(String channelName) {
+		private void notifyLostAdvertisedName(String sessionName) {
 			for (BusObserver obs : busObservers) {
-	            obs.lostAdvertisedName(channelName);
+	            obs.lostAdvertisedName(sessionName);
 	        }			
 		}
 		
-		private void notifyFoundAdvertisedName(String channelName) {
+		private void notifyFoundAdvertisedName(String sessionName) {
 			for (BusObserver obs : busObservers) {
-	            obs.foundAdvertisedName(channelName);
+	            obs.foundAdvertisedName(sessionName);
 	        }			
 		}
 
@@ -122,13 +122,13 @@ public class PTPHelper {
     class HelperBusObserver implements BusObserver{
 
     	@Override
-    	public void lostAdvertisedName(String channelName) {    		
-    		instance.removeAdvertisedName(channelName);    		
+    	public void lostAdvertisedName(String sessionName) {    		
+    		instance.removeAdvertisedName(sessionName);    		
     	}
     	
 		@Override
-		public void foundAdvertisedName(String channelName) {
-			instance.addAdvertisedName(channelName);    				
+		public void foundAdvertisedName(String sessionName) {
+			instance.addAdvertisedName(sessionName);    				
 		}
 
 		@Override
@@ -139,10 +139,10 @@ public class PTPHelper {
 
     
 	public final static int CONNECT_BUS = 0;
-	public final static int JOIN_CHANNEL = 1;
-	public final static int HOST_CHANNEL = 2;
-	public final static int LEAVE_CHANNEL = 3;
-	public final static int CLOSE_CHANNEL = 4;
+	public final static int JOIN_SESSION = 1;
+	public final static int HOST_SESSION = 2;
+	public final static int LEAVE_SESSION = 3;
+	public final static int CLOSE_SESSION = 4;
 	public final static int DISCONNECT = 5;
 	public final static int QUIT = 6;
 	
@@ -156,6 +156,8 @@ public class PTPHelper {
 	public static final int SESSION_NAME_EXISTS = 13;
 	
 	public final static String ENCODING_UTF8 = "UTF-8";
+	
+	private short contactPort = 100;
 	
 	private static PTPHelper instance = null;
 	private BackgroundHandler backgroundHandler;
@@ -195,8 +197,8 @@ public class PTPHelper {
 	
 	
 	public static String PACKAGE_NAME;
-	private String hostChannelName = "";
-	private String channelName = "";
+	private String hostSessionName = "";
+	private String sessionName = "";
 	private Queue<Integer> notificationQueue = new LinkedList<Integer>();
 	private String applicationName;
 	
@@ -240,20 +242,20 @@ public class PTPHelper {
 		return busObjectInterfaceType;		
 	}
 
-	public synchronized String getHostChannelName() {
-		return hostChannelName;
+	public synchronized String getHostSessionName() {
+		return hostSessionName;
 	}
 	
-	public synchronized void setHostChannelName(String name){
-		this.hostChannelName = name; 
+	public synchronized void setHostSessionName(String name){
+		this.hostSessionName = name; 
 		isHost = true;
 	}
-	public synchronized String getChannelName() {
-		return channelName;
+	public synchronized String getSessionName() {
+		return sessionName;
 	}
 	
-	public synchronized void setClientChannelName(String name){
-		this.channelName = name; 
+	public synchronized void setClientSessionName(String name){
+		this.sessionName = name; 
 		isHost = false;
 	}
 	
@@ -302,7 +304,7 @@ public class PTPHelper {
 		lobbyObservers.remove(obs);
 	}
 	
-	public void sendDataToAllPeers(int arg,byte[] data){
+	public void sendDataToAllPeers(int arg,String[] data){
 		if(signalEmitter==null){
 			Log.e(TAG, "SignalEmitter not set yet");
 			return;
@@ -323,7 +325,7 @@ public class PTPHelper {
         }
 	}
 
-	private void notifyDataListenersAllPeers(String sentFrom,int arg, byte[] data) {		
+	private void notifyDataListenersAllPeers(String sentFrom,int arg,String[] data) {		
 		for (DataListener listener : dataListeners) {
 			Log.i(TAG, "notify dataListener = " + listener);
 			listener.dataSentToAllPeers(sentFrom, arg, data);
@@ -336,7 +338,7 @@ public class PTPHelper {
 	private ArrayList<BusObserver> busObservers = new ArrayList<BusObserver>();
 	private ArrayList<SessionObserver> sessionObservers = new ArrayList<SessionObserver>();
 	private ArrayList<DataListener> dataListeners = new ArrayList<DataListener>();
-	private ArrayList<String> foundChannels = new ArrayList<String>();
+	private ArrayList<String> foundSessions = new ArrayList<String>();
 	private ArrayList<SessionJoinRule> joinRules = new ArrayList<SessionJoinRule>();
 	private HashMap<String,Object> proxyObjectsMap = new HashMap<String,Object>();
 
@@ -348,12 +350,12 @@ public class PTPHelper {
 	private Object signalEmitter = null;
 	private boolean isHost;
 	
-	public void joinChannel() {
+	public void joinSession() {
 		notifyHelperObservers(PTPService.JOIN_SESSION);
 	}
 	
 	public void connectAndStartDiscover() {
-		foundChannels.clear();
+		foundSessions.clear();
 		notifyHelperObservers(PTPService.CONNECT);
 		notifyHelperObservers(PTPService.START_DISCOVERY);		
 	}
@@ -364,12 +366,12 @@ public class PTPHelper {
 	}
 	
 	
-	public void leaveChannel() {
+	public void leaveSession() {
 		notifyHelperObservers(PTPService.CANCEL_ADVERTISE);
 		notifyHelperObservers(PTPService.LEAVE_SESSION);
 	}
 
-	public void hostStartChannel() {
+	public void hostStartSession() {
 		notifyHelperObservers(PTPService.UNBIND_SESSION);
 		notifyHelperObservers(PTPService.RELEASE_NAME);
 		notifyHelperObservers(PTPService.BIND_SESSION);
@@ -378,7 +380,7 @@ public class PTPHelper {
 		
 	}
 	
-	public void hostStopChannel() {
+	public void hostStopSession() {
 		notifyHelperObservers(PTPService.CANCEL_ADVERTISE);
 		notifyHelperObservers(PTPService.UNBIND_SESSION);
 		notifyHelperObservers(PTPService.RELEASE_NAME);
@@ -413,18 +415,18 @@ public class PTPHelper {
 	
 
 	private void addAdvertisedName(String name) {
-		foundChannels.add(name);
+		foundSessions.add(name);
 	}
 
 
 	private void removeAdvertisedName(String name) {
-		if(foundChannels.contains(name)){
-			foundChannels.remove(name);
+		if(foundSessions.contains(name)){
+			foundSessions.remove(name);
 		}
 	}
 
-	public List<String> getFoundChannels(){
-		return foundChannels;
+	public List<String> getFoundSessions(){
+		return foundSessions;
 	}
 
 
@@ -471,13 +473,13 @@ public class PTPHelper {
 		backgroundHandler.sendMessage(obtainedMessage);	
 	}
 
-	public synchronized void notifyLostAdvertisedName(String channelName) {
-		Message obtainedMessage = backgroundHandler.obtainMessage(BackgroundHandler.ADVERTISED_NAME_LOST, channelName);
+	public synchronized void notifyLostAdvertisedName(String sessionName) {
+		Message obtainedMessage = backgroundHandler.obtainMessage(BackgroundHandler.ADVERTISED_NAME_LOST, sessionName);
 		backgroundHandler.sendMessage(obtainedMessage);
 	}
 	
-	public synchronized void notifyFoundAdvertisedName(String channelName) {
-		Message obtainedMessage = backgroundHandler.obtainMessage(BackgroundHandler.ADVERTISED_NAME_FOUND, channelName);
+	public synchronized void notifyFoundAdvertisedName(String sessionName) {
+		Message obtainedMessage = backgroundHandler.obtainMessage(BackgroundHandler.ADVERTISED_NAME_FOUND, sessionName);
 		backgroundHandler.sendMessage(obtainedMessage);			
 	}
 
@@ -549,5 +551,13 @@ public class PTPHelper {
 				return false;
 		}
 		return true;
+	}
+
+	public synchronized short getContactPort() {
+		return contactPort;
+	}
+
+	public synchronized void setContactPort(short contactPort) {
+		this.contactPort = contactPort;
 	}
 }

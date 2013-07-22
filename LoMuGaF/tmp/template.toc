@@ -1,56 +1,55 @@
 \select@language {ngerman}
 \vspace {1.0cm}
 \contentsline {chapter}{\numberline {1}Einleitung}{3}{chapter.1}
-\contentsline {section}{\numberline {1.1}L\"osungsansatz}{3}{section.1.1}
-\contentsline {section}{\numberline {1.2}Gliederung}{4}{section.1.2}
-\contentsline {chapter}{\numberline {2}Grundlagen}{5}{chapter.2}
-\contentsline {section}{\numberline {2.1}Konzepte}{5}{section.2.1}
-\contentsline {section}{\numberline {2.2}Peer-to-Peer}{5}{section.2.2}
-\contentsline {section}{\numberline {2.3}Android SDK}{6}{section.2.3}
-\contentsline {subsection}{\numberline {2.3.1}Activity}{7}{subsection.2.3.1}
-\contentsline {subsection}{\numberline {2.3.2}Service}{7}{subsection.2.3.2}
-\contentsline {subsection}{\numberline {2.3.3}Application}{8}{subsection.2.3.3}
-\contentsline {subsection}{\numberline {2.3.4}Context}{8}{subsection.2.3.4}
-\contentsline {subsection}{\numberline {2.3.5}View}{8}{subsection.2.3.5}
-\contentsline {subsection}{\numberline {2.3.6}Handler}{8}{subsection.2.3.6}
-\contentsline {subsection}{\numberline {2.3.7}UI-Thread}{8}{subsection.2.3.7}
-\contentsline {subsection}{\numberline {2.3.8}AndroidManifest}{9}{subsection.2.3.8}
-\contentsline {section}{\numberline {2.4}AllJoyn}{10}{section.2.4}
-\contentsline {subsection}{\numberline {2.4.1}Bussystem}{10}{subsection.2.4.1}
-\contentsline {subsection}{\numberline {2.4.2}BusAttachement}{11}{subsection.2.4.2}
-\contentsline {subsection}{\numberline {2.4.3}Interface}{12}{subsection.2.4.3}
-\contentsline {subsection}{\numberline {2.4.4}ProxyObjecte}{12}{subsection.2.4.4}
-\contentsline {subsection}{\numberline {2.4.5}BusObject}{12}{subsection.2.4.5}
-\contentsline {subsection}{\numberline {2.4.6}SignalHandler}{13}{subsection.2.4.6}
-\contentsline {subsection}{\numberline {2.4.7}SignalEmitter}{13}{subsection.2.4.7}
-\contentsline {subsection}{\numberline {2.4.8}Session}{14}{subsection.2.4.8}
-\contentsline {chapter}{\numberline {3}Implementierung}{15}{chapter.3}
-\contentsline {section}{\numberline {3.1}PTPHelper}{15}{section.3.1}
-\contentsline {section}{\numberline {3.2}LobbyActivity}{20}{section.3.2}
-\contentsline {section}{\numberline {3.3}PTPService}{21}{section.3.3}
-\contentsline {subsection}{\numberline {3.3.1}doConnect() und doDisconnect()}{23}{subsection.3.3.1}
-\contentsline {subsection}{\numberline {3.3.2}doStartDiscovery() und doStopDiscovery()}{25}{subsection.3.3.2}
-\contentsline {subsection}{\numberline {3.3.3}doBindSession() und doUnbindSession()}{25}{subsection.3.3.3}
-\contentsline {subsection}{\numberline {3.3.4}doRequestName() und doReleaseName()}{27}{subsection.3.3.4}
-\contentsline {subsection}{\numberline {3.3.5}doAdvertise() und doCancelAdvertise()}{28}{subsection.3.3.5}
-\contentsline {subsection}{\numberline {3.3.6}doJoinSession() und doLeaveSession()}{28}{subsection.3.3.6}
-\contentsline {subsection}{\numberline {3.3.7}doQuit()}{29}{subsection.3.3.7}
-\contentsline {chapter}{\numberline {4}Praktisches Anwendungsbeispiel: Graphenspiel}{30}{chapter.4}
-\contentsline {section}{\numberline {4.1}Spielidee}{30}{section.4.1}
-\contentsline {section}{\numberline {4.2}Anforderungen}{31}{section.4.2}
-\contentsline {section}{\numberline {4.3}Implementierung}{32}{section.4.3}
-\contentsline {subsection}{\numberline {4.3.1}Projektkonfiguration}{32}{subsection.4.3.1}
-\contentsline {subsection}{\numberline {4.3.2}MainApplication}{32}{subsection.4.3.2}
-\contentsline {subsection}{\numberline {4.3.3}Graph}{34}{subsection.4.3.3}
-\contentsline {subsection}{\numberline {4.3.4}DrawView}{36}{subsection.4.3.4}
-\contentsline {chapter}{\numberline {5}Praktisches Anwendungsbeispiel: MauMau}{38}{chapter.5}
-\contentsline {section}{\numberline {5.1}Spielidee}{38}{section.5.1}
-\contentsline {section}{\numberline {5.2}Anforderungen}{40}{section.5.2}
-\contentsline {section}{\numberline {5.3}Implementierung}{40}{section.5.3}
-\contentsline {subsection}{\numberline {5.3.1}Projektkonfiguration}{40}{subsection.5.3.1}
-\contentsline {subsection}{\numberline {5.3.2}MauMauApplication}{40}{subsection.5.3.2}
-\contentsline {subsection}{\numberline {5.3.3}GameManager}{42}{subsection.5.3.3}
-\contentsline {subsection}{\numberline {5.3.4}GameActivity}{44}{subsection.5.3.4}
-\contentsline {chapter}{\numberline {6}Fazit}{46}{chapter.6}
+\contentsline {chapter}{\numberline {2}Grundlagen}{4}{chapter.2}
+\contentsline {section}{\numberline {2.1}Konzepte}{4}{section.2.1}
+\contentsline {section}{\numberline {2.2}Peer-to-Peer}{4}{section.2.2}
+\contentsline {section}{\numberline {2.3}Android SDK}{5}{section.2.3}
+\contentsline {subsection}{\numberline {2.3.1}Activity}{6}{subsection.2.3.1}
+\contentsline {subsection}{\numberline {2.3.2}Service}{6}{subsection.2.3.2}
+\contentsline {subsection}{\numberline {2.3.3}Application}{7}{subsection.2.3.3}
+\contentsline {subsection}{\numberline {2.3.4}Context}{7}{subsection.2.3.4}
+\contentsline {subsection}{\numberline {2.3.5}View}{7}{subsection.2.3.5}
+\contentsline {subsection}{\numberline {2.3.6}Handler}{7}{subsection.2.3.6}
+\contentsline {subsection}{\numberline {2.3.7}UI-Thread}{7}{subsection.2.3.7}
+\contentsline {subsection}{\numberline {2.3.8}AndroidManifest}{8}{subsection.2.3.8}
+\contentsline {section}{\numberline {2.4}AllJoyn}{9}{section.2.4}
+\contentsline {subsection}{\numberline {2.4.1}Bussystem}{9}{subsection.2.4.1}
+\contentsline {subsection}{\numberline {2.4.2}BusAttachement}{10}{subsection.2.4.2}
+\contentsline {subsection}{\numberline {2.4.3}Interface}{11}{subsection.2.4.3}
+\contentsline {subsection}{\numberline {2.4.4}ProxyObjecte}{11}{subsection.2.4.4}
+\contentsline {subsection}{\numberline {2.4.5}BusObject}{11}{subsection.2.4.5}
+\contentsline {subsection}{\numberline {2.4.6}SignalHandler}{12}{subsection.2.4.6}
+\contentsline {subsection}{\numberline {2.4.7}SignalEmitter}{12}{subsection.2.4.7}
+\contentsline {subsection}{\numberline {2.4.8}Session}{13}{subsection.2.4.8}
+\contentsline {chapter}{\numberline {3}Implementierung}{14}{chapter.3}
+\contentsline {section}{\numberline {3.1}Realisierung}{14}{section.3.1}
+\contentsline {section}{\numberline {3.2}PTPHelper}{14}{section.3.2}
+\contentsline {section}{\numberline {3.3}LobbyActivity}{19}{section.3.3}
+\contentsline {section}{\numberline {3.4}PTPService}{19}{section.3.4}
+\contentsline {subsection}{\numberline {3.4.1}doConnect() und doDisconnect()}{20}{subsection.3.4.1}
+\contentsline {subsection}{\numberline {3.4.2}doStartDiscovery() und doStopDiscovery()}{23}{subsection.3.4.2}
+\contentsline {subsection}{\numberline {3.4.3}doBindSession() und doUnbindSession()}{23}{subsection.3.4.3}
+\contentsline {subsection}{\numberline {3.4.4}doRequestName() und doReleaseName()}{25}{subsection.3.4.4}
+\contentsline {subsection}{\numberline {3.4.5}doAdvertise() und doCancelAdvertise()}{26}{subsection.3.4.5}
+\contentsline {subsection}{\numberline {3.4.6}doJoinSession() und doLeaveSession()}{26}{subsection.3.4.6}
+\contentsline {subsection}{\numberline {3.4.7}doQuit()}{27}{subsection.3.4.7}
+\contentsline {chapter}{\numberline {4}Praktisches Anwendungsbeispiel: Graphenspiel}{28}{chapter.4}
+\contentsline {section}{\numberline {4.1}Spielidee}{28}{section.4.1}
+\contentsline {section}{\numberline {4.2}Anforderungen}{29}{section.4.2}
+\contentsline {section}{\numberline {4.3}Implementierung}{30}{section.4.3}
+\contentsline {subsection}{\numberline {4.3.1}Projektkonfiguration}{30}{subsection.4.3.1}
+\contentsline {subsection}{\numberline {4.3.2}MainApplication}{30}{subsection.4.3.2}
+\contentsline {subsection}{\numberline {4.3.3}Graph}{32}{subsection.4.3.3}
+\contentsline {subsection}{\numberline {4.3.4}DrawView}{34}{subsection.4.3.4}
+\contentsline {chapter}{\numberline {5}Praktisches Anwendungsbeispiel: MauMau}{36}{chapter.5}
+\contentsline {section}{\numberline {5.1}Spielidee}{36}{section.5.1}
+\contentsline {section}{\numberline {5.2}Anforderungen}{38}{section.5.2}
+\contentsline {section}{\numberline {5.3}Implementierung}{38}{section.5.3}
+\contentsline {subsection}{\numberline {5.3.1}Projektkonfiguration}{38}{subsection.5.3.1}
+\contentsline {subsection}{\numberline {5.3.2}MauMauApplication}{38}{subsection.5.3.2}
+\contentsline {subsection}{\numberline {5.3.3}GameManager}{40}{subsection.5.3.3}
+\contentsline {subsection}{\numberline {5.3.4}GameActivity}{42}{subsection.5.3.4}
+\contentsline {chapter}{\numberline {6}Fazit}{44}{chapter.6}
 \vspace {1cm}
 \contentsline {chapter}{\numberline {A}Literaturverzeichnis}{I}{appendix.A}

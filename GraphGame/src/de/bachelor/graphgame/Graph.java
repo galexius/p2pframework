@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -104,11 +103,7 @@ class Graph implements GraphInterface, BusObject {
 			XMLIdMap map=new XMLIdMap();
 	    	map.withCreator(new NodeCreator());	
 	    	XMLEntity entity = map.encode(changedNode);
-	    	try {
-				PTPHelper.getInstance().sendDataToAllPeers(NODE_POSITION_CHANGED, entity.toString().getBytes(PTPHelper.ENCODING_UTF8));
-			} catch (UnsupportedEncodingException e) {
-				e.printStackTrace();
-			}
+			PTPHelper.getInstance().sendDataToAllPeers(NODE_POSITION_CHANGED, new String[]{entity.toString()});
 			return;
 		}
 		notifyObservers(GRAPH_CHANGED);
@@ -143,11 +138,7 @@ class Graph implements GraphInterface, BusObject {
 					XMLIdMap map=new XMLIdMap();
 			    	map.withCreator(new NodeCreator());	
 			    	XMLEntity entity = map.encode(nodeToChange);
-			    	try {
-						PTPHelper.getInstance().sendDataToAllPeers(NODE_OWNERSHIP_CHANGED, entity.toString().getBytes(PTPHelper.ENCODING_UTF8));
-					} catch (UnsupportedEncodingException e) {
-						e.printStackTrace();
-					}			    	
+					PTPHelper.getInstance().sendDataToAllPeers(NODE_OWNERSHIP_CHANGED, new String[]{entity.toString()});
 					return;
 				}
 				notifyObservers(GRAPH_CHANGED);

@@ -36,11 +36,11 @@ public final class R {
         public static final int action_settings=0x7f090012;
         public static final int clubs_button=0x7f09000e;
         public static final int create_button=0x7f090002;
-        public static final int create_channel_name=0x7f090001;
+        public static final int create_session_name=0x7f090001;
         public static final int diamond_button=0x7f090010;
         public static final int draw_card_button=0x7f09000b;
         public static final int heart_button=0x7f09000f;
-        public static final int join_channel_list=0x7f090003;
+        public static final int join_session_list=0x7f090003;
         public static final int listView=0x7f090009;
         public static final int next_turn_button=0x7f09000c;
         public static final int own_cards_gallery=0x7f090007;
@@ -68,18 +68,20 @@ public final class R {
         public static final int button_create=0x7f040006;
         public static final int button_refresh=0x7f040007;
         public static final int channel_name=0x7f040002;
-        public static final int default_player_name=0x7f040009;
-        public static final int draw_card=0x7f04000f;
-        public static final int game_exists=0x7f04000a;
+        public static final int default_player_name=0x7f04000a;
+        public static final int draw_card=0x7f040011;
+        public static final int field_empty=0x7f04000c;
+        public static final int game_exists=0x7f04000b;
         public static final int hello_world=0x7f040005;
-        public static final int next_turn=0x7f040010;
-        public static final int own_cards=0x7f04000c;
-        public static final int played_cards=0x7f04000d;
+        public static final int next_turn=0x7f040012;
+        public static final int own_cards=0x7f04000e;
+        public static final int played_cards=0x7f04000f;
         public static final int player_name=0x7f040008;
-        public static final int start=0x7f04000e;
-        public static final int title_activity_=0x7f04000b;
+        public static final int player_name_empty=0x7f040009;
+        public static final int start=0x7f040010;
+        public static final int title_activity_=0x7f04000d;
         public static final int title_activity_display_message=0x7f040004;
-        public static final int wish_suit=0x7f040011;
+        public static final int wish_suit=0x7f040013;
     }
     public static final class style {
         /** 

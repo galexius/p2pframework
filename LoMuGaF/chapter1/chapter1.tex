@@ -1,51 +1,39 @@
 \chapter{Einleitung}
 
-Spiele auf mobilen Endgeräten gibt es unzählige. Jedoch sind die
-meisten dieser Spiele entweder Solospiele, also Spiele für einen Spieler, oder
-sind für mehrere Spieler, aber unter Verwendung eines Servers. Trotz der mittlerweile gut ausgebauten Netzabdeckung und guter Internetgeschwindigkeit auf Smartphones, kann das
-Spielerlebniss durch eine schwankende Internetgeschwindigkeit getrübt werden. So
-sind z.B. Actionspiele meist nur über eine Wlan Verbindung spielbar. Außerdem
-gibt es Situationen bei denen man keine oder nur eine beschränkte Internetverbindung
-hat, z.B. wenn man mit dem Zug unterwegs ist oder sich gerade in Ausland
-befindet und sich die Roaminggebühren sparen will.
-Um die Entwicklung solcher Spiele vorran zu treiben und es den Entwickler soweit
-wie möglich zu erleichtern, sollte im Rahmen dieser Arbeit eine Bibliothek
-entwickelt werden. Es sollen die kommunikatonsbedingten Herausforderungen mit der
-PTP-Library gelöst werden, sodass die Entwickler sich nur um die Implementierung
-der Spiele selbst gedanken machen müssen. Die Entwickler hätten nur die Aufgabe sich um die
-Synchronisierung der spielbezogenen Daten zu kümmern. Die Übertragen der
-Daten an die einzelnen Gerät würde von der PTP-Library übernommen.
-Damit die Entwicklung solcher Spiele für die Hobbyentwickler keine finanziellen
-Hürden stellt, wurde die PTP-Library mit dem Android SDK \cite{andsdk}
-entwickelt.
-Da das Android SDK kostenlos für jeden Entwickler zur Verfügung steht, kann jeder Entwickler, der
-über ein Android Gerät verfügt gleich mit der Entwicklung des Spieles loslegen.
-Natürlich lässt sich die PTP-Library auch für praktische Anwendungen, wie
-z.B. Textmessanger, verwenden, jedoch wird im Rahmen dieser Ausarbeitung nur
-auf die Realisierung von Spielen eingegangen.
+Spiele für Smartphones gibt es unzählige. Die
+meisten dieser Spiele sind entweder Solospiele,
+oder sind für mehrere Spieler unter Verwendung eines Servers. Trotz der
+mittlerweile gut ausgebauten Netzabdeckung und guter Internetgeschwindigkeit auf Smartphones, kann das Spielerlebniss durch eine schwankende Internetgeschwindigkeit getrübt werden.
+Dies ist von der Unterschiedlichen Netzabdeckung der einzelnen
+Mobilfunkanbieter abhängig.\cite{coverage} Actionspiele, die eine schnelle
+Antwortzeit benötigen, setzen somit mindestens eine \ib{HSDPA}\cite{hsdpa}
+Verbindung vorraus.
+Einige Spiele senden außerdem eine große Menge an Daten an den Server. Das kann,
+abhängig vom vorhandenen Vertrag, das Datenvolumen schnell verbrauchen.
+Es gibt auch Situtationen, bei denen es keine oder nur eine beschränkte Internetverbingung gibt, z.B. im Ausland oder bei einer
+Zugfahrt. Für diese Situtationen gibt es die Möglichkeit eine lokale
+\ib{Peer-to-Peer}\cite{ptp} Verbindung zwischen den Smartphones zu erstellen.
+Das Interesse eine lokale Verbingung zwischen Smartphones herstellen zu können,
+wird auch an den Bemühungen seitens Samsung erkennbar.
+Samsung hat 2013, während der Erstellung dieser Arbeit, das \ib{Chord
+SDK}\cite{chord} herausgebracht, das die Kommunikation zwischen einzelnen
+Samsung Smartphones über das lokale Funknetz ermöglicht. Das Chord SDK steht
+jedoch unter der Samsung License und ermöglicht nur die Entwicklung auf Samsung
+Smartphones.
+Die Entwicklung einer Bibliothek, die \ib{OpenSource} ist und die Verwendung auf
+allen Android Geräten erlaubt, bietet somit eine gute Alternative. Durch diese
+Bibliothek wird die Entwicklung der Spiele soweit vereinfacht, dass bei der
+Entwicklung nur auf die Spiellogik geachtet werden muss. Die
+Verbindungtechnischen Prozesse werden von der Bibliothek übernommen.
+Für die Entwicklung eines Spiele auf Basis der Bibliothek wird nur ein
+Android Gerät benötigt.
+Die Bibliothek kann auch für praktische Anwendungen, wie z.B. Textmessanger,
+verwendet werden. Es wird jedoch im Rahmen dieser Ausarbeitung nur auf die
+Realisierung von Spielen eingegangen.
+Die Bibliothek wird im weiteren Verlauf der Arbeit als \ib{PTPLibrary}
+bezeichnet.
 
   
-\section{Lösungsansatz}  
-  
-Um sich die ganzen Herausforderung bei der Realisierung von Peer-to-Peer
-\cite{ptp} Kommunikation zu ersparen wurde ein weiteres Rahmenwerk namens
-AllJoyn verwendet, welches die die Verbindung und die Kommunikation zum
-größten Teil schon übernimmt. Somit blieb zum Einen eine geschickte
-Integration von AllJoyn in die PTP-Library. Weiterhin mussten die vielen,
-gerade auf den ersten Blick komplizierten, Konfigurationen des AllJoyn
-Rahmenwerks durch eine einfache Schnittstelle erweitert werden. Die
-Netzwerkverbindung läuft in einem seperaten Thread und muss daher
-mithilfe von \ib{Handlern} \ref{subsec:handler} von dem \ib{UI-Thread}
-\ref{subsec:uithread} abgekoppelt werden, sodass sich die beiden Threads nicht
-behindern. Als praktische Anwendungsbeispiele wurde ein Echtzeitpuzzlespiel und ein Zugbasiertes Kartenspiel namens MauMau implementiert.
-   
-\section{Gliederung}
 
-Die Arbeit beinhaltet zu Anfang die Erklärung der verwendeten Rahmenwerke
-AndroidSDK und AllJoyn. Dabei werden die Konzepte dieser Rahmenwerke grob
-erläutert. Dann wird das Konzept und die Implementierung der
-PTP-Library, welches das Hauptaugenmerk dieser Arbeit ist,
-beschrieben. Daraufhin wird beschrieben, wie die zwei Spielebeispiele realisiert
-wurden, sowie Herausforderung, die während der Implementierung entstanden.
 
 

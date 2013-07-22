@@ -15,8 +15,8 @@ public final class R {
     }
     public static final class id {
         public static int create_button=0x7f060002;
-        public static int create_channel_name=0x7f060001;
-        public static int join_channel_list=0x7f060003;
+        public static int create_session_name=0x7f060001;
+        public static int join_session_list=0x7f060003;
         public static int player_name=0x7f060000;
         public static int refresh_button=0x7f060004;
     }
@@ -30,10 +30,12 @@ public final class R {
         public static int button_create=0x7f040006;
         public static int button_refresh=0x7f040007;
         public static int channel_name=0x7f040002;
-        public static int default_player_name=0x7f040009;
-        public static int game_exists=0x7f04000a;
+        public static int default_player_name=0x7f04000a;
+        public static int field_empty=0x7f04000c;
+        public static int game_exists=0x7f04000b;
         public static int hello_world=0x7f040005;
         public static int player_name=0x7f040008;
+        public static int player_name_empty=0x7f040009;
         public static int title_activity_display_message=0x7f040004;
     }
     public static final class style {

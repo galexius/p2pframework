@@ -6,8 +6,8 @@ int drawable red_button 0x7f020002
 int id SurfaceView01 0x7f090005
 int id action_settings 0x7f090006
 int id create_button 0x7f090002
-int id create_channel_name 0x7f090001
-int id join_channel_list 0x7f090003
+int id create_session_name 0x7f090001
+int id join_session_list 0x7f090003
 int id player_name 0x7f090000
 int id refresh_button 0x7f090004
 int layout activity_display_message 0x7f030000
@@ -21,10 +21,12 @@ int string button_connect 0x7f050003
 int string button_create 0x7f050006
 int string button_refresh 0x7f050007
 int string channel_name 0x7f050002
-int string default_player_name 0x7f050009
-int string game_exists 0x7f05000a
+int string default_player_name 0x7f05000a
+int string field_empty 0x7f05000c
+int string game_exists 0x7f05000b
 int string hello_world 0x7f050005
 int string player_name 0x7f050008
+int string player_name_empty 0x7f050009
 int string title_activity_display_message 0x7f050004
 int style AppBaseTheme 0x7f060000
 int style AppTheme 0x7f060001

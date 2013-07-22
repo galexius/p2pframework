@@ -6,5 +6,5 @@ import org.alljoyn.bus.annotation.BusSignal;
 @BusInterface (name = "de.ptpservice.PTPBusObjectInterface")
 public interface PTPBusObjectInterface {	
 	@BusSignal
-	public void SendDataToAllPeers(String sentFrom,int arg, byte[] data);
+	public void SendDataToAllPeers(String sentFrom,int arg, String[] data);
 }

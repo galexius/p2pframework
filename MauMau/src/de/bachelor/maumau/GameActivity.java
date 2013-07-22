@@ -134,7 +134,7 @@ public class GameActivity extends Activity implements GameManagerObserver {
 	  super.onBackPressed();
 	  gameManager.notifyOthersAboutYourself();
 	  gameManager.reset();
-	  PTPHelper.getInstance().leaveChannel();
+	  PTPHelper.getInstance().leaveSession();
 	  PTPHelper.getInstance().disconnect();
 	  PTPHelper.getInstance().connectAndStartDiscover();
 	}

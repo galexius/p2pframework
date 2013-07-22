@@ -17,7 +17,7 @@
         android:text="@string/default_player_name" />
     
     <EditText
-        android:id="@+id/create_channel_name"
+        android:id="@+id/create_session_name"
         android:layout_width="0dip"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/create_button"
@@ -37,11 +37,11 @@
         android:text="@string/button_create" />
 
     <ListView
-        android:id="@+id/join_channel_list"
+        android:id="@+id/join_session_list"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/create_channel_name"
+        android:layout_below="@+id/create_session_name"
         android:layout_alignTop="@+id/refresh_button"
         android:layout_toLeftOf="@+id/refresh_button"
         android:layout_marginBottom="5dp"
@@ -60,7 +60,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/create_channel_name"
+        android:layout_below="@+id/create_session_name"
         android:onClick="refresh"
         android:text="@string/button_refresh" />
 

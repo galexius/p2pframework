@@ -4,22 +4,19 @@
 \markboth{Zusammenfassung}{Zusammenfassung}
 
   Diese Arbeit umfasst die Implementierung einer Bibliothek für
-  Multiplayerspiele auf Peer-to-Peer-Basis \cite{ptp}.
-  Peer-to-Peer bedeutet das für die Kommunikation kein Server verwendet wird. Dies wird jedoch
-  noch genauer im Kapitel ~\ref{sec:ptp} erläutert. Für die Verbindung zwischen den Geräten wurde das Rahmenwerk AllJoyn 
-  \cite{alljoyn} verwendet, welcher im Kapitel ~\ref{sec:alljoyn} erläutert
-  wird.
-  Weiterhin wurden zwei Spiele mithilfe dieser Bibliothek implementiert
-  und dienen als praktische Beispiele.
-  Die Bibliothek ist für Android Geräte bestimmt und wird daher
-  auf Basis des Android SDK \cite{andsdk} realisiert.
-  Die Bibliothek sollte eine Kommunikation zwischen mehreren Geräten soweit
-  vereinfachen, dass bei der Implementierung weiterer Spiele nur um die
-  Spielmechanik Gedanken gemacht werden muss. Selbst die
-  Lobby-Funktionalität, wie das Erstellen und das Verbinden zum Spiel, wird
-  von der Bibliothek übernommen.
-  Im weiteren Verlauf wird die implementierte Bibliothek als \ib{PTPLibrary}
-  genannt.
+  Multiplayerspiele, ohne die Verwendung eines externen Servers. Für die
+  Verbindung zwischen den Smartphones ist ein bereits vorhandenes Rahmenwerk
+  namens AllJoyn\cite{alljoyn} verwendet worden. AllJoyn ermöglicht eine
+  Kommunikation der Smartphones über das Funknetzwerk. Die Bibliothek ist für
+  die Entwicklung von Spielen für Android bestimmt und basiert daher dem Android SDK\cite{andsdk}.
+  Durch die Verwendung der Bibliothek wird die Kommunikation zwischen mehreren
+  Smartphones soweit vereinfacht, dass bei der Implementierung nur auf die
+  Spielmechanik konzentriert werden kann.
+  Funktionen wie die Vermittlung, das Erstellen und das Verbinden zum
+  Spiel, wird von der Bibliothek übernommen.
+  Im Anschluss ist das Kartenspiel MauMau und ein Puzzelspiel GraphenGame
+  implementiert worden. Die beiden Spiele dienen als Demonstration der
+  Funktionalität dieser Bibliothek. 
   
   \vspace{0.5cm}
 

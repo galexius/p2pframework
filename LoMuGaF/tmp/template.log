@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.4-1.40.13 (MiKTeX 2.9) (preloaded format=pdflatex 2013.6.7)  18 JUL 2013 21:04
+This is pdfTeX, Version 3.1415926-2.4-1.40.13 (MiKTeX 2.9) (preloaded format=pdflatex 2013.6.7)  22 JUL 2013 20:53
 entering extended mode
 **template.tex
 (G:\Bachelor\workspace\LoMuGaF\template.tex
@@ -468,7 +468,11 @@ File: lstlang1.sty 2004/09/05 1.3 listings language file
 Package csquotes Info: Checking for multilingual support...
 Package csquotes Info: ... found 'babel' package.
 
-(G:\Bachelor\workspace\LoMuGaF\template.aux)
+(G:\Bachelor\workspace\LoMuGaF\template.aux
+
+LaTeX Warning: Label `joinSession' multiply defined.
+
+)
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 13.
 LaTeX Font Info:    ... okay on input line 13.
 LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 13.
@@ -561,12 +565,12 @@ LaTeX Font Info:    Try loading font information for T1+cmss on input line 3.
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\base\t1cmss.fd"
 File: t1cmss.fd 1999/05/25 v2.5h Standard LaTeX font definitions
 )
-<title/Logo_UniKassel.png, id=215, 582.175pt x 132.495pt>
+<title/Logo_UniKassel.png, id=211, 582.175pt x 132.495pt>
 <use title/Logo_UniKassel.png>
 Overfull \vbox (20.91284pt too high) detected at line 12
  []
 
-<title/SE_Logo.png, id=216, 200.75pt x 80.3pt> <use title/SE_Logo.png>
+<title/SE_Logo.png, id=212, 200.75pt x 80.3pt> <use title/SE_Logo.png>
 Overfull \vbox (14.72226pt too high) detected at line 12
  []
 
@@ -648,94 +652,140 @@ Class scrreprt Warning: \float@addtolists detected!
 (scrreprt)              Support for \float@addtolists may be removed from
 (scrreprt)              `scrreprt' soon .
 
-[3
+) (G:\Bachelor\workspace\LoMuGaF\chapter2/chapter2.tex [3
 
-]) (G:\Bachelor\workspace\LoMuGaF\chapter2/chapter2.tex [4]
+]
 Kapitel 2.
-<chapter1/architect.png, id=329, 593.21625pt x 383.18156pt>
+<chapter1/architect.png, id=318, 593.21625pt x 383.18156pt>
 File: chapter1/architect.png Graphic file (type png)
 
 <use chapter1/architect.png>
 Package pdftex.def Info: chapter1/architect.png used on input line 12.
 (pdftex.def)             Requested size: 204.85803pt x 132.3264pt.
- [5
+ [4
 
  <G:/Bachelor/workspace/LoMuGaF/chapter1/architect.png>]
-<chapter2/Server-based-network.png, id=338, 119.44624pt x 123.46124pt>
+<chapter2/Server-based-network.png, id=329, 119.44624pt x 123.46124pt>
 File: chapter2/Server-based-network.png Graphic file (type png)
 
 <use chapter2/Server-based-network.png>
 Package pdftex.def Info: chapter2/Server-based-network.png used on input line 3
-7.
+5.
 (pdftex.def)             Requested size: 128.03871pt x 132.35088pt.
 
-<chapter2/P2P-network.png, id=339, 119.44624pt x 123.46124pt>
+<chapter2/P2P-network.png, id=330, 119.44624pt x 123.46124pt>
 File: chapter2/P2P-network.png Graphic file (type png)
 
 <use chapter2/P2P-network.png>
-Package pdftex.def Info: chapter2/P2P-network.png used on input line 43.
+Package pdftex.def Info: chapter2/P2P-network.png used on input line 41.
 (pdftex.def)             Requested size: 128.03871pt x 132.35088pt.
- [6 <G:/Bachelor/workspace/LoMuGaF/chapter2/Server-based-network.png> <G:/Bache
-lor/workspace/LoMuGaF/chapter2/P2P-network.png>]
-[7] <chapter2/anr.png, id=355, 281.05pt x 137.51375pt>
+
+<chapter2/android.jpg, id=332, 256.96pt x 248.93pt>
+File: chapter2/android.jpg Graphic file (type jpg)
+ <use chapter2/android.jpg>
+Package pdftex.def Info: chapter2/android.jpg used on input line 69.
+(pdftex.def)             Requested size: 85.35696pt x 82.6903pt.
+
+[5 <G:/Bachelor/workspace/LoMuGaF/chapter2/Server-based-network.png> <G:/Bachel
+or/workspace/LoMuGaF/chapter2/P2P-network.png> <G:/Bachelor/workspace/LoMuGaF/c
+hapter2/android.jpg>] [6] <chapter2/anr.png, id=348, 281.05pt x 137.51375pt>
 File: chapter2/anr.png Graphic file (type png)
- <use chapter2/anr.png>
-Package pdftex.def Info: chapter2/anr.png used on input line 147.
+
+<use chapter2/anr.png>
+Package pdftex.def Info: chapter2/anr.png used on input line 149.
 (pdftex.def)             Requested size: 192.05481pt x 93.96973pt.
-
-[8]
+ [7]
 Package hyperref Info: bookmark level for unknown lstlisting defaults to 0 on i
-nput line 165.
-LaTeX Font Info:    Try loading font information for T1+cmtt on input line 165.
+nput line 167.
+LaTeX Font Info:    Try loading font information for T1+cmtt on input line 167.
 
- ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\base\t1cmtt.fd"
+
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\base\t1cmtt.fd"
 File: t1cmtt.fd 1999/05/25 v2.5h Standard LaTeX font definitions
-) [9 <G:/Bachelor/workspace/LoMuGaF/chapter2/anr.png>]
-<chapter2/img-developer-proxy.png, id=373, 581.17125pt x 438.63875pt>
+) [8 <G:/Bachelor/workspace/LoMuGaF/chapter2/anr.png>]
+<chapter2/img-alljoyn-logo.png, id=366, 52.195pt x 55.20625pt>
+File: chapter2/img-alljoyn-logo.png Graphic file (type png)
+
+<use chapter2/img-alljoyn-logo.png>
+Package pdftex.def Info: chapter2/img-alljoyn-logo.png used on input line 179.
+(pdftex.def)             Requested size: 85.35696pt x 90.29367pt.
+
+<chapter2/img-developer-proxy.png, id=367, 581.17125pt x 438.63875pt>
 File: chapter2/img-developer-proxy.png Graphic file (type png)
 
 <use chapter2/img-developer-proxy.png>
 Package pdftex.def Info: chapter2/img-developer-proxy.png used on input line 19
-4.
+9.
 (pdftex.def)             Requested size: 213.39568pt x 161.06226pt.
- [10 <G:/Bachelor/workspace/LoMuGaF/chapter2/img-developer-proxy.png>]
+ [9 <G:/Bachelor/workspace/LoMuGaF/chapter2/img-alljoyn-logo.png> <G:/Bachelor/
+workspace/LoMuGaF/chapter2/img-developer-proxy.png>]
 LaTeX Font Info:    Font shape `T1/cmtt/bx/n' in size <10> not available
-(Font)              Font shape `T1/cmtt/m/n' tried instead on input line 216.
+(Font)              Font shape `T1/cmtt/m/n' tried instead on input line 226.
 
-<chapter2/bus.png, id=387, 500.62032pt x 185.19188pt>
+Overfull \hbox (4.46573pt too wide) in paragraph at lines 228--237
+\T1/cmr/m/n/12 be-han-deln soll. Durch den Pa-ra-me-ter \T1/cmr/bx/it/12 Bu-sAt
+-ta-che-ment.RemoteMessage.Receive
+ []
+
+<chapter2/bus.png, id=382, 500.62032pt x 185.19188pt>
 File: chapter2/bus.png Graphic file (type png)
  <use chapter2/bus.png>
-Package pdftex.def Info: chapter2/bus.png used on input line 230.
+Package pdftex.def Info: chapter2/bus.png used on input line 240.
 (pdftex.def)             Requested size: 213.39568pt x 78.94145pt.
 
-[11 <G:/Bachelor/workspace/LoMuGaF/chapter2/bus.png>] [12] [13])
-(G:\Bachelor\workspace\LoMuGaF\chapter3/chapter3.tex [14]
+[10 <G:/Bachelor/workspace/LoMuGaF/chapter2/bus.png>] [11] [12])
+(G:\Bachelor\workspace\LoMuGaF\chapter3/chapter3.tex [13]
 Kapitel 3.
-[15
+[14
 
-] [16] [17] [18] [19]
-<chapter3/lobby.png, id=508, 540.51938pt x 391.4625pt>
+] [15] [16] [17]
+Overfull \hbox (79.09892pt too wide) in paragraph at lines 165--187
+\T1/cmr/bx/it/12 Da-ta-Lis-te-ner\T1/cmr/m/n/12 . Die-ses In-te-face de-fi-nier
+t die Me-tho-de \T1/cmr/bx/it/12 da-ta-Sent-ToAll-Peers(String,int,String[])\T1
+/cmr/m/n/12 .
+ []
+
+[18] <chapter3/lobby.png, id=500, 540.51938pt x 391.4625pt>
 File: chapter3/lobby.png Graphic file (type png)
 
 <use chapter3/lobby.png>
-Package pdftex.def Info: chapter3/lobby.png used on input line 203.
+Package pdftex.def Info: chapter3/lobby.png used on input line 195.
 (pdftex.def)             Requested size: 204.85803pt x 148.36305pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 199--206
-\T1/cmr/m/n/12 so-dass man sich dar-um nicht mehr selbst küm-mern muss.
+Underfull \hbox (badness 1308) in paragraph at lines 190--198
+\T1/cmr/m/n/12 Die Lob-by, die die Lob-by-Ac-ti-vi-ty im-ple-men-tiert, zeigt d
+ie Ab-bil-dung  [][]3.1[][].
  []
 
-[20 <G:/Bachelor/workspace/LoMuGaF/chapter3/lobby.png>] [21] [22] [23] [24]
-[25] [26] [27] [28]) (G:\Bachelor\workspace\LoMuGaF\chapter4/chapter4.tex
-[29]
+[19 <G:/Bachelor/workspace/LoMuGaF/chapter3/lobby.png>] [20] [21]
+Overfull \hbox (56.82518pt too wide) in paragraph at lines 303--308
+[]\T1/cmr/m/n/12 Jedoch muss da-zu im An-dro-id-Ma-ni-fest die not-wen-di-ge Er
+-laub-niss \T1/cmr/bx/it/12 READ_PHONE_STATE
+ []
+
+[22]
+Overfull \hbox (39.76266pt too wide) in paragraph at lines 325--336
+\T1/cmr/m/n/12 ge-schieht über den ein-fa-chen Me-tho-den-auf-ruf \T1/cmr/bx/it
+/12 bus.findAdvertisedName(packageName)\T1/cmr/m/n/12 .
+ []
+
+
+Overfull \hbox (203.9281pt too wide) in paragraph at lines 325--336
+\T1/cmr/m/n/12 die Me-tho-de \T1/cmr/bx/it/12 do-Stop-Dis-co-ve-ry() \T1/cmr/m/
+n/12 aus-ge-führt wer-den, die die Me-tho-de \T1/cmr/bx/it/12 bus.cancelFindAdv
+ertisedName(packageName)
+ []
+
+[23] [24] [25] [26]) (G:\Bachelor\workspace\LoMuGaF\chapter4/chapter4.tex
+[27]
 Kapitel 4.
-<chapter4/graphscreen.png, id=678, 542.025pt x 752.8125pt>
+<chapter4/graphscreen.png, id=635, 542.025pt x 752.8125pt>
 File: chapter4/graphscreen.png Graphic file (type png)
 
 <use chapter4/graphscreen.png>
 Package pdftex.def Info: chapter4/graphscreen.png used on input line 10.
 (pdftex.def)             Requested size: 204.85803pt x 284.52098pt.
- [30
+ [28
 
  <G:/Bachelor/workspace/LoMuGaF/chapter4/graphscreen.png>]
 LaTeX Font Info:    Try loading font information for OMS+cmr on input line 40.
@@ -745,20 +795,20 @@ File: omscmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <12> not available
 (Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 40.
 
-[31] <chapter4/includelibrary.png, id=691, 311.66437pt x 163.3603pt>
+[29] <chapter4/includelibrary.png, id=649, 311.66437pt x 163.3603pt>
 File: chapter4/includelibrary.png Graphic file (type png)
 
 <use chapter4/includelibrary.png>
 Package pdftex.def Info: chapter4/includelibrary.png used on input line 69.
 (pdftex.def)             Requested size: 204.85803pt x 107.37941pt.
- [32 <G:/Bachelor/workspace/LoMuGaF/chapter4/includelibrary.png>] [33] [34] [35
-] [36]
+ [30 <G:/Bachelor/workspace/LoMuGaF/chapter4/includelibrary.png>] [31] [32] [33
+] [34]
 
-LaTeX Warning: Reference `udpateGraph' on page 37 undefined on input line 258.
+LaTeX Warning: Reference `udpateGraph' on page 35 undefined on input line 258.
 
-) (G:\Bachelor\workspace\LoMuGaF\chapter5/chapter5.tex [37]
+) (G:\Bachelor\workspace\LoMuGaF\chapter5/chapter5.tex [35]
 Kapitel 5.
-<chapter5/maumau.png, id=806, 542.025pt x 739.26187pt>
+<chapter5/maumau.png, id=764, 542.025pt x 739.26187pt>
 File: chapter5/maumau.png Graphic file (type png)
 
 <use chapter5/maumau.png>
@@ -769,19 +819,19 @@ Overfull \hbox (12.80322pt too wide) in paragraph at lines 5--6
  [][][] 
  []
 
-[38
+[36
 
- <G:/Bachelor/workspace/LoMuGaF/chapter5/maumau.png>] [39] [40] [41]
-[42] [43] <chapter5/wishsuit.png, id=882, 463.7325pt x 221.32687pt>
+ <G:/Bachelor/workspace/LoMuGaF/chapter5/maumau.png>] [37] [38] [39]
+[40] [41] <chapter5/wishsuit.png, id=840, 463.7325pt x 221.32687pt>
 File: chapter5/wishsuit.png Graphic file (type png)
 
 <use chapter5/wishsuit.png>
 Package pdftex.def Info: chapter5/wishsuit.png used on input line 226.
 (pdftex.def)             Requested size: 204.85803pt x 97.77248pt.
- [44 <G:/Bachelor/workspace/LoMuGaF/chapter5/wishsuit.png>]) (G:\Bachelor\works
-pace\LoMuGaF\chapter7/chapter7.tex [45]
+ [42 <G:/Bachelor/workspace/LoMuGaF/chapter5/wishsuit.png>]) (G:\Bachelor\works
+pace\LoMuGaF\chapter7/chapter7.tex [43]
 Kapitel 6.
-) [46
+) [44
 
 ] (G:\Bachelor\workspace\LoMuGaF\bibliography/bibliography.tex
 Anhang A.
@@ -798,35 +848,62 @@ msung . com / chord$[][] \T1/cmr/m/n/12 [Stand:
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 26--28
+Underfull \hbox (badness 10000) in paragraph at lines 25--27
 $\T1/cmtt/m/n/12 de / android -[] 900 -[] millionen -[] geraete -[] aktivierung
 en -[] und -[] 48 -[]$
  []
 
-)
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 68.
- [1
 
-]
+Underfull \hbox (badness 1107) in paragraph at lines 31--34
+[][]\T1/cmr/m/n/12 Latenzzeiten von HSD-PA [][]$\T1/cmtt/m/n/12 http : / / www 
+. elektronik -[] kompendium . de /$
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 35--38
+[][]\T1/cmr/m/n/12 Netzabdeckung von Mo-bil-funkan-bie-tern [][]$\T1/cmtt/m/n/1
+2 http : / / www . welt . de /$
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 35--38
+$\T1/cmtt/m/n/12 wirtschaft / webwelt / article110550438 / Schlecht -[] verbund
+en -[]$
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 39--42
+[][]\T1/cmr/m/n/12 DBus Da-ten-typspe-ci-fi-ca-ti-on [][]$\T1/cmtt/m/n/12 http 
+: / / dbus . freedesktop . org / doc /$
+ []
+
+[1
+
+])
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 68.
+ [2]
 Package atveryend Info: Empty hook `AfterLastShipout' on input line 68.
  (G:\Bachelor\workspace\LoMuGaF\template.aux)
 Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 68.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 68.
 Package rerunfilecheck Info: File `template.out' has not changed.
-(rerunfilecheck)             Checksum: E61CEA0EC04E8DA1285EE6BD3A505CE6;3499.
+(rerunfilecheck)             Checksum: 2BDE5C7086A8FB6E6A533FC9C9047B7A;3437.
 
 
 LaTeX Warning: There were undefined references.
 
+
+LaTeX Warning: There were multiply-defined labels.
+
  ) 
 Here is how much of TeX's memory you used:
- 12366 strings out of 493921
- 187869 string characters out of 3144880
- 393027 words of memory out of 3000000
- 14992 multiletter control sequences out of 15000+200000
+ 12319 strings out of 493921
+ 187179 string characters out of 3144880
+ 387027 words of memory out of 3000000
+ 14972 multiletter control sequences out of 15000+200000
  21284 words of font info for 47 fonts, out of 3000000 for 9000
  841 hyphenation exceptions out of 8191
- 50i,13n,56p,819b,1906s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 50i,13n,56p,819b,1904s stack positions out of 5000i,500n,10000p,200000b,50000s
  <C:\Users\alex\AppData\Local\MiKTeX\2.9\fonts\pk\ljfour\jknappen\ec\dpi600\e
 ctt1200.pk> <C:\Users\alex\AppData\Local\MiKTeX\2.9\fonts\pk\ljfour\jknappen\ec
 \dpi600\ecit1000.pk> <C:\Users\alex\AppData\Local\MiKTeX\2.9\fonts\pk\ljfour\jk
@@ -834,9 +911,9 @@ nappen\ec\dpi600\ectt1000.pk> <C:\Users\alex\AppData\Local\MiKTeX\2.9\fonts\pk\
 ljfour\jknappen\ec\dpi600\ecrm0600.pk> <C:\Users\alex\AppData\Local\MiKTeX\2.9\
 fonts\pk\ljfour\jknappen\ec\dpi600\ecrm1000.pk> <C:\Users\alex\AppData\Local\Mi
 KTeX\2.9\fonts\pk\ljfour\jknappen\ec\dpi600\ecsx1440.pk> <C:\Users\alex\AppData
-\Local\MiKTeX\2.9\fonts\pk\ljfour\jknappen\ec\dpi600\ecsx1200.pk> <C:\Users\ale
-x\AppData\Local\MiKTeX\2.9\fonts\pk\ljfour\jknappen\ec\dpi600\ecbx1200.pk> <C:\
-Users\alex\AppData\Local\MiKTeX\2.9\fonts\pk\ljfour\jknappen\ec\dpi600\ecbi1200
+\Local\MiKTeX\2.9\fonts\pk\ljfour\jknappen\ec\dpi600\ecbi1200.pk> <C:\Users\ale
+x\AppData\Local\MiKTeX\2.9\fonts\pk\ljfour\jknappen\ec\dpi600\ecsx1200.pk> <C:\
+Users\alex\AppData\Local\MiKTeX\2.9\fonts\pk\ljfour\jknappen\ec\dpi600\ecbx1200
 .pk> <C:\Users\alex\AppData\Local\MiKTeX\2.9\fonts\pk\ljfour\jknappen\ec\dpi600
 \ecrm1200.pk> <C:\Users\alex\AppData\Local\MiKTeX\2.9\fonts\pk\ljfour\jknappen\
 ec\dpi600\ecsx2074.pk> <C:\Users\alex\AppData\Local\MiKTeX\2.9\fonts\pk\ljfour\
@@ -847,9 +924,9 @@ MiKTeX\2.9\fonts\pk\ljfour\jknappen\ec\dpi600\eccc2074.pk> <C:\Users\alex\AppDa
 ta\Local\MiKTeX\2.9\fonts\pk\ljfour\jknappen\ec\dpi600\ecss1000.pk><C:/Program 
 Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi12.pfb><C:/Program Fi
 les (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb>
-Output written on template.pdf (50 pages, 1495713 bytes).
+Output written on template.pdf (49 pages, 1505468 bytes).
 PDF statistics:
- 1737 PDF objects out of 2073 (max. 8388607)
- 446 named destinations out of 1000 (max. 500000)
- 490 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 1712 PDF objects out of 1728 (max. 8388607)
+ 416 named destinations out of 1000 (max. 500000)
+ 492 words of extra memory for PDF output out of 10000 (max. 10000000)
 

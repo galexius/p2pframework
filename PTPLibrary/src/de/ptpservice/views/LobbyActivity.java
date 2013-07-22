@@ -22,12 +22,12 @@ import de.ptpservice.PTPHelper;
 @TargetApi(Build.VERSION_CODES.GINGERBREAD)
 public abstract class LobbyActivity extends AbstractLobbyActivity {
 
-	private ListView channelList;
+	private ListView sessionList;
 	private Button refreshButton;
 	private Button createButtn;
 	
-	protected abstract Class<?> getJoinChannelView();
-	protected abstract Class<?> getHostChannelView();
+	protected abstract Class<?> getJoinSessionView();
+	protected abstract Class<?> getHostSessionView();
      
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +37,7 @@ public abstract class LobbyActivity extends AbstractLobbyActivity {
         PTPHelper.getInstance().addLobbyObserver(this);
         createButtn = (Button) findViewById(R.id.create_button);
         refreshButton = (Button) findViewById(R.id.refresh_button);
-        channelList = (ListView) findViewById(R.id.join_channel_list);
+        sessionList = (ListView) findViewById(R.id.join_session_list);
         setupListView();
         updateUIState(PTPHelper.getInstance().getConnectionState());
         PTPHelper.getInstance().connectAndStartDiscover();
@@ -55,21 +55,21 @@ public abstract class LobbyActivity extends AbstractLobbyActivity {
     }
     
     public void create(View view){
-    	EditText channel = (EditText)findViewById(R.id.create_channel_name);
+    	EditText channel = (EditText)findViewById(R.id.create_session_name);
     	EditText player = (EditText)findViewById(R.id.player_name);
     	String playerName = player.getText().toString();
     	String channelName = channel.getText().toString();
     	if(playerName.isEmpty() || channelName.isEmpty()){
     		Context context = getApplicationContext();
-	    	CharSequence text = "Player name or channel name is empty";
+	    	CharSequence text = context.getResources().getText(R.string.field_empty);
 	    	int duration = Toast.LENGTH_SHORT;
 
 	    	Toast toast = Toast.makeText(context, text, duration);
 	    	toast.show();
     	}else{
-    		PTPHelper.getInstance().setHostChannelName(channelName);
+    		PTPHelper.getInstance().setHostSessionName(channelName);
     		PTPHelper.getInstance().setPlayerName(playerName);
-    		PTPHelper.getInstance().hostStartChannel();
+    		PTPHelper.getInstance().hostStartSession();
     		updateUIState(PTPHelper.SESSION_HOSTED);
     	}
 
@@ -84,48 +84,48 @@ public abstract class LobbyActivity extends AbstractLobbyActivity {
     }
     
     private void setupListView(){
-        ArrayAdapter<String> channelListAdapter = new ArrayAdapter<String>(this, android.R.layout.test_list_item);    	
+        ArrayAdapter<String> sessionListAdapter = new ArrayAdapter<String>(this, android.R.layout.test_list_item);    	
 
-    	channelList.setOnItemClickListener(new ListView.OnItemClickListener() {
+    	sessionList.setOnItemClickListener(new ListView.OnItemClickListener() {
 	    	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 	        	EditText player = (EditText)findViewById(R.id.player_name);
 	        	String playerName = player.getText().toString();
 	        	if(playerName.isEmpty()){
 	        		Context context = getApplicationContext();
-	    	    	CharSequence text = "Player name is empty";
+	    	    	CharSequence text = context.getResources().getString(R.string.player_name_empty);
 	    	    	int duration = Toast.LENGTH_SHORT;
 
 	    	    	Toast toast = Toast.makeText(context, text, duration);
 	    	    	toast.show();
 	        	}else{
-					String name = channelList.getItemAtPosition(position).toString();
-					PTPHelper.getInstance().setClientChannelName(name);
+					String name = sessionList.getItemAtPosition(position).toString();
+					PTPHelper.getInstance().setClientSessionName(name);
 					PTPHelper.getInstance().setPlayerName(playerName);
-					PTPHelper.getInstance().joinChannel();
+					PTPHelper.getInstance().joinSession();
 					updateUIState(PTPHelper.SESSION_JOINED);
 	        	}
 			}
     	});
     	
     	
-        channelList.setAdapter(channelListAdapter);
+        sessionList.setAdapter(sessionListAdapter);
         
-		List<String> channels = PTPHelper.getInstance().getFoundChannels();
-        for (String channel : channels) {
-        	channelListAdapter.add(channel);
+		List<String> sessions = PTPHelper.getInstance().getFoundSessions();
+        for (String session : sessions) {
+        	sessionListAdapter.add(session);
         }
-	    channelListAdapter.notifyDataSetChanged();
+	    sessionListAdapter.notifyDataSetChanged();
     }
     
     @Override
     public void connectionStateChanged(final int connectionState){
 		updateUIState(connectionState);
 		if(connectionState == PTPHelper.SESSION_HOSTED){
-			Intent intent = new Intent(LobbyActivity.this, getHostChannelView());
+			Intent intent = new Intent(LobbyActivity.this, getHostSessionView());
 			LobbyActivity.this.startActivity(intent);
 		}
 		if(connectionState == PTPHelper.SESSION_JOINED){
-			Intent intent = new Intent(LobbyActivity.this, getJoinChannelView());
+			Intent intent = new Intent(LobbyActivity.this, getJoinSessionView());
 			LobbyActivity.this.startActivity(intent);
 		}
 		if(connectionState == PTPHelper.SESSION_NAME_EXISTS){
@@ -141,6 +141,6 @@ public abstract class LobbyActivity extends AbstractLobbyActivity {
 		boolean connected = connectionState == PTPHelper.CONNECTED || connectionState == PTPHelper.SESSION_CLOSED || connectionState == PTPHelper.SESSION_LEFT;
 		createButtn.setEnabled(connected);
 		refreshButton.setEnabled(connected);
-		channelList.setEnabled(connected);		
+		sessionList.setEnabled(connected);		
 	}    
 }

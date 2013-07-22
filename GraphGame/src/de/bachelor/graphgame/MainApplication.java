@@ -1,7 +1,5 @@
 package de.bachelor.graphgame;
 
-import java.io.UnsupportedEncodingException;
-
 import android.annotation.SuppressLint;
 import android.app.Application;
 import android.os.Handler;
@@ -13,7 +11,7 @@ import de.ptpservice.PTPHelper;
 public class MainApplication extends Application {
 		
 	class MessageInfoHolder {
-		public byte[] data;
+		public String[] data;
 		public String sentBy;
 	}
 	
@@ -28,7 +26,7 @@ public class MainApplication extends Application {
 		PTPHelper.getInstance().addDataListener(new DataListener() {
 			
 			@Override
-			public void dataSentToAllPeers(String peersID, int messageType, byte[] data) {
+			public void dataSentToAllPeers(String peersID, int messageType, String[] data) {
 				MessageInfoHolder infoHolder = new MessageInfoHolder();
 				infoHolder.data = data;
 				infoHolder.sentBy = peersID;
@@ -65,24 +63,12 @@ public class MainApplication extends Application {
     };
 
 	protected void nodeOwnerChanged(MessageInfoHolder obj) {
-    	String dataAsString = "";
-		try {
-			dataAsString = new String(obj.data,PTPHelper.ENCODING_UTF8);
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
-    	Node node = graph.getNodeFromXML(dataAsString);
+    	Node node = graph.getNodeFromXML(obj.data[0]);
 	    graph.ChangeOwnerOfNode(node.getId(),node.getOwner(), obj.sentBy);
 	}
 
 	protected void nodePositionChanged(MessageInfoHolder obj) {
-    	String dataAsString = "";
-		try {
-			dataAsString = new String(obj.data,PTPHelper.ENCODING_UTF8);
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
-    	Node node = graph.getNodeFromXML(dataAsString);
+    	Node node = graph.getNodeFromXML(obj.data[0]);
 	    graph.MoveNode(node.getId(), node.getX(), node.getY(), obj.sentBy);	
 	}
 
