@@ -34,19 +34,18 @@
 \BOOKMARK [2][-]{subsection.3.4.7}{doQuit\(\)}{section.3.4}% 34
 \BOOKMARK [0][-]{chapter.4}{Praktisches Anwendungsbeispiel: Graphenspiel}{}% 35
 \BOOKMARK [1][-]{section.4.1}{Spielidee}{chapter.4}% 36
-\BOOKMARK [1][-]{section.4.2}{Anforderungen}{chapter.4}% 37
-\BOOKMARK [1][-]{section.4.3}{Implementierung}{chapter.4}% 38
-\BOOKMARK [2][-]{subsection.4.3.1}{Projektkonfiguration}{section.4.3}% 39
-\BOOKMARK [2][-]{subsection.4.3.2}{MainApplication}{section.4.3}% 40
-\BOOKMARK [2][-]{subsection.4.3.3}{Graph}{section.4.3}% 41
-\BOOKMARK [2][-]{subsection.4.3.4}{DrawView}{section.4.3}% 42
-\BOOKMARK [0][-]{chapter.5}{Praktisches Anwendungsbeispiel: MauMau}{}% 43
-\BOOKMARK [1][-]{section.5.1}{Spielidee}{chapter.5}% 44
-\BOOKMARK [1][-]{section.5.2}{Anforderungen}{chapter.5}% 45
-\BOOKMARK [1][-]{section.5.3}{Implementierung}{chapter.5}% 46
-\BOOKMARK [2][-]{subsection.5.3.1}{Projektkonfiguration}{section.5.3}% 47
-\BOOKMARK [2][-]{subsection.5.3.2}{MauMauApplication}{section.5.3}% 48
-\BOOKMARK [2][-]{subsection.5.3.3}{GameManager}{section.5.3}% 49
-\BOOKMARK [2][-]{subsection.5.3.4}{GameActivity}{section.5.3}% 50
-\BOOKMARK [0][-]{chapter.6}{Fazit}{}% 51
-\BOOKMARK [0][-]{appendix.A}{Literaturverzeichnis}{}% 52
+\BOOKMARK [1][-]{section.4.2}{Implementierung}{chapter.4}% 37
+\BOOKMARK [2][-]{subsection.4.2.1}{Projektkonfiguration}{section.4.2}% 38
+\BOOKMARK [2][-]{subsection.4.2.2}{MainApplication}{section.4.2}% 39
+\BOOKMARK [2][-]{subsection.4.2.3}{Graph}{section.4.2}% 40
+\BOOKMARK [2][-]{subsection.4.2.4}{DrawView}{section.4.2}% 41
+\BOOKMARK [0][-]{chapter.5}{Praktisches Anwendungsbeispiel: MauMau}{}% 42
+\BOOKMARK [1][-]{section.5.1}{Spielidee}{chapter.5}% 43
+\BOOKMARK [1][-]{section.5.2}{Anforderungen}{chapter.5}% 44
+\BOOKMARK [1][-]{section.5.3}{Implementierung}{chapter.5}% 45
+\BOOKMARK [2][-]{subsection.5.3.1}{Projektkonfiguration}{section.5.3}% 46
+\BOOKMARK [2][-]{subsection.5.3.2}{MauMauApplication}{section.5.3}% 47
+\BOOKMARK [2][-]{subsection.5.3.3}{GameManager}{section.5.3}% 48
+\BOOKMARK [2][-]{subsection.5.3.4}{GameActivity}{section.5.3}% 49
+\BOOKMARK [0][-]{chapter.6}{Fazit}{}% 50
+\BOOKMARK [0][-]{appendix.A}{Literaturverzeichnis}{}% 51

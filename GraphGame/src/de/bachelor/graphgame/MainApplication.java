@@ -62,12 +62,12 @@ public class MainApplication extends Application {
 		}
     };
 
-	protected void nodeOwnerChanged(MessageInfoHolder obj) {
+	private void nodeOwnerChanged(MessageInfoHolder obj) {
     	Node node = graph.getNodeFromXML(obj.data[0]);
 	    graph.ChangeOwnerOfNode(node.getId(),node.getOwner(), obj.sentBy);
 	}
 
-	protected void nodePositionChanged(MessageInfoHolder obj) {
+	private void nodePositionChanged(MessageInfoHolder obj) {
     	Node node = graph.getNodeFromXML(obj.data[0]);
 	    graph.MoveNode(node.getId(), node.getX(), node.getY(), obj.sentBy);	
 	}

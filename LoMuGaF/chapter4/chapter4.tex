@@ -1,69 +1,43 @@
 \chapter{Praktisches Anwendungsbeispiel: Graphenspiel}
 
 \section{Spielidee}
-Das Prinzip des Graphenspiel basiert im Grunde darauf, dass die Spieler einen
-Graph vorgelegt bekommen, bei dem sich die Kanten überschneiden. Ziel des
+Das Prinzip des Graphenspiels basiert im darauf, dass die Spieler einen
+Graphen sehen, bei dem sich die Kanten anfangs überschneiden. Ziel des
 Spieles ist es die Knoten des Graphen so zu bewegen, dass sich keine Kante mehr
 überschneidet.
-\begin{wrapfigure}{r}{0.5\textwidth}
+\begin{wrapfigure}{r}{0.45\textwidth}
    \centering
-   \includegraphics[width=0.48\textwidth]{chapter4/graphscreen}
+   \includegraphics[width=0.4\textwidth]{chapter4/graphscreen}
    \caption{Graphspiel}
    \label{fig:graphgame}
 \end{wrapfigure}
-Der Hacken hinter der Sache ist jedoch, dass sich alle anderen Knoten
-mitbewegen, falls einer bewegt wird, bis auf die, die von den anderen Spielern
-gehalten bzw. bewegt werden. Genau darin liegt der Mehrspielergedanke, denn man
-kann das Spiel nicht alleine gewinnen. Somit handelt es sich hierbei um ein
-sogenanntes kooperatives Mehrspielerspiel. Auf dem Bild ~\ref{fig:graphgame}
-sieht man z.B.
-dass der Knoten mit der Nummer 6 rot markiert ist. Somit kann der Spieler diesen Knoten
-nicht bewegen. Aber er kann alle anderen Knoten, welche blau markiert sind,
-bewegen. Das Puzzel lässt sich einfacher lösen, wenn mehr Leute mitspielen, was
-auch einen positiven sozialen Aspekt mit sich bringt. Außerdem ist es sehr von
-Vorteil bei der Lösung des Puzzels sich mit den anderen Mitspielern
-abzusprechen, sodass man auf ein gemeinsames Ziel hinarbeiten kann. Zum Schluss
-wird noch die Zeit angezeigt, die gebraucht wurde um das Rätsel zu lösen, was
-dazu motivieren kann es nochmal zu versuchen und es schneller zu schaffen.
-Weiterhin lässt sich wärend des Spielens zu dem Spiel verbinden, d.h. selbst
-wenn ein Spiel schon im Gange ist, kann ein weiterer Spieler dazu stoßen und
-mithelfen. Natürlich kann somit auch jeder das Spiel verlassen, ohne das
-laufende Spiel beenden zu müssen, unter Beachtung, dass man immer noch
-mindestens zwei Mitspieler braucht um das Rätsel lösen zu können.
-
-\section{Anforderungen}
-Hier nochmal die Auflistung der Anforderungen, welche zur Implementierung des
-oben genannten Spiels notwendigt sind, also in der Fachsprache auch Must-Haves
-genannt.
-\begin{itemize}
-     
-\item  Es soll zu Begin ein Graph erstellt werden mit mindestens 6 Knoten
-\item Zu Begin müssen sich die Knoten überschneiden
-\item Als Spieler kann man alle Knoten verschieben, die von keinem anderen Spieler
-im Moment verschoben werden.
-\item Als Spieler sieht man in Echtzeit wie sich eigene und die von den anderen
-Mitspielern verschobene Knoten bewegen.
-\item Als Spieler sollte man sofort sehen, wenn man gewonnen hat.
-\item Als Spieler kann ich einen Namen angeben, welchen von anderen Mitspielern
-gesehen wird.
-\item Der generierte Graph soll immer lösbar sein
-\item Am Ende des Spiels, sollte die Zeit angezeigt werden, die für das Lösen
-des Rätsels benötigt wurde.
-\end{itemize}
-
-\newpage
+Die Schwierigkeit beim Spiel ist, dass sich alle anderen Knoten
+mitbewegen. Lediglich die Knoten, die von den anderen Spielern gehalten bzw.
+bewegt werden, werden nicht mitbewegt. Durch diese Tatsache, lässt sich das
+Spiel nur mit mehreren Spielern gewinnen.
+Es handelt sich hierbei um ein sogenanntes kooperatives Mehrspielerspiel. Auf
+dem Bild ~\ref{fig:graphgame} ist zu erkennen, dass der Knoten mit der Nummer 6
+rot markiert ist. Somit kann der Spieler diesen Knoten nicht bewegen. Alle
+anderen Knoten, die blau markiert sind, können vom Spieler jedoch bewegt werden.
+Das Puzzel lässt sich einfacher lösen, wenn mehr Leute mitspielen. Dies bringt
+einen weiteren sozialen Aspekt, das das Spielen mit mehr Leuten fördert.
+Die Spieler können sich wärend des Spielens zu dem Spiel verbinden, d.h. selbst
+wenn ein Spiel schon im Gange ist, kann ein weiterer Spieler beitreten und
+mithelfen. Die Spieler können auch jederzeit das Spiel verlassen, ohne das
+Beenden des Spiels zu verursachen.
+Es ist jedoch zu beachten, dass immernoch mindestens 2 Spieler benötigt werden,
+um das Rätsel lösen zu können.
 
 \section{Implementierung}
-\subsection{Projektkonfiguration}
-Für die Entwicklung des Spieles wurde weiterhin Eclipse verwendet, sodass die
-Beschreibung der Projektkonfiguration sich auf Eclipse beruhen. Als Erstes wurde
-ein \ib{Android Application Project} erstellt. Dabei wurden die Applicationname,
-Packagename und Projektname entsprechend angegeben. Die restlichen Einstellung
-wurden als Standarteinstellung belassen, bis auf die \ib{Activity}, welche
-ausgelassen wurde, da für die Implementierung eine eigene Application Klasse
-geschrieben wird. Weiterhin wurde als Target SDK \ib{Android 4.2 Jelly Bean}
-und als Mininum \ib{Android 2.3} verwendet, da AllJoyn mindestens die Android
-Version 2.3 benötigt. 
+\subsection{Projektkonfiguration} \label{subsec:projectconfig}
+Für die Entwicklung des Spieles ist das Eclipse ADT verwendet worden, sodass die
+Beschreibung der Projektkonfiguration sich auf Eclipse beruhen. Als Erstes wird
+ein \ib{Android Application Project} erstellt. Dabei werden die
+Applicationname, Packagename und Projektname entsprechend angegeben. Eine
+vorimplementierte Activity wird entfernt, da eine eine Activity hierfür
+implementiert wird.
+Als das Target SDK wird \ib{Android 4.2 Jelly Bean} und als Mininum wird
+\ib{Android 2.3} verwendet, da AllJoyn mindestens die Android Version 2.3 benötigt. 
 \begin{wrapfigure}{r}{0.5\textwidth}
    \centering
    \includegraphics[width=0.48\textwidth]{chapter4/includelibrary}
@@ -71,175 +45,125 @@ Version 2.3 benötigt.
    \label{fig:lib}
 \end{wrapfigure}
 Als nächstes ist es notwendig das \ib{PTPLibrary} Projekt
-als Bibliothek im Spielprojekt zu referenzieren wie im Bild ~\ref{fig:lib}
-zu sehen. Dazu klickt man rechts auf das Projekt und dann auf Eigenschaften.
-Unter den Reiter \ib{Android} gibt es unten die Einstellung für Bibliotheken. Hier muss man die \ib{PTPLibrary} als
-Bibliothek angeben. Leider erlaubt es Android nicht \ib{Libraries} als
-gewöhnliche Jar Dateien zu packen, daher muss man die Bibliothek als Projekt
-referenzieren.\cite{androidLib}
+als Bibliothek im Spielprojekt zu referenzieren, wie im Bild ~\ref{fig:lib}
+zu sehen. Durch einen Rechtsklickt auf das Projekt erscheint ein Kontextmenu,
+bei den Eigenschaften ausgewählt werden.
+Unter den Reiter \ib{Android} ist die Einstellung für Bibliotheken. Dort muss
+die \ib{PTPLibrary} als Bibliothek angeben werden. Android erlaubt es
+nicht \ib{Libraries} als gewöhnliche Jar Dateien zu packen, daher muss die
+Bibliothek als Android Projekt referenziert werden.\cite{androidLib}
 
-\subsection{MainApplication}
+\subsection{MainApplication} \label{subsec:mainApplicaiton}
 Die \ib{MainApplication} Klasse wird beim Ausführen der Anwendung als erstes
 ausgeführt und ist für die Initialisierung von für das Spiel wichtigen Objekten
-verantwortlich. Am Anfang die die \ib{onCreate()} Methode aufgerufen. Im
-Codeausschnitt ~\ref{onCreateMain} sieht man den genaueren Inhalt der Methode.
+verantwortlich. Am Anfang wird die \ib{onCreate()} Methode aufgerufen. Im
+Codeausschnitt ~\ref{onCreateMain} ist der Inhalt der Methode zu sehen.
 \begin{lstlisting}[caption=onCreate Methode,label=onCreateMain]
 super.onCreate();
 graph = new Graph();
 graph.addObserver(this);  
 graph.setupPoints();    
-PTPHelper.initHelper("GraphGame",GraphInterface.class, this, new GraphDummyObject(), graph, GraphLobbyActivity.class);
+PTPHelper.initHelper("GraphGame",this, GraphLobbyActivity.class);
 \end{lstlisting}
-Dabei wird als erstes das Graph Objekt erstellt und konfiguriert, welches das
+Dabei wird als erstes das Graphobjekt erstellt und konfiguriert, das das
 Datenmodel des Spieles representiert. Als zweites wird dann der \ib{PTPService}
-initialisiert, mit der Angabe der nötigen Parameter. Interessant ist hier das
-\ib{GraphDammyObject}, welches das BusObject respresentiert. Es implementiert
-das \ib{GraphInterface} und das \ib{BusObject} Interface, beinhaltet aber keine
-weitere Logik, da es für das Spiel irrelevant ist und nur für AllJoyn benötigt
-wird für eine erfolgreiche Registrierung des \ib{BusAttachements}. Das
-\ib{graph} Object spielt die Rolle des SignalHandlers und implementiert die
-Methoden des BusIntefaces. Die \ib{MainApplication} implementiert außerdem noch
-den \ib{GraphObserver}, welcher die Methode \ib{doAction(int)} definiert. Darüber kann der Graph der \ib{MainApplication} mitteilen, Nachrichten an andere Teilnehmer zu schicken.
-Dies wird zuerst an den \ib{MessageHandler} weitergeleitet, welcher über die die
-Nachricht genauer behandelt, wie im Codeausschnitt ~\ref{handleGraphMessage}
-sichtbar.
-\begin{lstlisting}[caption=Graphnachrichten behandeln,label=handleGraphMessage] 
-public void handleMessage(Message msg) {
-	try{
-		GraphInterface remoteGraph = (GraphInterface) PTPHelper.getInstance().getSignalEmitter();
-		switch (msg.what) {
-		case Graph.NODE_POSITION_CHANGED:
-			Node node;
-			while(( node = graph.getChangedNode()) != null){
-				remoteGraph.MoveNode(node.getId(), node.x, node.y, PTPHelper.getInstance().getUniqueID());
-			}break;
-			
-		case Graph.POINT_OWNERSHIP_CHANGED:				
-			Graph.IdChange idChange;
-			while(( idChange = graph.getIdChange()) != null){
-				remoteGraph.ChangeOwnerOfNode(idChange.id, idChange.owner, PTPHelper.getInstance().getUniqueID());
-			}break;
-			
-		default: break;
-		}
-	}catch(BusException e){
-		Log.e(TAG, "BusException: " + e);
-	};
+initialisiert. Dabei wird die \ib{GraphLobbyActivity} Klasse übergebe, die die
+\ib{LobbyActivity} implementiert, übergeben. Die GraphLobbyActivity definiert
+nur die \ib{Activity}, die geöffnet werden soll, wenn eine Spielsession erstellt
+wurde, oder zu einer Spielsession verbunden wurde. Dann wird noch ein
+\ib{DataListener} beim \ib{PTPHelper} registiert, um auf Nachrichten von anderen Spielen reagieren zu können. Der Codeausschnitt \ref{dataListener} zeigt den Inhalt des \ib{DataListeners}.
+
+ \begin{lstlisting}[caption=DataListener,label=dataListener]
+PTPHelper.getInstance().addDataListener(new DataListener() {			
+			@Override
+			public void dataSentToAllPeers(String peersID, int messageType, String[] data) {
+				MessageInfoHolder infoHolder = new MessageInfoHolder();
+				infoHolder.data = data;
+				infoHolder.sentBy = peersID;
+				sendMessage(messageType, infoHolder);
+			}
+		});
+\end{lstlisting}
+Der DataListener beinhaltet eine Methode, die die ID des Senders als String, den
+Nachrichtentyp als Integer, und die Daten als ein String Array übergibt. Diese Informationen
+werden als ein Object von Typ \ib{MessageInfoHolder} zusammengefasst, um es an
+den \ib{MessageHandler} als \ib{Message} senden zu können.
+Der MessageHandler läuft auf dem \ib{UIThread} und verhindert Threadkollisionen,
+da die Methode des DataListeners vom Thread des Hintergrundservices aufgerufen
+wird. Der MessageHandler entscheidet anhand des Nachrichtentyps die Methode, die
+aufgerufen werden soll, und ruft diese mit den Nachrichteninhalt auf. Im
+Codeausschnitt \ref{receiveMethods} sind die 2 Methoden aufgeführt, die beim
+Empfangen von Nachrichten verwendet werden.
+\begin{lstlisting}[caption=Empfänger Methoden,label=receiveMethods] 
+private void nodeOwnerChanged(MessageInfoHolder obj) {
+	Node node = graph.getNodeFromXML(obj.data[0]);
+    graph.ChangeOwnerOfNode(node.getId(),node.getOwner(), obj.sentBy);
+}
+
+private void nodePositionChanged(MessageInfoHolder obj) {
+	Node node = graph.getNodeFromXML(obj.data[0]);
+    graph.MoveNode(node.getId(), node.getX(), node.getY(), obj.sentBy);	
 }
 \end{lstlisting}
-Zu erst wird über einen Statuscode der Nachrichtentyp mitgeteilt, worauf der
-\ib{MessageHandler} sich die nötigen Information, dann vom Graphobject holt und
-über den \ib{SignalEmitter} an die anderen Teilnehmer schickt. Man sieht, dass
-die Kommunikation recht einfach gehalten ist, denn es gibt nur zwei
-Nachrichtentypen, nämlich wenn jemand den Knoten berührt und wenn jemand den
-Knoten verschiebt. Der rest wird durch die Logik bei den einzelnen Teilnehmern
-entschieden. Gerade bei Echtzeitspielen ist es wichtig die Nachrichten, so
-gering wie möglich zu halten.
+Die Daten werden als ein XML String versendet und werden mithilfe einer
+Bibliothek namens \ib{PeerParser} \cite{peerParser} in ein entsprechendes Object
+umgewandelt.
+Die Attribute des Objectes werden dazu verwenden Methoden auf dem Graph auszuführen.
 
 \subsection{Graph}
 Der \ib{Graph} representiert das Datenmodel des Spiels und beinhaltet somit alle
 Spielrelevanten Daten. Die Beschreibung des Graphen wird durch einfache Kanten
-und Knoten gespeichert, welche in einer Liste abgelegt werden. Jede Kante
+und Knoten gespeichert, die in einer Liste abgelegt werden. Jede Kante
 verweist auf zwei Knoten und jeder Knoten besitzt eine \ib{ID} und eine
-Positionn als X- und Y-Koordinate. Der \ib{Graph} implementiert das
-\ib{GraphInterface}, welches das BusObject-Interface für die Kommunikation
-darstellt. Die Methoden des Interfaces sind im Codeausschnitt
-~\ref{graphInterface} angeben. 
+Positionn als X- und Y-Koordinate. Die im Codeausschnitt
+~\ref{graphInterface} dargestellten Methoden, sind die 2 Methoden, die für die
+Kommunikation mit anderen Spielern wichtig sind.
 \begin{lstlisting}[caption=GraphInteface, label=graphInterface]
-@BusSignal
-public void MoveNode(int id,double x,double y, String uniqueName) throws BusException;
-@BusSignal
-public void ChangeOwnerOfNode(int id,String owner, String uniqueID) throws BusException;	 
+public void MoveNode(int id,double x,double y, String uniqueName);
+public void ChangeOwnerOfNode(int id,String owner, String uniqueID);	 
 \end{lstlisting}
-AllJoyn schreibt es vor bei den Methoden, welche für die Kommunikation
-über den Bus genutzt werden,mit einer entsprechenden Annotation zu erweitern,
-sodass die Nachrichten entsprechend gehandhabt werden können. In diesem Fall handelt es sich um \ib{Signalmethoden}, d.h. diese Methoden werden dazu benutzt um Nachrichten an alle Teilnehmer gleichzeitig zu schicken. Die konkrete Implementierung dieser Methoden beim \ib{SignalHandler}
-ist somit die Behandlung der eingehenden Nachrichten. Die Annotationen gehören
-zum einen in das Interface als auch in die konkrete Implementierung.
-Die Implementierung der \ib{MoveNode} Methode sieht man im Codeausschnitt
-~\ref{MoveNode}.
-\newpage
-
-\begin{lstlisting} [caption=MoveNode implementierung,label=MoveNode]
-@BusSignalHandler(iface = "com.example.firstapp.GraphInterface", signal = "MoveNode")
-public synchronized void MoveNode(int id, double x, double y, String uniqueName) throws BusException {
+Die Methode \ib{MoveNode} wird aufgerufen, wenn ein Spieler einen Knoten
+verschoben hat. Die Methode \ib{ChangeOwnerOfNode} wird aufgerufen, wenn jemand
+einen Knoten berührt oder loslässt, sodass der Knoten einem Besitzer zugewiesen
+werden kann. Der letzte Parameter \ib{uniqueID} ist die ID von den Spieler, der
+diese Methode aufruft. Mithilfe dieses Parameters wird innerhalb der Methode
+entschieden, ob der Methodenaufruf lokal stattgefunden hat, oder von einem
+anderen Spieler stamm. Falls der Methodenaufruf lokal stattgefunden hat, werden
+die Daten über die Änderung in ein XML String gepackt und an die anderen Spieler
+verschickt. Der Codeausschnitt \ref{sendChangeOwner} zeigt einen Ausschnitt aus
+der Methode \ib{ChangeOwnerOfNode} 
+\begin{lstlisting}[caption=Sende Änderung des
+Besitzers,label=sendChangeOwner] if(uniqueID.equals(PTPHelper.getInstance().getUniqueID())){
+	Node nodeToChange = new Node();
+	nodeToChange.setid(id);
+	nodeToChange.setOwner(owner);
 	
-	for (Node point : nodes) {
-		if(point.getOwner().isEmpty() || point.getOwner().equals(uniqueName)){
-			point.x += x;
-			point.y += y;
-			checkAndAdjust(point);
-		}
-	}
-	if(uniqueName.equals(PTPHelper.getInstance().getUniqueID())){
-		Node changedNode = new Node(x,y,id);
-		changedNodes.add(changedNode);
-		notifyObservers(NODE_POSITION_CHANGED);
-		return;
-	}
-	notifyObservers(GRAPH_CHANGED);
+	XMLIdMap map=new XMLIdMap();
+	map.withCreator(new NodeCreator());	
+	XMLEntity entity = map.encode(nodeToChange);
+	PTPHelper.getInstance().sendDataToAllPeers(NODE_OWNERSHIP_CHANGED, new String[]{entity.toString()});
+	return;
 }
 \end{lstlisting}
-Wichtig hier ist auch die richtige Annotation der Methode, welche zum einen das
-Inteface nochmal angibt und den Methodennamem. Die Method selbst  prüft erst ob
-der zu verschiebende Knoten auch dem Spieler gehört, wenn ja wird der Offset der
-als Parameter hereingereicht wird hinzuaddiert. Anschließend werden die Knoten,
-welche aus dem Bildschirm herausgehen, durch die Methode \ib{checkAndAdjust()}
-zurück an die Bildschirmgrenze gebracht, sodass die Knoten den Bildschirm nicht
-verlassen können. Als zweiter Schritt wird geprüft ob der Spieler der den Knoten
-verschoben hat, auch der Spieler ist welcher lokal auf dieser Instanz des Spiels
-spielt. Wenn es der Fall ist,  werden die Änderungen als Knoten in eine Liste
-abgespeichert und den Observer wird gesagt, dass er die Änderung den anderen
-Mitspielern mitteilen kann. Zum Schluss wird den Observern noch mitgeteilt, dass
-ich der Graph verändert hat, sodass z.B. die View den Graphen neu zeichnen kann.
-Die zweite Methode \ib{ChangeOwnerOfNode()} kümmert sich um das Zuweisen von
-Knoten zu den Spielern und ist im Codeausschnitt ~\ref{changeOwner} zu sehen.
-\newpage
-
-\begin{lstlisting}[caption=ChangeOwnerOfNode implementierung,label=changeOwner]
-@BusSignalHandler(iface = "com.example.firstapp.GraphInterface", signal = "ChangeOwnerOfNode")
-public synchronized void ChangeOwnerOfNode(int id, String owner, String uniqueID) throws BusException {
-	for (Node node : nodes) {
-		if(node.getId() == id){
-			node.setOwner(owner);
-			if(uniqueID.equals(PTPHelper.getInstance().getUniqueID())){
-				addIdOfChangedPoint(new IdChange(id,owner));
-				notifyObservers(POINT_OWNERSHIP_CHANGED);
-				return;
-			}
-			notifyObservers(GRAPH_CHANGED);
-			return;
-		}
-	}
-}
-\end{lstlisting}
-Als Parameter wird erst die Knoten ID übergeben, damit man weiß um welchen
-Knoten es sich handelt. Dazu kommt erst der neue Besitzer und dann die ID des
-Spielers, von wem diese Nachricht stamm. Der letzte Parameter ist daher wichtig,
-falls die Besitzer ID leer ist, was soviel bedeutet, dass der Spieler den Knoten
-losgelassen hat, man noch nachvollziehen von wem die Nachricht stamm um zu
-entscheiden ob man den anderen Mitspielern es mitteilen soll oder nicht. Die
-Methode macht im Grunde auch nichts Anderes als den neuen Besitzer zu setzen und
-zu entscheiden ob dieser Wechsel mitgeteilt werden soll. Die Idee ist die
-folgende. Wenn man selber den Knoten losgelassen hat, müssen es die Anderen
-wissen, falls es jemand anders getan hat, so hat derjenige selber dafür gesorgt
-es jedem mitzuteilen.
+Dabei wird wieder die Bibliothek \ib{PeerParser} verwenden um aus dem Node
+Object einen XML String zu erstellen. Dieser wird im Anschluss, mit Angabe des
+Nachrichtentyps \ib{NODE\_OWNERSHIP\_CHANGED}, über den PTPhelper an die anderen
+Spieler verschickt.
 
 \subsection{DrawView}
-Schließlich gibt es noch die \ib{DrawView}, welche für die grafische Darstellung
-und die Benutzereingaben zuständig ist. Diese Klasse ist die Unterklasse von
-\ib{View} und implementiert weiterhin den \ib{OnTouchListener} und den
-\ib{GraphObserver}. Die \ib{View} ist eine Android Klasse ist für die grafische
-Darstellung zuständig und beinhaltet als wichtigste Methode \ib{onDraw(Canvas)},
-welche dafür zuständig ist die Kanten und Knoten auf dem \ib{Canvas} zu
-``malen''. Außerdem wird in dieser Methode geprüft ob der Graph gelöst ist und
-eine Meldung dass man gewonnen hat erscheinen soll.
+Die \ib{DrawView} ist für die grafische Darstellung und die Benutzereingaben
+zuständig. Diese Klasse ist die Unterklasse von \ib{View} und implementiert
+zusätzlich den \ib{OnTouchListener} und den \ib{GraphObserver}. Die \ib{View}
+ist eine Android Klasse und beinhaltet als wichtigste Methode \ib{onDraw(Canvas)},
+die dafür zuständig ist die Kanten und Knoten auf dem \ib{Canvas} zu
+zeichnen. Außerdem wird in dieser Methode geprüft, ob der Graph gelöst ist und
+eine Meldung dass das Spiel gewonnen worden ist, erscheinen soll.
 Die Methode \ib{isGraphFinished()} überprüft, durch die Benutzung eines
 Algorithmus \cite{algorithm}, ob sich noch Kanten überschneiden.
 Durch die Implementierung des \ib{OnTouchListeners} wird die Methode
-\ib{onTouch(View, MotionEvent)} benutzt, welche sich um die
-Benutzeraktivitäten kümmert, wie das Bewegen von Knoten. Dabei wird z.B. bei der
-ersten Berührung geprüft ob der Knoten noch keinen Besitzer hat, und daraufhin
+\ib{onTouch(View, MotionEvent)} benutzt, die sich um die
+Benutzeraktivitäten kümmert. Dabei wird z.B.
+bei der ersten Berührung geprüft ob der Knoten noch keinen Besitzer hat, und daraufhin
 der neue Besitzer zugewiesen. Die Abfrage ob es sich um die erste Berührung
 handelt, wird im Codeausschnitt ~\ref{actionDown} gezeigt. 
 \begin{lstlisting}[caption=Erste Berührung,label=actionDown]
@@ -250,12 +174,13 @@ Fingers bedeutet. In diesem Fall wird der Knoten, falls einer diesem Spieler
 zugewiesen war, wieder freigegeben. Und schließlich gibt es noch den Fall, dass
 keiner dieser Fälle gegeben ist und dies bedeutet nur das der Finger bewegt
 wird. Hierbei wird die letzte Position des Knoten mit der momentanen Position
-des Fingers berechnet und die Differenz zum Knoten hinzuaddiert, also der Knoten
-wird auf die Position des Fingers bewegt. In jedem dieser Fälle wird die
+des Fingers berechnet und die Differenz zum Knoten hinzuaddiert. Der
+Knoten wird auf die Position des Fingers bewegt. In jedem dieser Fälle wird die
 Änderung an die anderen Spieler mitgeteilt.
-Dann gibt es noch die Methode \ib{update(int)}des \ib{GraphObservers}, welche
-auf die Nachricht hört, dass der Graph neu gezeichnet werden soll, was man im
-Codeausschnitt ~\ref{udpateGraph} nochmal sieht.
+Dann gibt es noch die Methode \ib{update(int)}des \ib{GraphObservers}, die
+auf die Nachricht hört, dass der Graph neu gezeichnet werden soll. Der
+Codeausschnitt ~\ref{updateGraph} zeigt den Inhalt dieser Methode.
+\newpage
 \begin{lstlisting}[caption=Graphen neu zeichnen,label=updateGraph]
 @Override
 public void update(int args) {
@@ -264,7 +189,7 @@ public void update(int args) {
 }
 \end{lstlisting}
 Die \ib{postInvalidate()} Methode gehört zu der View Klasse und muss aufgerufen
-werden um dem UI Thread mitzuteilen, dass die View nicht aktuell ist. Falls man
-sich innerhalb des UI Threads befindet, wie z.B. bei der Abarbeitung der
-Berührungsaktivität reicht es die Methode \ib{invalidate()} aufzurufen um das
-Neuzeichnen anzustoßen.
+werden, um dem UI Thread mitzuteilen, dass die View nicht aktuell ist. Diese
+Methode muss aufgerufen werden, wenn der Aufrufen nicht vom UI Thread kommt.
+Falls der Aufruf innerhalb des UI Threads befindet, wie z.B.
+bei der Abarbeitung der Berührungsaktivität reicht es die Methode \ib{invalidate()} aufzurufen.

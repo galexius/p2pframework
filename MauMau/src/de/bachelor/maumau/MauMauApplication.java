@@ -61,7 +61,7 @@ public class MauMauApplication extends Application {
 		}
     };
 
-	protected void playerStateChanged(MessageInfoHolder message) {
+	private void playerStateChanged(MessageInfoHolder message) {
 		if(gameManager.getJoinedPlayers().containsKey(message.sentBy) && message.data.length == 0){
 			gameManager.ByeIWas(message.sentBy);
 		}else{
@@ -70,7 +70,7 @@ public class MauMauApplication extends Application {
 	}
 
 
-	protected void nextTurn(MessageInfoHolder message) {
+	private void nextTurn(MessageInfoHolder message) {
 		try {
 			gameManager.NextTurn(message.sentBy, Integer.valueOf(message.data[0]));
 		} catch (NumberFormatException e) {
@@ -78,7 +78,7 @@ public class MauMauApplication extends Application {
 		}
 	}
 
-	protected void ownerChanged(MessageInfoHolder message) {
+	private void ownerChanged(MessageInfoHolder message) {
 		XMLIdMap map=new XMLIdMap();
     	map.withCreator(new CardCreator());
     	Card cardToPlay = null;
@@ -87,7 +87,7 @@ public class MauMauApplication extends Application {
 	}
 
 
-	protected void cardPlayed(MessageInfoHolder message) {
+	private void cardPlayed(MessageInfoHolder message) {
 		try {
 			gameManager.PlayCard(Integer.valueOf(message.data[0]), message.sentBy);
 		} catch (NumberFormatException e) {

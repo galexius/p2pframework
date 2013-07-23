@@ -303,15 +303,7 @@ public class PTPHelper {
 		Log.i(TAG, "deleteObserver(" + obs + ")");
 		lobbyObservers.remove(obs);
 	}
-	
-	public void sendDataToAllPeers(int arg,String[] data){
-		if(signalEmitter==null){
-			Log.e(TAG, "SignalEmitter not set yet");
-			return;
-		}
-		PTPBusObjectInterface emitter = (PTPBusObjectInterface) signalEmitter;
-		emitter.SendDataToAllPeers(uniqueID, arg, data);
-	}
+
 	
 
 	private void notifyHelperObservers(int arg) {
@@ -330,6 +322,15 @@ public class PTPHelper {
 			Log.i(TAG, "notify dataListener = " + listener);
 			listener.dataSentToAllPeers(sentFrom, arg, data);
 		}
+	}
+	
+	public void sendDataToAllPeers(int arg,String[] data){
+		if(signalEmitter==null){
+			Log.e(TAG, "SignalEmitter not set yet");
+			return;
+		}
+		PTPBusObjectInterface emitter = (PTPBusObjectInterface) signalEmitter;
+		emitter.SendDataToAllPeers(uniqueID, arg, data);
 	}
 
 	

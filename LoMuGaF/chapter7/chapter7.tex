@@ -4,27 +4,35 @@ eine herausfordende und spannende Sache. Mehrspieler Spiele ohne einen Server
 sind heutzutage noch nicht sehr weit verbreitet und das bietet daher sehr viele
 Möglichkeiten neue Konzepte und Ideen zu realisieren. Die Herausforderung liegt
 in der Komplexität der Implementierung dieser Spiele, sowie in den
-Beschränkungen, welche durch den größeren Synchronizationsaufwand entstehen.
-Besonder an dem Praktischen Beispiel MauMau sah man, dass es viele Fälle gibt, die man beachten muss um den Zustand synchron zu halten und daher war es notwendig mehr Informationen über das Netzwerk zu verschicken, was zu mehr
-Datenverkehr führt. Das Rahmenwerk AllJoyn hielt was es versprach, mit all
-seinen Funktionalitäten, bis auf den leichten Einstieg, denn gerade das
-Verstandniss des Mechanismus ist anfangs recht mühsam und bedarf viel Ziel. Eine
-weitere Problematik kommt aus der Tatsache, dass der Android Emulator, welcher
-mit dem Android SDK mitgelieft wird, keine Wlan Unterstützung besitzt und somit
-die Entwicklung mithilfe des Emulator nicht möglich ist. Dies führt dazu, dass
-für die Entwicklung von Mehrspielerspielen mindestens 2 Android Geräte
-notwendig sind um das Spiel vernünftig testen zu können. Daher war es auch
-schwer Belastungstest durchzuführen, da dafür eine entsprechende Anzahl an
-Geräten benötigt wird. Alternativ gäbe es noch die Möglichkeit eine Android x86
+Beschränkungen, die durch den größeren Synchronizationsaufwand entstehen.
+Besonder an dem Praktischen Beispiel MauMau wird deutlich, dass es viele Fälle
+gibt, die zu beachten sind, um den Zustand synchron zu halten. Daher war es
+notwendig mehr Informationen über das Netzwerk zu verschicken, das wiederum zu
+mehr Datenverkehr führt. Das Kartenspiel ist jedoch ein Rundenbasiertes
+Spiel, sodass eine größere Datenmenge das Spielerlebniss nicht
+beeinträchtigt.
+Das Rahmenwerk AllJoyn hielt was es versprach, mit all seinen
+Funktionalitäten, bis auf den leichten Einstieg. Das Verstandniss des
+Mechanismus ist anfangs recht mühsam und bedarf viel Ziel. Eine weitere
+Problematik kommt aus der Tatsache, dass der Android Emulator, der mit dem
+Android SDK mitgelieft wird, keine Wlan Unterstützung besitzt und somit die
+Entwicklung mithilfe des Emulator nicht möglich ist. Dies führt dazu, dass für
+die Entwicklung von Mehrspielerspielen mindestens 2 Android Geräte notwendig
+sind, um das Spiel vernünftig testen zu können. Daher war es auch schwer
+Belastungstest durchzuführen, da dafür eine entsprechende Anzahl an Smartphones
+benötigt wird. Alternativ gäbe es noch die Möglichkeit eine Android x86
 Version\cite{andx86} auf einer VM laufen zu lassen, jedoch ist die native
 Bibliothek von AllJoyn nur für die ARM-Architektur verfügbar. Doch auch hier
 gibt es eine Möglichkeit AllJoyn für die x86 Architektur zu bauen, da der
-Quellcode frei verfügbar ist, was jedoch einen großen Aufwand bedeutet und die
-Auseinandersetzung mit dem Android Quellcode. Trotz der Herausforderungen und
-Probleme mit dem Peer-to-Peer Prinzip, besteht das Interesse für eine
-unabhängige Kommunikation zwischen Mobilen Endgeräten.
-Dies zeigt z.B. Samsung mit Samsung Chrod SDK\cite{chord}, welches im Prinzip
-dem AllJoyn SDK ähnlich ist, bis auf die Tatsache, dass es
-nicht Opensource ist und unter Samsungs License steht, was die Entwicklung etwas
-einschränken kann. Aber das Interesse von Samsung bestätigt, dass ein gewisser
-Potential in der Entwicklung von Peer-to-Peer Anwendung und Spielen besteht.
+Quellcode frei verfügbar ist, das jedoch einen großen Aufwand bedeutet und die
+Auseinandersetzung mit dem Android Quellcode. Es gibt noch viel
+Entwicklungspotential für die hier vorgestellte Bibliothek, sowie das verwendete
+Rahmenwerk AllJoyn. Es fehlt z.B. die Möglichkeit ein Spiel über die Bluetooth
+Verbindung zu spielen. AllJoyn bietet eine Bluetooth Unterstützung nur für
+Smartphones mit \ib{root}\cite{root} Rechten. Weiterhin wäre eine automatische
+Erstellung eines AccessPoints zu den sich die Spieler auch automatisch verbinden
+ein interessantes Feature. Weiterhin wäre die Entwicklung der Bibliothek auch
+für das iOS möglich, sodass auch die Entwicklung von Peer-to-Peer Spielen für
+das iPhone und iPad erleichtert wird. Als eine Opensource Alternative zu
+Samsungs Chord SDK, hat diese Bibliothek das Potential, bei der Entwickung von
+Peer-to-Peer Spielen auf dem Android, einen großen Beitrag zu leisten.
