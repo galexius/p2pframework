@@ -38,7 +38,6 @@ public class GameActivity extends Activity implements GameManagerObserver {
 	private Button nextTurnButton;
 	private Card cardToPlay;
 	private PopupWindow wishSuitPopup;
-	private boolean gameStarted;
 	
 	@Override
 	public void onCreate(final Bundle savedInstanceState) {
@@ -54,7 +53,7 @@ public class GameActivity extends Activity implements GameManagerObserver {
 	  playedCardsLabel.setVisibility(View.INVISIBLE);
 	  application = (MauMauApplication) getApplication();
 	  gameManager = application.getGameManager();
-	  startButton.setVisibility(PTPHelper.getInstance().isHost() && !gameStarted && gameManager.getJoinedPlayers().size() > 1 ? View.VISIBLE: View.GONE);
+	  startButton.setVisibility(PTPHelper.getInstance().isHost() && !gameManager.isGameStarted() && gameManager.getJoinedPlayers().size() > 1 ? View.VISIBLE: View.GONE);
 	  gameManager.notifyOthersAboutYourself();
 	  gameManager.addObserver(this);
 	  	 
@@ -140,8 +139,7 @@ public class GameActivity extends Activity implements GameManagerObserver {
 	}
 	  
 	
-	public void start(View view){
-		gameStarted = true;
+	public void start(View view){		
 		startButton.setVisibility(View.GONE);
 		gameManager.startGameAsHost();
 	}
@@ -204,7 +202,7 @@ public class GameActivity extends Activity implements GameManagerObserver {
 				public void run() {
 					playerListAdapter.refresh();
 					playerListAdapter.notifyDataSetChanged();
-					boolean showStartGameButton = !gameStarted && playerListAdapter.getCount() > 1;
+					boolean showStartGameButton = !gameManager.isGameStarted() && playerListAdapter.getCount() > 1;
 					startButton.setVisibility(showStartGameButton && PTPHelper.getInstance().isHost() ? View.VISIBLE : View.GONE);
 					updateButtonsState();
 				}

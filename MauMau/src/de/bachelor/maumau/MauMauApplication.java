@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.Message;
 import de.ptpservice.DataListener;
 import de.ptpservice.PTPHelper;
+import de.ptpservice.SessionJoinRule;
 import de.uniks.jism.xml.XMLIdMap;
 
 
@@ -33,6 +34,13 @@ public class MauMauApplication extends Application {
 				messageInfoHolder.data = data;
 				messageInfoHolder.sentBy = sentBy;	
 				sendMessage(messageType, messageInfoHolder);
+			}
+		});
+		PTPHelper.getInstance().addJoinRule(new SessionJoinRule() {
+			
+			@Override
+			public boolean canJoin(String arg0) {
+				return !gameManager.isGameStarted() && gameManager.getJoinedPlayers().size() < 3;
 			}
 		});
 	}		

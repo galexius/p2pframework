@@ -70,6 +70,8 @@ public class GameManager {
 		private String lastCardPlayedBy = "";
 		private boolean cardsDrawnThisTurn;
 		private boolean cardPlayedThisTurn;
+
+		private boolean gameStarted = false;
 		
 		public GameManager(MauMauApplication application){
 			getPlayCardRuleEnforcer().addInclusiveRule(new YourTurnRule(this));
@@ -164,6 +166,7 @@ public class GameManager {
 		}
 		
 		public void startGameAsHost(){
+			setGameStarted(true);
 			cardsDrawnThisTurn = false;
 			setAndNotifyNextTurn(PTPHelper.getInstance().getUniqueID());
 		}
@@ -397,6 +400,7 @@ public class GameManager {
 			currentPlayersID = "";
 			joinedPlayers.clear();
 			playedCard = null;
+			gameStarted = false;
 			
 			playCardRuleEnforcer.removeAllExclusiveRules();
 			playCardRuleEnforcer.removeAllInclusiveRules();
@@ -409,6 +413,14 @@ public class GameManager {
 		public void notifyOthersAboutYourself() {			
 				HiIAm(PTPHelper.getInstance().getUniqueID(), PTPHelper.getInstance().getPlayerName());
 				PTPHelper.getInstance().sendDataToAllPeers(PLAYERS_STATE_CHANGED, new String[]{PTPHelper.getInstance().getPlayerName()});
+		}
+
+		public boolean isGameStarted() {
+			return gameStarted;
+		}
+
+		public void setGameStarted(boolean gameStarted) {
+			this.gameStarted = gameStarted;
 		}
 
 
