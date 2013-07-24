@@ -1,1 +1,70 @@
-\chapter{Herausforderungen und Probleme}
+\chapter{Ping Testapplikation}
+In diesem Kapitel wird auf eine Applikation eingegangen, die dazu verwendet wird
+die \ib{Latenzzeit} bei der Kommunikation zwischen Smartphones zu messen. Es
+wird ein Android Projekt erstellt, dass wie bei den beiden Bespielen in Kapitel
+\ref{chapter:graph} und \ref{chapter:maumau} erklärt, die PTPLibrary als
+Bibliothek referenziert. Mit der Latenzzeit ist die Zeit gemeint, die zwischen
+dem Versenden eines Signals und dem Empfangen einer Antwort verstreicht. Die
+Latenzzeit wird auch als der \ib{Ping} bezeichnet. Dazu werden allen Smartphones
+eine Nachricht geschickt, die in der selben Session sind. Die Session wird wiederum durch die vorimplementierte Lobby erstellt.
+Die Behandlung der Nachrichten, wird mithilfe eine Handlers realisiert, der die
+eingehenden Nachrichten an den UIThread weiterleitet. Der Codeausschnitt
+\ref{ping} zeigt die beiden Methoden, die für das Messen verwendet werden.
+\begin{lstlisting}[caption=Ping Methoden,label=ping]
+private void ping(MessageInfoHolder obj) {
+	PTPHelper.getInstance().sendDataToAllPeers(PingData.PING_REPLY, obj.data);
+}
+
+private void pingReply(MessageInfoHolder obj) {
+	if(obj.data[0] != null && obj.data[1]!= null && obj.data[1].equals(PTPHelper.getInstance().getUniqueID())){			
+		long timeStampSent = Long.valueOf(obj.data[0]);
+		long timeSpent = System.currentTimeMillis() - timeStampSent;
+		getPingData().addToPingTable(obj.sentBy, timeSpent);
+	}
+}
+\end{lstlisting}
+Bei den Methoden wird das \ib{MessageInfoHolder} Objekt verwendet, das dazu
+benötigt wird die Daten der Nachricht als ein Objekt zusammenzufassen. Die
+Methode \ib{ping()} wird ausgeführt, falls eine Pinganfrage ankommt. Dabei wird
+der ganze Methodeninhalt wieder zurück geschickt. Die Methode \ib{pingReply}
+wird aufgerufen, falls eine Pinganfrage zugekommen ist. Dabei wird auch geprüft
+ob, die Pinganfrage dem Empfänger gehört oder nicht, da die Anfrage an alle
+Sessionteilnehmer geschickt wird. Daraufhin wird die Zeit, die mit der Nachricht
+verschickt wurde mit der aktuellen Zeit verglichen und daraus wird die Differenz
+gebildet. Die Differenz entspricht der Latenzzeit. Diese wird in ein Datenmodel
+gespeichert, das wiederrum die Ergebnisse als eine Liste auf dem Bildschirm
+darstellen lässt. Das Versenden der Pinganfragen wird in der eine
+anderen Activity Klasse, durch das drücken eine Buttons realisiert. Der
+Implementierung für das Versenden ist im Codeausschnitt \ref{sendPing} zusehen.
+\begin{lstlisting}[caption=Sende Pinganfrage,label=sendPing]
+long currentTime = System.currentTimeMillis();
+PTPHelper.getInstance().sendDataToAllPeers(PingData.PING, new String[]{""+currentTime, PTPHelper.getInstance().getUniqueID()});
+\end{lstlisting}
+Dabei wird wie aktuelle Zeit und die ID des Versenders an alle Sessionteilnehmer
+versendet. Die Ergebnisse der Messung sind auf den Bildern
+\ref{fig:ping} a und b zu sehen.
+\begin{figure}[hbt!]
+\centering
+	\begin{subfigure}[b]{0.4\textwidth}
+	    \centering
+	    \includegraphics[width=\textwidth]{chapter6/samsungping}
+	    \caption{Samsung Galaxy S3}
+    \end{subfigure}
+	\begin{subfigure}[b]{0.4\textwidth}
+	    \centering
+	    \includegraphics[width=\textwidth]{chapter6/sonyping}
+	    \caption{Sony Xperia Tipo ST21i}
+    \end{subfigure}
+    \caption{Ping Messergebnisse}
+    \label{fig:ping}
+\end{figure} 
+Diese Bilder zeigen Bildschirmausschnitte der Ping Application auf den
+jeweiligen Smartphone. Dabei ist zu erkennen, dass die Pingzahlen, die in
+Millisekunden dargestellt sind, auf dem Samsung Smartphone ungleichmässig sind.
+Dies ist darauf zurückzuführen, dass die Verarbeitung der Pinganfragen auf dem
+Sony Smartphone stattfinden, das nur über einen Prozessorkern besitzt und
+deswegen bei der Verarbeitung von mehreren Threads Verzögerungen verursachen
+kann. Das Samsung Galaxy S3 hingegen besitzt einen 4 Kern Prozessor und
+verarbeitet die Pinganfragen recht schnell. Auf dem Bild \ref{fig:ping}
+b sind die Antwortzeiten des Samsung Smartphones zu sehen, und diese zeigen
+eine konstante Antwortzeit von etwa 40 Millisekunden.

@@ -3,14 +3,15 @@ Die Entwicklung von Peer-to-Peer Spielen im Lokalen Wlan ist
 eine herausfordende und spannende Sache. Mehrspieler Spiele ohne einen Server
 sind heutzutage noch nicht sehr weit verbreitet und das bietet daher sehr viele
 Möglichkeiten neue Konzepte und Ideen zu realisieren. Die Herausforderung liegt
-in der Komplexität der Implementierung dieser Spiele, sowie in den
+jedoch in der Komplexität der Implementierung dieser Spiele, sowie in den
 Beschränkungen, die durch den größeren Synchronizationsaufwand entstehen.
 Besonder an dem Praktischen Beispiel MauMau wird deutlich, dass es viele Fälle
 gibt, die zu beachten sind, um den Zustand synchron zu halten. Daher war es
 notwendig mehr Informationen über das Netzwerk zu verschicken, das wiederum zu
 mehr Datenverkehr führt. Das Kartenspiel ist jedoch ein Rundenbasiertes
 Spiel, sodass eine größere Datenmenge das Spielerlebniss nicht
-beeinträchtigt.
+beeinträchtigt. Das Graphenspiel zeigt durch seine einfache Implementierung, wie
+schnell ein Spiel auf Peer-to-Peer Basis realisiert werden kann. 
 Das Rahmenwerk AllJoyn hielt was es versprach, mit all seinen
 Funktionalitäten, bis auf den leichten Einstieg. Das Verstandniss des
 Mechanismus ist anfangs recht mühsam und bedarf viel Ziel. Eine weitere
@@ -21,11 +22,11 @@ die Entwicklung von Mehrspielerspielen mindestens 2 Android Geräte notwendig
 sind, um das Spiel vernünftig testen zu können. Daher war es auch schwer
 Belastungstest durchzuführen, da dafür eine entsprechende Anzahl an Smartphones
 benötigt wird. Alternativ gäbe es noch die Möglichkeit eine Android x86
-Version\cite{andx86} auf einer VM laufen zu lassen, jedoch ist die native
-Bibliothek von AllJoyn nur für die ARM-Architektur verfügbar. Doch auch hier
+Version\cite{andx86} auf einer Virtual Machine laufen zu lassen, jedoch ist die
+native Bibliothek von AllJoyn nur für die ARM-Architektur verfügbar. Doch auch hier
 gibt es eine Möglichkeit AllJoyn für die x86 Architektur zu bauen, da der
-Quellcode frei verfügbar ist, das jedoch einen großen Aufwand bedeutet und die
-Auseinandersetzung mit dem Android Quellcode. Es gibt noch viel
+Quellcode frei verfügbar ist, das jedoch einen großen Aufwand und die
+Auseinandersetzung mit dem Android Quellcode bedeutet. Es gibt noch viel
 Entwicklungspotential für die hier vorgestellte Bibliothek, sowie das verwendete
 Rahmenwerk AllJoyn. Es fehlt z.B. die Möglichkeit ein Spiel über die Bluetooth
 Verbindung zu spielen. AllJoyn bietet eine Bluetooth Unterstützung nur für

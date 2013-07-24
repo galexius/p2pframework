@@ -21,7 +21,7 @@ public final class R {
         public static int refresh_button=0x7f060004;
     }
     public static final class layout {
-        public static int activity_main=0x7f030000;
+        public static int lobby_activity=0x7f030000;
     }
     public static final class string {
         public static int action_settings=0x7f040001;

@@ -33,7 +33,7 @@ public abstract class LobbyActivity extends AbstractLobbyActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);       
         this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        setContentView(R.layout.activity_main);       
+        setContentView(R.layout.lobby_activity);       
         PTPHelper.getInstance().addLobbyObserver(this);
         createButtn = (Button) findViewById(R.id.create_button);
         refreshButton = (Button) findViewById(R.id.refresh_button);

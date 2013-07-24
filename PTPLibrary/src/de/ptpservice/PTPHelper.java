@@ -46,7 +46,6 @@ public class PTPHelper {
     		notifyDataListenersAllPeers(sentFrom,arg,data);
     	}
     }
-
     
     
     @SuppressLint("HandlerLeak")

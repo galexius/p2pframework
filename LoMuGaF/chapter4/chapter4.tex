@@ -1,4 +1,4 @@
-\chapter{Praktisches Anwendungsbeispiel: Graphenspiel}
+\chapter{Praktisches Anwendungsbeispiel: Graphenspiel}\label{chapter:graph}
 
 \section{Spielidee}
 Das Prinzip des Graphenspiels basiert im darauf, dass die Spieler einen
@@ -27,6 +27,20 @@ mithelfen. Die Spieler können auch jederzeit das Spiel verlassen, ohne das
 Beenden des Spiels zu verursachen.
 Es ist jedoch zu beachten, dass immernoch mindestens 2 Spieler benötigt werden,
 um das Rätsel lösen zu können.
+
+\section{Anforderung}
+Die Anforderung für die Implementierung des Spiels sind unten aufgelistet.
+\begin{itemize}
+  \item Es soll zu Beginn ein Graph mit mindestes 6 Konten erstellt werden, die
+  durch Kanten verbunden sind.
+  \item Der Spieler kann nur die Knoten verschieben, die nicht von anderen
+  Spieler im selben Augenblick verschoben werden.
+  \item Jeder Spieler sieht in Echtzeit, wie sich die eigenen und die Knoten
+  der anderen Spieler bewegen.
+  \item Es soll eine Nachricht erschein, wenn das Rätsel gelöst wurde.
+  \item Der erstellte Graph muss lösbar sein, d.h. es muss sich um einen
+  plättbaren Graphen handeln.
+\end{itemize}
 
 \section{Implementierung}
 \subsection{Projektkonfiguration} \label{subsec:projectconfig}

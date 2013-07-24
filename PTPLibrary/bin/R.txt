@@ -4,7 +4,7 @@ int id create_session_name 0x7f060001
 int id join_session_list 0x7f060003
 int id player_name 0x7f060000
 int id refresh_button 0x7f060004
-int layout activity_main 0x7f030000
+int layout lobby_activity 0x7f030000
 int string action_settings 0x7f040001
 int string app_name 0x7f040000
 int string button_connect 0x7f040003

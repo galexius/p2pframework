@@ -25,22 +25,23 @@
 \contentsline {chapter}{\numberline {3}Implementierung}{14}{chapter.3}
 \contentsline {section}{\numberline {3.1}Realisierung}{14}{section.3.1}
 \contentsline {section}{\numberline {3.2}PTPHelper}{14}{section.3.2}
-\contentsline {section}{\numberline {3.3}LobbyActivity}{20}{section.3.3}
-\contentsline {section}{\numberline {3.4}PTPService}{20}{section.3.4}
-\contentsline {subsection}{\numberline {3.4.1}doConnect() und doDisconnect()}{21}{subsection.3.4.1}
+\contentsline {section}{\numberline {3.3}LobbyActivity}{21}{section.3.3}
+\contentsline {section}{\numberline {3.4}PTPService}{21}{section.3.4}
+\contentsline {subsection}{\numberline {3.4.1}doConnect() und doDisconnect()}{22}{subsection.3.4.1}
 \contentsline {subsection}{\numberline {3.4.2}doStartDiscovery() und doStopDiscovery()}{23}{subsection.3.4.2}
 \contentsline {subsection}{\numberline {3.4.3}doBindSession() und doUnbindSession()}{23}{subsection.3.4.3}
 \contentsline {subsection}{\numberline {3.4.4}doRequestName() und doReleaseName()}{25}{subsection.3.4.4}
-\contentsline {subsection}{\numberline {3.4.5}doAdvertise() und doCancelAdvertise()}{26}{subsection.3.4.5}
-\contentsline {subsection}{\numberline {3.4.6}doJoinSession() und doLeaveSession()}{26}{subsection.3.4.6}
-\contentsline {subsection}{\numberline {3.4.7}doQuit()}{27}{subsection.3.4.7}
-\contentsline {chapter}{\numberline {4}Praktisches Anwendungsbeispiel: Graphenspiel}{28}{chapter.4}
-\contentsline {section}{\numberline {4.1}Spielidee}{28}{section.4.1}
-\contentsline {section}{\numberline {4.2}Implementierung}{29}{section.4.2}
-\contentsline {subsection}{\numberline {4.2.1}Projektkonfiguration}{29}{subsection.4.2.1}
-\contentsline {subsection}{\numberline {4.2.2}MainApplication}{29}{subsection.4.2.2}
-\contentsline {subsection}{\numberline {4.2.3}Graph}{31}{subsection.4.2.3}
-\contentsline {subsection}{\numberline {4.2.4}DrawView}{32}{subsection.4.2.4}
+\contentsline {subsection}{\numberline {3.4.5}doAdvertise() und doCancelAdvertise()}{25}{subsection.3.4.5}
+\contentsline {subsection}{\numberline {3.4.6}doJoinSession() und doLeaveSession()}{25}{subsection.3.4.6}
+\contentsline {subsection}{\numberline {3.4.7}doQuit()}{26}{subsection.3.4.7}
+\contentsline {chapter}{\numberline {4}Praktisches Anwendungsbeispiel: Graphenspiel}{27}{chapter.4}
+\contentsline {section}{\numberline {4.1}Spielidee}{27}{section.4.1}
+\contentsline {section}{\numberline {4.2}Anforderung}{28}{section.4.2}
+\contentsline {section}{\numberline {4.3}Implementierung}{28}{section.4.3}
+\contentsline {subsection}{\numberline {4.3.1}Projektkonfiguration}{28}{subsection.4.3.1}
+\contentsline {subsection}{\numberline {4.3.2}MainApplication}{29}{subsection.4.3.2}
+\contentsline {subsection}{\numberline {4.3.3}Graph}{30}{subsection.4.3.3}
+\contentsline {subsection}{\numberline {4.3.4}DrawView}{31}{subsection.4.3.4}
 \contentsline {chapter}{\numberline {5}Praktisches Anwendungsbeispiel: MauMau}{34}{chapter.5}
 \contentsline {section}{\numberline {5.1}Spielidee}{34}{section.5.1}
 \contentsline {section}{\numberline {5.2}Anforderungen}{36}{section.5.2}
@@ -49,6 +50,7 @@
 \contentsline {subsection}{\numberline {5.3.2}MauMauApplication}{36}{subsection.5.3.2}
 \contentsline {subsection}{\numberline {5.3.3}GameManager}{38}{subsection.5.3.3}
 \contentsline {subsection}{\numberline {5.3.4}GameActivity}{40}{subsection.5.3.4}
-\contentsline {chapter}{\numberline {6}Fazit}{42}{chapter.6}
+\contentsline {chapter}{\numberline {6}Ping Testapplikation}{42}{chapter.6}
+\contentsline {chapter}{\numberline {7}Fazit}{44}{chapter.7}
 \vspace {1cm}
 \contentsline {chapter}{\numberline {A}Literaturverzeichnis}{I}{appendix.A}

@@ -446,10 +446,10 @@ public class PTPService extends Service implements ServiceHelperObserver {
 								SignalEmitter.GlobalBroadcast.Off);
 						Object hostInterface = emitter
 								.getInterface(PTPHelper.getInstance().getBusObjectInterfaceType());
-						PTPHelper.getInstance().setSignalEmitter(hostInterface);
-						PTPHelper.getInstance().notifyMemberJoined(joiner);
+						PTPHelper.getInstance().setSignalEmitter(hostInterface);						
 						bus.setSessionListener(sessionId, new PTPSessionListener());
 					}
+					PTPHelper.getInstance().notifyMemberJoined(joiner);
 			}
 		};
 		Status status = bus.bindSessionPort(mutableContactPort, sessionOpts,
