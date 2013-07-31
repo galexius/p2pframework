@@ -69,19 +69,20 @@ public final class R {
         public static final int button_refresh=0x7f040007;
         public static final int channel_name=0x7f040002;
         public static final int default_player_name=0x7f04000a;
-        public static final int draw_card=0x7f040011;
+        public static final int draw_card=0x7f040012;
         public static final int field_empty=0x7f04000c;
         public static final int game_exists=0x7f04000b;
         public static final int hello_world=0x7f040005;
-        public static final int next_turn=0x7f040012;
-        public static final int own_cards=0x7f04000e;
-        public static final int played_cards=0x7f04000f;
+        public static final int next_turn=0x7f040013;
+        public static final int no_wifi=0x7f04000d;
+        public static final int own_cards=0x7f04000f;
+        public static final int played_cards=0x7f040010;
         public static final int player_name=0x7f040008;
         public static final int player_name_empty=0x7f040009;
-        public static final int start=0x7f040010;
-        public static final int title_activity_=0x7f04000d;
+        public static final int start=0x7f040011;
+        public static final int title_activity_=0x7f04000e;
         public static final int title_activity_display_message=0x7f040004;
-        public static final int wish_suit=0x7f040013;
+        public static final int wish_suit=0x7f040014;
     }
     public static final class style {
         /** 

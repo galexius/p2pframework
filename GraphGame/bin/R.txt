@@ -25,6 +25,7 @@ int string default_player_name 0x7f05000a
 int string field_empty 0x7f05000c
 int string game_exists 0x7f05000b
 int string hello_world 0x7f050005
+int string no_wifi 0x7f05000d
 int string player_name 0x7f050008
 int string player_name_empty 0x7f050009
 int string title_activity_display_message 0x7f050004

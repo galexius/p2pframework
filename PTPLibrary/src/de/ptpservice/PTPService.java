@@ -564,7 +564,6 @@ public class PTPService extends Service implements ServiceHelperObserver {
 		ADVERTISED, 		
 		CONNECTED		
 	}
-
 	
 	private void startBusThread() {
 		HandlerThread busThread = new HandlerThread("BackgroundHandler");

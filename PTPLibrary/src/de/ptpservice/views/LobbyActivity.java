@@ -3,6 +3,7 @@ package de.ptpservice.views;
 import java.util.List;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -26,8 +27,8 @@ public abstract class LobbyActivity extends AbstractLobbyActivity {
 	private Button refreshButton;
 	private Button createButtn;
 	
-	protected abstract Class<?> getJoinSessionView();
-	protected abstract Class<?> getHostSessionView();
+	protected abstract Class<? extends Activity> getJoinSessionView();
+	protected abstract Class<? extends Activity> getHostSessionView();
      
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,9 +68,8 @@ public abstract class LobbyActivity extends AbstractLobbyActivity {
 	    	Toast toast = Toast.makeText(context, text, duration);
 	    	toast.show();
     	}else{
-    		PTPHelper.getInstance().setHostSessionName(channelName);
     		PTPHelper.getInstance().setPlayerName(playerName);
-    		PTPHelper.getInstance().hostStartSession();
+    		PTPHelper.getInstance().hostStartSession(channelName);
     		updateUIState(PTPHelper.SESSION_HOSTED);
     	}
 
@@ -98,10 +98,9 @@ public abstract class LobbyActivity extends AbstractLobbyActivity {
 	    	    	Toast toast = Toast.makeText(context, text, duration);
 	    	    	toast.show();
 	        	}else{
-					String name = sessionList.getItemAtPosition(position).toString();
-					PTPHelper.getInstance().setClientSessionName(name);
+					String sessionName = sessionList.getItemAtPosition(position).toString();
 					PTPHelper.getInstance().setPlayerName(playerName);
-					PTPHelper.getInstance().joinSession();
+					PTPHelper.getInstance().joinSession(sessionName);
 					updateUIState(PTPHelper.SESSION_JOINED);
 	        	}
 			}

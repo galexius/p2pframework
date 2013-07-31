@@ -24,6 +24,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 import android.widget.Toast;
+import de.p2pservice.R;
 import de.ptpservice.views.AbstractLobbyActivity;
 import de.ptpservice.views.LobbyObserver;
 
@@ -31,25 +32,40 @@ public class PTPHelper {
     static {
         Log.i("P2PHelper","System.loadLibrary(\"alljoyn_java\")");
         System.loadLibrary("alljoyn_java");
-    }
+    }    
+	
+	public class MessageInfoHolder {
+		public String[] data;
+		public String sentBy;
+		public int messageType;
+	}
     
     class PTPBusObject implements PTPBusObjectInterface,BusObject{
 		@Override
 		@BusSignal
 		public void SendDataToAllPeers(String sentFrom,int arg,String[] data) {}    	
-    }    
+    }   
+    
+    
     
     class PTPBusHandler implements PTPBusObjectInterface, BusObject {
     	@Override
     	@BusSignalHandler(iface = "de.ptpservice.PTPBusObjectInterface", signal = "SendDataToAllPeers")
     	public void SendDataToAllPeers(String sentFrom,int arg, String[] data) {
+    		MessageInfoHolder messageInfoHolder = new MessageInfoHolder();
+    		messageInfoHolder.data = data;
+    		messageInfoHolder.sentBy = sentFrom;
+    		messageInfoHolder.messageType = arg;
+    		
+    		Message obtainedMessage = messageHandler.obtainMessage(MessageHandler.DATA_SENT,messageInfoHolder);
+    		messageHandler.sendMessage(obtainedMessage);		
     		notifyDataListenersAllPeers(sentFrom,arg,data);
     	}
     }
     
     
     @SuppressLint("HandlerLeak")
-	class BackgroundHandler extends Handler{
+	class MessageHandler extends Handler{
     	public static final int BUS_DISCONNECTED = 0;
     	public static final int SESSION_LOST = 1;
     	public static final int MEMBER_JOINED = 2;
@@ -57,8 +73,9 @@ public class PTPHelper {
     	public static final int ADVERTISED_NAME_FOUND = 4;
     	public static final int ADVERTISED_NAME_LOST = 5;    	
     	public static final int CONNECTION_STATE_CHANED = 6;    	
+    	public static final int DATA_SENT = 7;    	
     	
-		public BackgroundHandler(Looper looper) {
+		public MessageHandler(Looper looper) {
 			super(looper);
 		}
 		
@@ -72,6 +89,7 @@ public class PTPHelper {
 				case ADVERTISED_NAME_FOUND: notifyFoundAdvertisedName((String) msg.obj); break;
 				case ADVERTISED_NAME_LOST: notifyLostAdvertisedName((String) msg.obj); break;
 				case CONNECTION_STATE_CHANED: notifyConnectionStateChanged(msg.arg1); break;
+				case DATA_SENT: notifyDataSent((MessageInfoHolder) msg.obj); break;
     		}
     	}
 
@@ -91,6 +109,12 @@ public class PTPHelper {
 			for (BusObserver obs : busObservers) {
 	            obs.foundAdvertisedName(sessionName);
 	        }			
+		}
+		
+		private void notifyDataSent(MessageInfoHolder message) {
+			for (DataObserver obs : dataObservers) {
+				obs.dataSentToAllPeers(message.sentBy, message.messageType, message.data);
+			}			
 		}
 
 		private void notifyMemberJoined(String uniqueId) {
@@ -159,14 +183,21 @@ public class PTPHelper {
 	private short contactPort = 100;
 	
 	private static PTPHelper instance = null;
-	private BackgroundHandler backgroundHandler;
+	private MessageHandler messageHandler;
 	
 	public static void initHelper(String applicationName, Context context, Class<? extends AbstractLobbyActivity> lobbyClass){
 		instance = new PTPHelper(applicationName);	
 		instance.addBusObserver(instance.new HelperBusObserver());
 		PACKAGE_NAME = context.getPackageName();
-        if(instance.isWifiEnabledAndShowInfo(context))
+        if(!instance.isWifiEnabled(context)){
+        	CharSequence text = context.getResources().getText(R.string.no_wifi);
+	    	int duration = Toast.LENGTH_LONG;
+	    	Toast toast = Toast.makeText(context, text, duration);
+	    	toast.show();
+	    	Log.i(TAG, "ShowNoWiFi");
         	return;          
+        	
+        }
          
 		Intent service = new Intent(context,PTPService.class);
         boolean bound = context.bindService(service,new PTPServiceConnection(),Service.BIND_AUTO_CREATE);
@@ -207,22 +238,17 @@ public class PTPHelper {
 		this.busObjectInterfaceType = PTPBusObjectInterface.class;
 		this.busObject = new PTPBusObject();
 		this.signalHandler  = new PTPBusHandler();
-		backgroundHandler = new BackgroundHandler(Looper.getMainLooper());
+		messageHandler = new MessageHandler(Looper.getMainLooper());
 	}
 	
 	@TargetApi(Build.VERSION_CODES.GINGERBREAD)
-	private boolean isWifiEnabledAndShowInfo(Context context){
+	private boolean isWifiEnabled(Context context){
 		WifiManager mainWifi = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
 	    WifiInfo currentWifi = mainWifi.getConnectionInfo();
-	    if((currentWifi==null || currentWifi.getSSID()== null || currentWifi.getSSID().isEmpty()) && !isWifiAPEnabled(mainWifi)){
-	    	CharSequence text = "No WiFi connection";
-	    	int duration = Toast.LENGTH_LONG;
-	    	Toast toast = Toast.makeText(context, text, duration);
-	    	toast.show();
-	    	Log.i(TAG, "ShowNoWiFi");
-	    	return true;
+	    if((currentWifi==null || currentWifi.getSSID()== null || currentWifi.getSSID().isEmpty()) && !isWifiAPEnabled(mainWifi)){	    	
+	    	return false;
 	    }
-	    return false;
+	    return true;
 	}
 	
 	 public boolean isWifiAPEnabled(WifiManager wifi) {
@@ -245,7 +271,7 @@ public class PTPHelper {
 		return hostSessionName;
 	}
 	
-	public synchronized void setHostSessionName(String name){
+	private synchronized void setHostSessionName(String name){
 		this.hostSessionName = name; 
 		isHost = true;
 	}
@@ -253,7 +279,7 @@ public class PTPHelper {
 		return sessionName;
 	}
 	
-	public synchronized void setClientSessionName(String name){
+	private synchronized void setClientSessionName(String name){
 		this.sessionName = name; 
 		isHost = false;
 	}
@@ -317,7 +343,7 @@ public class PTPHelper {
 	}
 
 	private void notifyDataListenersAllPeers(String sentFrom,int arg,String[] data) {		
-		for (DataListener listener : dataListeners) {
+		for (DataObserver listener : dataObservers) {
 			Log.i(TAG, "notify dataListener = " + listener);
 			listener.dataSentToAllPeers(sentFrom, arg, data);
 		}
@@ -337,7 +363,7 @@ public class PTPHelper {
 	private ArrayList<LobbyObserver> lobbyObservers = new ArrayList<LobbyObserver>();
 	private ArrayList<BusObserver> busObservers = new ArrayList<BusObserver>();
 	private ArrayList<SessionObserver> sessionObservers = new ArrayList<SessionObserver>();
-	private ArrayList<DataListener> dataListeners = new ArrayList<DataListener>();
+	private ArrayList<DataObserver> dataObservers = new ArrayList<DataObserver>();
 	private ArrayList<String> foundSessions = new ArrayList<String>();
 	private ArrayList<SessionJoinRule> joinRules = new ArrayList<SessionJoinRule>();
 	private HashMap<String,Object> proxyObjectsMap = new HashMap<String,Object>();
@@ -350,7 +376,8 @@ public class PTPHelper {
 	private Object signalEmitter = null;
 	private boolean isHost;
 	
-	public void joinSession() {
+	public void joinSession(String sessionName) {
+		setClientSessionName(sessionName);
 		notifyHelperObservers(PTPService.JOIN_SESSION);
 	}
 	
@@ -371,7 +398,8 @@ public class PTPHelper {
 		notifyHelperObservers(PTPService.LEAVE_SESSION);
 	}
 
-	public void hostStartSession() {
+	public void hostStartSession(String sessionName) {
+		setHostSessionName(sessionName);
 		notifyHelperObservers(PTPService.UNBIND_SESSION);
 		notifyHelperObservers(PTPService.RELEASE_NAME);
 		notifyHelperObservers(PTPService.BIND_SESSION);
@@ -464,38 +492,38 @@ public class PTPHelper {
 	}
 	
 	private void notifyLobbyObserversConnectionStateChanged() {
-		Message obtainedMessage = backgroundHandler.obtainMessage(BackgroundHandler.CONNECTION_STATE_CHANED, connectionState,0);
-		backgroundHandler.sendMessage(obtainedMessage);			
+		Message obtainedMessage = messageHandler.obtainMessage(MessageHandler.CONNECTION_STATE_CHANED, connectionState,0);
+		messageHandler.sendMessage(obtainedMessage);			
 	}
-
+	
 	public synchronized void notifyBusDisconnected() {
-		Message obtainedMessage = backgroundHandler.obtainMessage(BackgroundHandler.BUS_DISCONNECTED);
-		backgroundHandler.sendMessage(obtainedMessage);	
+		Message obtainedMessage = messageHandler.obtainMessage(MessageHandler.BUS_DISCONNECTED);
+		messageHandler.sendMessage(obtainedMessage);	
 	}
 
 	public synchronized void notifyLostAdvertisedName(String sessionName) {
-		Message obtainedMessage = backgroundHandler.obtainMessage(BackgroundHandler.ADVERTISED_NAME_LOST, sessionName);
-		backgroundHandler.sendMessage(obtainedMessage);
+		Message obtainedMessage = messageHandler.obtainMessage(MessageHandler.ADVERTISED_NAME_LOST, sessionName);
+		messageHandler.sendMessage(obtainedMessage);
 	}
 	
 	public synchronized void notifyFoundAdvertisedName(String sessionName) {
-		Message obtainedMessage = backgroundHandler.obtainMessage(BackgroundHandler.ADVERTISED_NAME_FOUND, sessionName);
-		backgroundHandler.sendMessage(obtainedMessage);			
+		Message obtainedMessage = messageHandler.obtainMessage(MessageHandler.ADVERTISED_NAME_FOUND, sessionName);
+		messageHandler.sendMessage(obtainedMessage);			
 	}
 
 	public synchronized void notifyMemberJoined(String membersId) {
-		Message obtainedMessage = backgroundHandler.obtainMessage(BackgroundHandler.MEMBER_JOINED, membersId);
-		backgroundHandler.sendMessage(obtainedMessage);	
+		Message obtainedMessage = messageHandler.obtainMessage(MessageHandler.MEMBER_JOINED, membersId);
+		messageHandler.sendMessage(obtainedMessage);	
 	}
 
 	public synchronized void notifyMemberLeft(String membersId) {
-		Message obtainedMessage = backgroundHandler.obtainMessage(BackgroundHandler.MEMBER_LEFT, membersId);
-		backgroundHandler.sendMessage(obtainedMessage);
+		Message obtainedMessage = messageHandler.obtainMessage(MessageHandler.MEMBER_LEFT, membersId);
+		messageHandler.sendMessage(obtainedMessage);
 	}
 
 	public synchronized void notifySessionLost() {
-		Message obtainedMessage = backgroundHandler.obtainMessage(BackgroundHandler.SESSION_LOST);
-		backgroundHandler.sendMessage(obtainedMessage);
+		Message obtainedMessage = messageHandler.obtainMessage(MessageHandler.SESSION_LOST);
+		messageHandler.sendMessage(obtainedMessage);
 	}
 	
 	public synchronized void addJoinRule(SessionJoinRule joinRule){
@@ -515,20 +543,20 @@ public class PTPHelper {
 		}
 	}
 	
-	public synchronized void addDataListener(DataListener dataListener){
-		if (dataListeners.indexOf(dataListener) < 0) {
-			dataListeners.add(dataListener);
+	public synchronized void addDataObserver(DataObserver dataObserver){
+		if (dataObservers.indexOf(dataObserver) < 0) {
+			dataObservers.add(dataObserver);
 		}
 	}
 	
-	public synchronized void removeDataListener(DataListener dataListener){
-		if (dataListeners.indexOf(dataListener) >= 0) {
-			dataListeners.remove(dataListener);
+	public synchronized void removeDataObserver(DataObserver dataObserver){
+		if (dataObservers.indexOf(dataObserver) >= 0) {
+			dataObservers.remove(dataObserver);
 		}
 	}
 	
-	public synchronized void removeAllDataListeners(){
-		dataListeners.clear();
+	public synchronized void removeAllDataObservers(){
+		dataObservers.clear();
 	}
 	
 	public synchronized void removeProxyObjectForPeerID(String peerID){

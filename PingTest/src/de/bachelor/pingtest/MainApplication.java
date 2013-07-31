@@ -4,7 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Application;
 import android.os.Handler;
 import android.os.Message;
-import de.ptpservice.DataListener;
+import de.ptpservice.DataObserver;
 import de.ptpservice.PTPHelper;
 
 @SuppressLint("HandlerLeak")
@@ -22,7 +22,7 @@ public class MainApplication extends Application {
         pingData = new PingData();
         
 		PTPHelper.initHelper("Ping",this, PingLobby.class);
-		PTPHelper.getInstance().addDataListener(new DataListener() {
+		PTPHelper.getInstance().addDataObserver(new DataObserver() {
 			
 			@Override
 			public void dataSentToAllPeers(String peersID, int messageType, String[] data) {	

@@ -31,6 +31,7 @@ public final class R {
 		public static final int field_empty = 0x7f05000c;
 		public static final int game_exists = 0x7f05000b;
 		public static final int hello_world = 0x7f050005;
+		public static final int no_wifi = 0x7f05000d;
 		public static final int player_name = 0x7f050008;
 		public static final int player_name_empty = 0x7f050009;
 		public static final int title_activity_display_message = 0x7f050004;

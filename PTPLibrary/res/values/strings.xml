@@ -14,5 +14,6 @@
     <string name="default_player_name">Player</string>
     <string name="game_exists">game name does already exist</string>
     <string name="field_empty">Player name or session name is empty</string>
+    <string name="no_wifi">No WiFi connection found</string>
 
 </resources>
