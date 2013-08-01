@@ -45,8 +45,7 @@ class Graph implements GraphInterface, BusObject {
     
     public Graph(Context context){
 		this.context = context;    	
-    }
-    
+    }   
     
     public void setupPoints() {
     	Log.d("Graph", "setupPoints()");
@@ -58,7 +57,6 @@ class Graph implements GraphInterface, BusObject {
     	currentLevel = (Level) map.decode(xmlAsString);
     	nodes = currentLevel.getAllNodes();
     	edges = currentLevel.getAllEdges();
-
 	}
     
     private String getLevelXMLAsString()
@@ -221,11 +219,10 @@ class Graph implements GraphInterface, BusObject {
 				Line line2 = new Line();
 				line2.point1 = point3;
 				line2.point2 = point4;
-
+	
 				//To avoid intersection on the ends of the lines we shorten them a little
-				line1.shorten(0.01d);
-				line2.shorten(0.01d);
-				
+				line1.shorten(0.05d);
+				line2.shorten(0.05d);
 				if(GraphCalculator.linesIntersect(point1.x,point1.y,point2.x,point2.y,point3.x,point3.y,point4.x,point4.y)){
 					return false;
 				}

@@ -2,17 +2,11 @@ package de.bachelor.pingtest;
 
 import android.annotation.SuppressLint;
 import android.app.Application;
-import android.os.Handler;
-import android.os.Message;
 import de.ptpservice.DataObserver;
 import de.ptpservice.PTPHelper;
 
 @SuppressLint("HandlerLeak")
 public class MainApplication extends Application {		
-	class MessageInfoHolder {
-		public String[] data;
-		public String sentBy;
-	}
 	
 	protected static final String TAG = "MainApp";
 	private PingData pingData;
@@ -26,39 +20,25 @@ public class MainApplication extends Application {
 			
 			@Override
 			public void dataSentToAllPeers(String peersID, int messageType, String[] data) {	
-				MessageInfoHolder infoHolder = new MessageInfoHolder();
-				infoHolder.data = data;
-				infoHolder.sentBy = peersID;
-				sendMessage(messageType, infoHolder);
+				switch (messageType) {
+	    		case PingData.PING: ping(peersID,data);
+	    		case PingData.PING_REPLY: pingReply(peersID,data);
+				default: break;
+				};
 			}
 		});
 	}	
 	
-	void sendMessage(int messageType,MessageInfoHolder infoHolder){
-		Message obtainedMessage = messageHandler.obtainMessage(messageType,infoHolder);
-		messageHandler.sendMessage(obtainedMessage);	
-	}
-	
-	private Handler messageHandler = new Handler() {
-		
-    	public void handleMessage(Message msg) {
-    		switch (msg.what) {
-    		case PingData.PING: ping((MessageInfoHolder)msg.obj);
-    		case PingData.PING_REPLY: pingReply((MessageInfoHolder)msg.obj);
-			default: break;
-			};
-		}
-    };
 
-	private void ping(MessageInfoHolder obj) {
-		PTPHelper.getInstance().sendDataToAllPeers(PingData.PING_REPLY, obj.data);
+	private void ping(String peersID, String[] data) {
+		PTPHelper.getInstance().sendDataToAllPeers(PingData.PING_REPLY, data);
 	}
 
-	private void pingReply(MessageInfoHolder obj) {
-		if(obj.data[0] != null && obj.data[1]!= null && obj.data[1].equals(PTPHelper.getInstance().getUniqueID())){			
-			long timeStampSent = Long.valueOf(obj.data[0]);
+	private void pingReply(String peersID, String[] data) {
+		if(data[0] != null && data[1]!= null && data[1].equals(PTPHelper.getInstance().getUniqueID())){			
+			long timeStampSent = Long.valueOf(data[0]);
 			long timeSpent = System.currentTimeMillis() - timeStampSent;
-			getPingData().addToPingTable(obj.sentBy, timeSpent);
+			getPingData().addToPingTable(peersID, timeSpent);
 		}
 	}
 

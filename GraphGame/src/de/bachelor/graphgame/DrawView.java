@@ -48,8 +48,7 @@ public class DrawView extends View implements OnTouchListener, GraphObserver {
 	private boolean isWaitingForConnection;
 
 	private boolean isFinished = false;
-	private boolean startTimeSet = false;
-	private long timeStarted;
+	private long timeStarted = -1;
     
     @SuppressWarnings("deprecation")
 	public DrawView(Context context, MainApplication application) {
@@ -146,8 +145,7 @@ public class DrawView extends View implements OnTouchListener, GraphObserver {
 			invalidate();
 			return false;
 		}
-		if(!startTimeSet){
-			startTimeSet = true;
+		if(timeStarted == -1){
 			timeStarted = System.currentTimeMillis();
 		}
 		

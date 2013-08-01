@@ -12,7 +12,6 @@ import org.alljoyn.bus.Status;
 
 import android.annotation.SuppressLint;
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.Handler;
@@ -20,30 +19,28 @@ import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
-import android.telephony.TelephonyManager;
 import android.util.Log;
 
 public class PTPService extends Service implements ServiceHelperObserver {
 
-	
-	class PTPSessionListener extends SessionListener{
-		
+	class PTPSessionListener extends SessionListener {
+
 		@Override
 		public void sessionLost(int sessionId) {
 			PTPHelper.getInstance().notifySessionLost();
 		}
-		
+
 		@Override
-	    public void sessionMemberAdded(int sessionId, String uniqueName) {
-	    	PTPHelper.getInstance().notifyMemberJoined(uniqueName);
-	    }
-	    
+		public void sessionMemberAdded(int sessionId, String uniqueName) {
+			PTPHelper.getInstance().notifyMemberJoined(uniqueName);
+		}
+
 		@Override
-	    public void sessionMemberRemoved(int sessionId, String uniqueName) {
-	    	PTPHelper.getInstance().notifyMemberLeft(uniqueName);
-	    }
+		public void sessionMemberRemoved(int sessionId, String uniqueName) {
+			PTPHelper.getInstance().notifyMemberLeft(uniqueName);
+		}
 	}
-	
+
 	public static final int EXIT = 1;
 	public static final int CONNECT = 2;
 	public static final int DISCONNECT = 3;
@@ -57,72 +54,102 @@ public class PTPService extends Service implements ServiceHelperObserver {
 	public static final int CANCEL_ADVERTISE = 11;
 	public static final int JOIN_SESSION = 12;
 	public static final int LEAVE_SESSION = 13;
-	
+
 	private BusAttachmentState busAttachmentState = BusAttachmentState.DISCONNECTED;
-	
+
 	private HostChannelState hostChannelState = HostChannelState.IDLE;
-	
+
 	static final String TAG = "P2PService";
-	
+
 	private BackgroundHandler backgroundHandler = null;
 	protected String packageName;
-	
+
 	private BusAttachment bus;
 
 	protected String objectPath = "/ObjectPath";
-	
+
 	public void onCreate() {
 		Log.i(TAG, "onCreate()");
 		packageName = this.getPackageName();
-		if(PTPHelper.getInstance() == null){
+		if (PTPHelper.getInstance() == null) {
 			Log.e(TAG, "P2PHelper not initialized!");
 			return;
 		}
-		objectPath = "/"+ PTPHelper.getInstance().getApplicationName();
+		objectPath = "/" + PTPHelper.getInstance().getApplicationName();
 		PTPHelper.getInstance().addObserver(this);
-		org.alljoyn.bus.alljoyn.DaemonInit.PrepareDaemon(getApplicationContext());
-		
-        startBusThread();
-        PTPHelper.getInstance().acquireMissedNotifications();
- 	}
-		
-	public void doAction(int arg){
+		org.alljoyn.bus.alljoyn.DaemonInit
+				.PrepareDaemon(getApplicationContext());
 
-			switch(arg){
-				case CONNECT: backgroundHandler.connect();break;
-				case DISCONNECT: backgroundHandler.disconnect();break;
-				case START_DISCOVERY: backgroundHandler.startDiscovery();break;
-				case CANCEL_DISCOVERY: backgroundHandler.cancelDiscovery();break;
-				case REQUEST_NAME: backgroundHandler.requestName();break;
-				case RELEASE_NAME: backgroundHandler.releaseName();break;
-				case BIND_SESSION: backgroundHandler.bindSession();break;
-				case UNBIND_SESSION: backgroundHandler.unbindSession();break;
-				case ADVERTISE: backgroundHandler.advertise();break;
-				case CANCEL_ADVERTISE: backgroundHandler.cancelAdvertise();break;
-				case JOIN_SESSION: backgroundHandler.joinSession();break;
-				case LEAVE_SESSION: backgroundHandler.leaveSession();break;
-				case EXIT: backgroundHandler.exit();break;
-			    default: break;
-			}
+		startBusThread();
+		PTPHelper.getInstance().acquireMissedNotifications();
 	}
-	
+
+	public void doAction(int arg) {
+
+		switch (arg) {
+		case CONNECT:
+			backgroundHandler.connect();
+			break;
+		case DISCONNECT:
+			backgroundHandler.disconnect();
+			break;
+		case START_DISCOVERY:
+			backgroundHandler.startDiscovery();
+			break;
+		case CANCEL_DISCOVERY:
+			backgroundHandler.cancelDiscovery();
+			break;
+		case REQUEST_NAME:
+			backgroundHandler.requestName();
+			break;
+		case RELEASE_NAME:
+			backgroundHandler.releaseName();
+			break;
+		case BIND_SESSION:
+			backgroundHandler.bindSession();
+			break;
+		case UNBIND_SESSION:
+			backgroundHandler.unbindSession();
+			break;
+		case ADVERTISE:
+			backgroundHandler.advertise();
+			break;
+		case CANCEL_ADVERTISE:
+			backgroundHandler.cancelAdvertise();
+			break;
+		case JOIN_SESSION:
+			backgroundHandler.joinSession();
+			break;
+		case LEAVE_SESSION:
+			backgroundHandler.leaveSession();
+			break;
+		case EXIT:
+			backgroundHandler.exit();
+			break;
+		default:
+			break;
+		}
+	}
+
 	@SuppressLint("HandlerLeak")
-	private final class BackgroundHandler extends Handler {	
+	private final class BackgroundHandler extends Handler {
 
 		public BackgroundHandler(Looper looper) {
 			super(looper);
 		}
+
 		public void exit() {
 			Log.i(TAG, "backgroundHandler.exit()");
 			Message msg = backgroundHandler.obtainMessage(EXIT);
 			backgroundHandler.sendMessage(msg);
 		}
+
 		public void connect() {
 			Log.i(TAG, "backgroundHandler.connect()");
 			Message msg = backgroundHandler.obtainMessage(CONNECT);
 			backgroundHandler.sendMessage(msg);
 		}
-		
+
 		public void disconnect() {
 			Log.i(TAG, "backgroundHandler.disconnect()");
 			Message msg = backgroundHandler.obtainMessage(DISCONNECT);
@@ -134,7 +161,7 @@ public class PTPService extends Service implements ServiceHelperObserver {
 			Message msg = backgroundHandler.obtainMessage(START_DISCOVERY);
 			backgroundHandler.sendMessage(msg);
 		}
-		
+
 		public void cancelDiscovery() {
 			Log.i(TAG, "backgroundHandler.startDiscovery()");
 			Message msg = backgroundHandler.obtainMessage(CANCEL_DISCOVERY);
@@ -188,144 +215,142 @@ public class PTPService extends Service implements ServiceHelperObserver {
 			Message msg = backgroundHandler.obtainMessage(LEAVE_SESSION);
 			backgroundHandler.sendMessage(msg);
 		}
-		
-		
 
 		public void handleMessage(Message msg) {
 			switch (msg.what) {
 			case CONNECT:
-	            doConnect();
-            	break;
-	        case DISCONNECT:
-		        doDisconnect();
-		    	break;
-            case START_DISCOVERY:
-	            doStartDiscovery();
-            	break;
-	        case CANCEL_DISCOVERY:
-		        doStopDiscovery();
-		    	break;
-	        case REQUEST_NAME:
-		        doRequestName();
-		    	break;
-	        case RELEASE_NAME:
-		        doReleaseName();
-		    	break;		
-	        case BIND_SESSION:
-		        doBindSession();
-		    	break;
-	        case UNBIND_SESSION:
-		        doUnbindSession();
-		        break;
-	        case ADVERTISE:
-		        doAdvertise();
-		    	break;
-	        case CANCEL_ADVERTISE:
-		        doCancelAdvertise();		        
-		    	break;	
-	        case JOIN_SESSION:
-		        doJoinSession();
-		    	break;
-	        case LEAVE_SESSION:
-		        doLeaveSession();
-		        break;
-	        case EXIT:
-                doQuit();
-                break;
+				doConnect();
+				break;
+			case DISCONNECT:
+				doDisconnect();
+				break;
+			case START_DISCOVERY:
+				doStartDiscovery();
+				break;
+			case CANCEL_DISCOVERY:
+				doStopDiscovery();
+				break;
+			case REQUEST_NAME:
+				doRequestName();
+				break;
+			case RELEASE_NAME:
+				doReleaseName();
+				break;
+			case BIND_SESSION:
+				doBindSession();
+				break;
+			case UNBIND_SESSION:
+				doUnbindSession();
+				break;
+			case ADVERTISE:
+				doAdvertise();
+				break;
+			case CANCEL_ADVERTISE:
+				doCancelAdvertise();
+				break;
+			case JOIN_SESSION:
+				doJoinSession();
+				break;
+			case LEAVE_SESSION:
+				doLeaveSession();
+				break;
+			case EXIT:
+				doQuit();
+				break;
 			default:
 				break;
 			}
 		}
 
 	}
-	
-    private void doStartDiscovery() {
-        Log.i(TAG, "doStartDiscovery()");
-    	assert(busAttachmentState == BusAttachmentState.CONNECTED);
-      	Status status = bus.findAdvertisedName(packageName);
-    	if (status == Status.OK) {
-        	busAttachmentState = BusAttachmentState.DISCOVERING;
-        	return;
-    	} else {
-    		Log.e(TAG, "startDiscovery failed");
-        	return;
-    	}
-    }
-    
-    private void doStopDiscovery() {
-        Log.i(TAG, "doStopDiscovery()");
-    	assert(busAttachmentState == BusAttachmentState.DISCOVERING);
-      	bus.cancelFindAdvertisedName(packageName);
-      	busAttachmentState = BusAttachmentState.CONNECTED;
-    }
-    
-    private String getDeviceID(){
-    	TelephonyManager telephonyManager = (TelephonyManager) getBaseContext().getSystemService(Context.TELEPHONY_SERVICE);
-		Log.i(TAG, "DeviceID: " + telephonyManager.getDeviceId());
-		return telephonyManager.getDeviceId();
-    }
-	
+
+	private void doStartDiscovery() {
+		Log.i(TAG, "doStartDiscovery()");
+		assert (busAttachmentState == BusAttachmentState.CONNECTED);
+		Status status = bus.findAdvertisedName(packageName);
+		if (status == Status.OK) {
+			busAttachmentState = BusAttachmentState.DISCOVERING;
+			return;
+		} else {
+			Log.e(TAG, "startDiscovery failed");
+			return;
+		}
+	}
+
+	private void doStopDiscovery() {
+		Log.i(TAG, "doStopDiscovery()");
+		assert (busAttachmentState == BusAttachmentState.DISCOVERING);
+		bus.cancelFindAdvertisedName(packageName);
+		busAttachmentState = BusAttachmentState.CONNECTED;
+	}
+
 	private void doConnect() {
 		Log.i(TAG, "doConnect()");
-		
-		bus = new BusAttachment(packageName + "." + PTPHelper.getInstance().getApplicationName(),  BusAttachment.RemoteMessage.Receive);
+
+		bus = new BusAttachment(packageName + "."
+				+ PTPHelper.getInstance().getApplicationName(),
+				BusAttachment.RemoteMessage.Receive);
 		assert (busAttachmentState == BusAttachmentState.DISCONNECTED);
 		bus.useOSLogging(true);
 		bus.setDebugLevel("ALLJOYN_JAVA", 7);
-		busListener = new BusListener(){
+		busListener = new BusListener() {
 			@Override
-			public void foundAdvertisedName(String fullName, short transport, String namePrefix) {
-				if(namePrefix.equals(packageName))
-					PTPHelper.getInstance().notifyFoundAdvertisedName(getSimpleName(fullName));
+			public void foundAdvertisedName(String fullName, short transport,
+					String namePrefix) {
+				if (namePrefix.equals(packageName))
+					PTPHelper.getInstance().notifyFoundAdvertisedName(
+							getSimpleName(fullName));
 			};
-			
-			
+
 			@Override
-			public void lostAdvertisedName(String fullName, short transport, String namePrefix) {
-				if(namePrefix.equals(packageName))
-					PTPHelper.getInstance().notifyLostAdvertisedName(getSimpleName(fullName));
+			public void lostAdvertisedName(String fullName, short transport,
+					String namePrefix) {
+				if (namePrefix.equals(packageName))
+					PTPHelper.getInstance().notifyLostAdvertisedName(
+							getSimpleName(fullName));
 			}
-			
+
 			@Override
 			public void busDisconnected() {
 				PTPHelper.getInstance().notifyBusDisconnected();
 			}
-			
-			private String getSimpleName(String fullName){
+
+			private String getSimpleName(String fullName) {
 				int lastDotIndex = fullName.lastIndexOf(".");
-				String simpleName = fullName.substring(lastDotIndex+1);
+				String simpleName = fullName.substring(lastDotIndex + 1);
 				return simpleName;
-			}	
+			}
 
 		};
-		
+
 		bus.registerBusListener(busListener);
-		BusObject busObject = PTPHelper.getInstance().getBusObject(); 
+		BusObject busObject = PTPHelper.getInstance().getBusObject();
 		Status status;
-		if(busObject != null){
-			status = bus.registerBusObject(busObject, objectPath+ "/" + getDeviceID());
-			if (Status.OK != status) {			
+		if (busObject != null) {
+			status = bus.registerBusObject(busObject, objectPath + "/"
+					+ bus.getGlobalGUIDString());
+			if (Status.OK != status) {
 				Log.e(TAG, "Cannot register : " + status);
 				return;
 			}
 		}
 
 		status = bus.connect();
-		if (status != Status.OK) {			
+		if (status != Status.OK) {
 			Log.e(TAG, "Cannot connect");
 			return;
 		}
 
-		status = bus.registerSignalHandlers(PTPHelper.getInstance().getSignalHandler());
+		status = bus.registerSignalHandlers(PTPHelper.getInstance()
+				.getSignalHandler());
 		if (status != Status.OK) {
 			Log.e(TAG, "Cannot register signalHandler: " + status);
 			return;
 		}
 		busAttachmentState = BusAttachmentState.CONNECTED;
 		PTPHelper.getInstance().setUniqueID(bus.getUniqueName());
-		PTPHelper.getInstance().setConnectionState(PTPHelper.CONNECTED);		
+		PTPHelper.getInstance().setConnectionState(PTPHelper.CONNECTED);
 	}
-	
 
 	private void doDisconnect() {
 		Log.i(TAG, "doDisonnect()");
@@ -344,27 +369,31 @@ public class PTPService extends Service implements ServiceHelperObserver {
 				.compareTo(BusAttachmentState.DISCONNECTED);
 		assert (stateRelation >= 0);
 		assert (hostChannelState == HostChannelState.BOUND);
-		if (hostChannelState != HostChannelState.BOUND) return;
-		
-		
-		if(PTPHelper.getInstance().getFoundSessions().contains(PTPHelper.getInstance().getHostSessionName())){
-			PTPHelper.getInstance().setConnectionState(PTPHelper.SESSION_NAME_EXISTS);
-			Log.e(TAG, "cannot request name " );
+		if (hostChannelState != HostChannelState.BOUND)
+			return;
+
+		if (PTPHelper.getInstance().getFoundSessions()
+				.contains(PTPHelper.getInstance().getHostSessionName())) {
+			PTPHelper.getInstance().setConnectionState(
+					PTPHelper.SESSION_NAME_EXISTS);
+			Log.e(TAG, "cannot request name ");
 			doUnbindSession();
 			hostChannelState = HostChannelState.IDLE;
 			PTPHelper.getInstance().setConnectionState(PTPHelper.CONNECTED);
 			return;
 		}
-		Status status = bus.requestName(packageName + "." +PTPHelper.getInstance().getHostSessionName(),
+		Status status = bus.requestName(packageName + "."
+				+ PTPHelper.getInstance().getHostSessionName(),
 				BusAttachment.ALLJOYN_REQUESTNAME_FLAG_DO_NOT_QUEUE);
 		if (status == Status.OK) {
 			hostChannelState = HostChannelState.NAMED;
 		} else {
-			if(status.compareTo(Status.DBUS_REQUEST_NAME_REPLY_EXISTS) == 0){
-				PTPHelper.getInstance().setConnectionState(PTPHelper.SESSION_NAME_EXISTS);
-				
+			if (status.compareTo(Status.DBUS_REQUEST_NAME_REPLY_EXISTS) == 0) {
+				PTPHelper.getInstance().setConnectionState(
+						PTPHelper.SESSION_NAME_EXISTS);
+
 			}
-			Log.e(TAG, "cannot request name " + status.toString() );
+			Log.e(TAG, "cannot request name " + status.toString());
 			doUnbindSession();
 			hostChannelState = HostChannelState.IDLE;
 			PTPHelper.getInstance().setConnectionState(PTPHelper.CONNECTED);
@@ -378,96 +407,107 @@ public class PTPService extends Service implements ServiceHelperObserver {
 		assert (stateRelation >= 0);
 		assert (busAttachmentState == BusAttachmentState.CONNECTED || busAttachmentState == BusAttachmentState.DISCOVERING);
 		assert (hostChannelState == HostChannelState.NAMED);
-		
-		if (busAttachmentState != BusAttachmentState.CONNECTED || busAttachmentState != BusAttachmentState.DISCOVERING) return;
-		if(hostChannelState != HostChannelState.NAMED) return;
-		
+
+		if (busAttachmentState != BusAttachmentState.CONNECTED
+				|| busAttachmentState != BusAttachmentState.DISCOVERING)
+			return;
+		if (hostChannelState != HostChannelState.NAMED)
+			return;
+
 		bus.releaseName(PTPHelper.getInstance().getHostSessionName());
 		hostChannelState = HostChannelState.IDLE;
 		PTPHelper.getInstance().setConnectionState(PTPHelper.SESSION_CLOSED);
 	}
-	
-    private void doAdvertise() {
-        Log.i(TAG, "doAdvertise()");
-        if(hostChannelState != HostChannelState.NAMED) return;
-        
-        assert (hostChannelState == HostChannelState.NAMED);
-    	Log.i(TAG, "Advertised name: " + PTPHelper.getInstance().getHostSessionName() );
-        Status status = bus.advertiseName(packageName+"."+PTPHelper.getInstance().getHostSessionName(), SessionOpts.TRANSPORT_WLAN);
-        
-        if (status == Status.OK) {
-        	hostChannelState = HostChannelState.ADVERTISED;
-        	PTPHelper.getInstance().setConnectionState(PTPHelper.SESSION_HOSTED);
-        } else {
-        	Log.e(TAG, "doAdvertise() failed");
-        	return;
-        }
-    }
-    
-   
-    private void doCancelAdvertise() {
-        Log.i(TAG, "doCancelAdvertise()");
-       
-    	String wellKnownName = packageName + "." + PTPHelper.getInstance().getHostSessionName();
-        Status status = bus.cancelAdvertiseName(wellKnownName, SessionOpts.TRANSPORT_ANY);
-        
-        if (status != Status.OK) {
-        	Log.e(TAG, "cancelAdvertise() failed : " + status);
-        	return;
-        }
-     	hostChannelState = HostChannelState.BOUND;
-    }
+
+	private void doAdvertise() {
+		Log.i(TAG, "doAdvertise()");
+		if (hostChannelState != HostChannelState.NAMED)
+			return;
+
+		assert (hostChannelState == HostChannelState.NAMED);
+		Log.i(TAG, "Advertised name: "
+				+ PTPHelper.getInstance().getHostSessionName());
+		Status status = bus.advertiseName(packageName + "."
+				+ PTPHelper.getInstance().getHostSessionName(),
+				SessionOpts.TRANSPORT_WLAN);
+
+		if (status == Status.OK) {
+			hostChannelState = HostChannelState.ADVERTISED;
+			PTPHelper.getInstance()
+					.setConnectionState(PTPHelper.SESSION_HOSTED);
+		} else {
+			Log.e(TAG, "doAdvertise() failed");
+			return;
+		}
+	}
+
+	private void doCancelAdvertise() {
+		Log.i(TAG, "doCancelAdvertise()");
+
+		String wellKnownName = packageName + "."
+				+ PTPHelper.getInstance().getHostSessionName();
+		Status status = bus.cancelAdvertiseName(wellKnownName,
+				SessionOpts.TRANSPORT_ANY);
+
+		if (status != Status.OK) {
+			Log.e(TAG, "cancelAdvertise() failed : " + status);
+			return;
+		}
+		hostChannelState = HostChannelState.BOUND;
+	}
 
 	private void doBindSession() {
 		Log.i(TAG, "doBindSession()");
-		Mutable.ShortValue mutableContactPort = new Mutable.ShortValue(PTPHelper.getInstance().getContactPort());
+		Mutable.ShortValue mutableContactPort = new Mutable.ShortValue(
+				PTPHelper.getInstance().getContactPort());
 		SessionOpts sessionOpts = new SessionOpts(SessionOpts.TRAFFIC_MESSAGES,
-				true, SessionOpts.PROXIMITY_ANY, SessionOpts.TRANSPORT_WLAN);		
-		sessionPortListener = new SessionPortListener(){
-			
+				true, SessionOpts.PROXIMITY_ANY, SessionOpts.TRANSPORT_WLAN);
+		sessionPortListener = new SessionPortListener() {
+
 			public boolean acceptSessionJoiner(short sessionPort,
-								String joiner, SessionOpts sessionOpts) {
-					Log.d(TAG, "Accept Session Joiner: " + joiner);
-					if(sessionPort == PTPHelper.getInstance().getContactPort()){					
-						return PTPHelper.getInstance().canJoin(joiner);
-					}
-					return false;
+					String joiner, SessionOpts sessionOpts) {
+				Log.d(TAG, "Accept Session Joiner: " + joiner);
+				if (sessionPort == PTPHelper.getInstance().getContactPort()) {
+					return PTPHelper.getInstance().canJoin(joiner);
+				}
+				return false;
 			}
-			
-			public void sessionJoined(short sessionPort, int sessionId,String joiner) {
-					
-					Log.i(TAG, "SessionPortListener.sessionJoined("
-							+ sessionPort + ", " + sessionId + ", " + joiner + ")");
-					if(firstJoiner){
-						firstJoiner = false;
-						hostSessionId = sessionId;
-						
-						SignalEmitter emitter = new SignalEmitter(PTPHelper.getInstance().getBusObject(), sessionId,
-								SignalEmitter.GlobalBroadcast.Off);
-						Object hostInterface = emitter
-								.getInterface(PTPHelper.getInstance().getBusObjectInterfaceType());
-						PTPHelper.getInstance().setSignalEmitter(hostInterface);						
-						bus.setSessionListener(sessionId, new PTPSessionListener());
-					}
-					PTPHelper.getInstance().notifyMemberJoined(joiner);
+
+			public void sessionJoined(short sessionPort, int sessionId,
+					String joiner) {
+
+				Log.i(TAG, "SessionPortListener.sessionJoined(" + sessionPort
+						+ ", " + sessionId + ", " + joiner + ")");
+				if (firstJoiner) {
+					firstJoiner = false;
+					hostSessionId = sessionId;
+
+					SignalEmitter emitter = new SignalEmitter(PTPHelper
+							.getInstance().getBusObject(), sessionId,
+							SignalEmitter.GlobalBroadcast.Off);
+					Object hostInterface = emitter.getInterface(PTPHelper
+							.getInstance().getBusObjectInterfaceType());
+					PTPHelper.getInstance().setSignalEmitter(hostInterface);
+					bus.setSessionListener(sessionId, new PTPSessionListener());
+				}
+				PTPHelper.getInstance().notifyMemberJoined(joiner);
 			}
 		};
 		Status status = bus.bindSessionPort(mutableContactPort, sessionOpts,
 				sessionPortListener);
-		
+
 		if (status == Status.OK) {
 			hostChannelState = HostChannelState.BOUND;
 		} else {
 			Log.e(TAG, "Unable to bind session contact port: (" + status + ")");
 			return;
-		}				
+		}
 		joinedToSelf = true;
 		firstJoiner = true;
 	}
 
 	public static enum UseChannelState {
-		IDLE, 
-		JOINED,
+		IDLE, JOINED,
 	}
 
 	private void doJoinSession() {
@@ -478,49 +518,53 @@ public class PTPService extends Service implements ServiceHelperObserver {
 			}
 		}
 
-		String wellKnownName = packageName + "." + PTPHelper.getInstance().getSessionName();
+		String wellKnownName = packageName + "."
+				+ PTPHelper.getInstance().getSessionName();
 
 		SessionOpts sessionOpts = new SessionOpts(SessionOpts.TRAFFIC_MESSAGES,
 				true, SessionOpts.PROXIMITY_ANY, SessionOpts.TRANSPORT_WLAN);
 		Mutable.IntegerValue sessionId = new Mutable.IntegerValue();
 
-		Status status = bus.joinSession(wellKnownName, PTPHelper.getInstance().getContactPort(), sessionId,
-			sessionOpts, new SessionListener(){
-				@Override
-				public void sessionLost(int sessionId) {
-					PTPHelper.getInstance().notifySessionLost();
-				}
-				
-				@Override
-			    public void sessionMemberAdded(int sessionId, String uniqueName) {
-			    	PTPHelper.getInstance().notifyMemberJoined(uniqueName);
-			    }
-			    
-				@Override
-			    public void sessionMemberRemoved(int sessionId, String uniqueName) {
-			    	PTPHelper.getInstance().notifyMemberLeft(uniqueName);
-			    }
-				
-		});
-		
+		Status status = bus.joinSession(wellKnownName, PTPHelper.getInstance()
+				.getContactPort(), sessionId, sessionOpts,
+				new SessionListener() {
+					@Override
+					public void sessionLost(int sessionId) {
+						PTPHelper.getInstance().notifySessionLost();
+					}
+
+					@Override
+					public void sessionMemberAdded(int sessionId,
+							String uniqueName) {
+						PTPHelper.getInstance().notifyMemberJoined(uniqueName);
+					}
+
+					@Override
+					public void sessionMemberRemoved(int sessionId,
+							String uniqueName) {
+						PTPHelper.getInstance().notifyMemberLeft(uniqueName);
+					}
+
+				});
+
 		if (status == Status.OK) {
-			clientSessionId = sessionId.value;			
+			clientSessionId = sessionId.value;
 			Log.i(TAG, "doJoinSession(): use sessionId is " + clientSessionId);
 		} else {
 			Log.e(TAG, "Unable to join session: (" + status + ")");
 			return;
 		}
-		SignalEmitter emitter = new SignalEmitter(PTPHelper.getInstance().getBusObject(), clientSessionId,
+		SignalEmitter emitter = new SignalEmitter(PTPHelper.getInstance()
+				.getBusObject(), clientSessionId,
 				SignalEmitter.GlobalBroadcast.Off);
-		
-		Object clientInterface = emitter.getInterface(PTPHelper.getInstance().getBusObjectInterfaceType());
+
+		Object clientInterface = emitter.getInterface(PTPHelper.getInstance()
+				.getBusObjectInterfaceType());
 		PTPHelper.getInstance().setSignalEmitter(clientInterface);
 		PTPHelper.getInstance().setConnectionState(PTPHelper.SESSION_JOINED);
-		
+
 	}
 
-
-	
 	private void doLeaveSession() {
 		Log.i(TAG, "doLeaveSession()");
 		if (joinedToSelf == false) {
@@ -531,7 +575,6 @@ public class PTPService extends Service implements ServiceHelperObserver {
 		PTPHelper.getInstance().setConnectionState(PTPHelper.SESSION_LEFT);
 	}
 
-
 	int clientSessionId = -1;
 
 	int hostSessionId = -1;
@@ -539,8 +582,6 @@ public class PTPService extends Service implements ServiceHelperObserver {
 	boolean joinedToSelf = false;
 	boolean firstJoiner = false;
 
-	
-	
 	private BusListener busListener;
 	private SessionPortListener sessionPortListener;
 
@@ -551,20 +592,13 @@ public class PTPService extends Service implements ServiceHelperObserver {
 	}
 
 	public static enum BusAttachmentState {
-		DISCONNECTED,
-		CONNECTED, 
-		DISCOVERING		
+		DISCONNECTED, CONNECTED, DISCOVERING
 	}
 
-	
 	public static enum HostChannelState {
-		IDLE, 
-		NAMED, 		
-		BOUND, 
-		ADVERTISED, 		
-		CONNECTED		
+		IDLE, NAMED, BOUND, ADVERTISED, CONNECTED
 	}
-	
+
 	private void startBusThread() {
 		HandlerThread busThread = new HandlerThread("BackgroundHandler");
 		busThread.start();
@@ -578,9 +612,9 @@ public class PTPService extends Service implements ServiceHelperObserver {
 		PTPHelper.getInstance().removeObserver(this);
 		this.stopSelf();
 	}
-	
+
 	@Override
-	public void onDestroy(){
+	public void onDestroy() {
 		doQuit();
 		super.onDestroy();
 	}

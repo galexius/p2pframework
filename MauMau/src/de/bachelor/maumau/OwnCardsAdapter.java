@@ -38,7 +38,7 @@ public class OwnCardsAdapter extends BaseAdapter {
 	 public View getView(final int position, final View convertView, final ViewGroup parent) {	 
 		  ImageView imageView = new ImageView(context);
 		  Card card = gameManager.getOwnCards().get(position);
-		  Bitmap bitmap = gameManager.getBitmap(context, card);
+		  Bitmap bitmap = BitmapHelper.getBitmap(context, card);
 		  imageView.setImageBitmap(bitmap);
 		  imageView.setTag(card);
 		  

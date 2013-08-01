@@ -59,7 +59,6 @@ public class PTPHelper {
     		
     		Message obtainedMessage = messageHandler.obtainMessage(MessageHandler.DATA_SENT,messageInfoHolder);
     		messageHandler.sendMessage(obtainedMessage);		
-    		notifyDataListenersAllPeers(sentFrom,arg,data);
     	}
     }
     
@@ -242,7 +241,7 @@ public class PTPHelper {
 	}
 	
 	@TargetApi(Build.VERSION_CODES.GINGERBREAD)
-	private boolean isWifiEnabled(Context context){
+	public boolean isWifiEnabled(Context context){
 		WifiManager mainWifi = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
 	    WifiInfo currentWifi = mainWifi.getConnectionInfo();
 	    if((currentWifi==null || currentWifi.getSSID()== null || currentWifi.getSSID().isEmpty()) && !isWifiAPEnabled(mainWifi)){	    	
@@ -251,7 +250,7 @@ public class PTPHelper {
 	    return true;
 	}
 	
-	 public boolean isWifiAPEnabled(WifiManager wifi) {
+	 private boolean isWifiAPEnabled(WifiManager wifi) {
 	        boolean state = false;
 	        try {
 	            Method method2 = wifi.getClass().getMethod("isWifiApEnabled");
@@ -340,13 +339,6 @@ public class PTPHelper {
             Log.i(TAG, "notify observer = " + obs);
             obs.doAction(arg);
         }
-	}
-
-	private void notifyDataListenersAllPeers(String sentFrom,int arg,String[] data) {		
-		for (DataObserver listener : dataObservers) {
-			Log.i(TAG, "notify dataListener = " + listener);
-			listener.dataSentToAllPeers(sentFrom, arg, data);
-		}
 	}
 	
 	public void sendDataToAllPeers(int arg,String[] data){

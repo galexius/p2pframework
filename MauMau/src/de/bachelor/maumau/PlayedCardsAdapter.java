@@ -36,7 +36,7 @@ public class PlayedCardsAdapter extends BaseAdapter {
 	 public View getView(final int position, final View convertView, final ViewGroup parent) {	  	
 	  ImageView imageView = new ImageView(context);
 	  Card card = gameManager.getPlayedCard();
-	  imageView.setImageBitmap(gameManager.getBitmap(context, card));
+	  imageView.setImageBitmap(BitmapHelper.getBitmap(context, card));
 	  imageView.setTag(card);
 	  return imageView;
 	 }
