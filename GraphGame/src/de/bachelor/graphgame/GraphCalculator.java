@@ -90,16 +90,8 @@ public class GraphCalculator {
        double collinearity = x1*(y2-y3) + x2*(y3-y1) + x3*(y1-y2);   // see http://mathworld.wolfram.com/Collinear.html
        
        if ( collinearity < EPSILON && collinearity > (0-EPSILON)){
-          // The lines are collinear. Now check if they overlap.
-          if (x1 >= x3 && x1 <= x4 || x1 <= x3 && x1 >= x4 ||
-                x2 >= x3 && x2 <= x4 || x2 <= x3 && x2 >= x4 ||
-                x3 >= x1 && x3 <= x2 || x3 <= x1 && x3 >= x2){
-             if (y1 >= y3 && y1 <= y4 || y1 <= y3 && y1 >= y4 ||
-                   y2 >= y3 && y2 <= y4 || y2 <= y3 && y2 >= y4 ||
-                   y3 >= y1 && y3 <= y2 || y3 <= y1 && y3 >= y2){
-                return true;
-             }
-          }
+          // The lines are collinear.
+          return true; //the lines overlap, otherwise bounding box test would have failed
        }
        return false;
 	   }

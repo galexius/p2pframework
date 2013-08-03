@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.alljoyn.bus.BusException;
-import org.alljoyn.bus.BusObject;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -18,26 +17,16 @@ import de.ptpservice.PTPHelper;
 import de.uniks.jism.xml.XMLEntity;
 import de.uniks.jism.xml.XMLIdMap;
 
-class Graph implements GraphInterface, BusObject {
+class Graph {
 
-	public class IdChange{
-		public IdChange(int id2, String owner2) {
-			id = id2;
-			owner = owner2;
-		}
-		public int id;
-		public String owner;
-	}
-		
+	
 	public static final int NODE_POSITION_CHANGED = 1;
 	public static final int NODE_OWNERSHIP_CHANGED = 2;
 	public static final int GRAPH_CHANGED = 3;
 	
 	private static final String TAG = "Graph";
 	ArrayList<Node> nodes = new ArrayList<Node>();
-	ArrayList<Node> changedNodes = new ArrayList<Node>();
     ArrayList<Edge> edges = new ArrayList<Edge>();
-    ArrayList<IdChange> idChanges = new ArrayList<Graph.IdChange>();
     private List<GraphObserver> mObservers = new ArrayList<GraphObserver>();
 	private Context context;
 	private Level currentLevel;
@@ -47,7 +36,7 @@ class Graph implements GraphInterface, BusObject {
 		this.context = context;    	
     }   
     
-    public void setupPoints() {
+    public void setupGraph() {
     	Log.d("Graph", "setupPoints()");
     	String xmlAsString = getLevelXMLAsString();    	    	
     	XMLIdMap map=new XMLIdMap();
@@ -78,15 +67,12 @@ class Graph implements GraphInterface, BusObject {
     }
     
     public void resetGraph(){
-    	changedNodes.clear();
-    	idChanges.clear();
     	mObservers.clear();
-    	setupPoints();
+    	setupGraph();
     }
     
 	@TargetApi(Build.VERSION_CODES.GINGERBREAD)
-	@Override
-	public synchronized void MoveNode(int id, double x, double y, String uniqueName)  {
+	public synchronized void moveNode(int id, double x, double y, String uniqueName)  {
 		
 		for (Node point : nodes) {
 			if(point.getOwner().isEmpty() || point.getOwner().equals(uniqueName)){
@@ -123,8 +109,7 @@ class Graph implements GraphInterface, BusObject {
 		
 	}
 
-	@Override
-	public synchronized void ChangeOwnerOfNode(int id, String owner, String uniqueID) {
+	public synchronized void changeOwnerOfNode(int id, String owner, String uniqueID) {
 		for (Node node : nodes) {
 			if(node.getId() == id){
 				node.setOwner(owner);
@@ -166,27 +151,6 @@ class Graph implements GraphInterface, BusObject {
         }
 	}
 
-	public IdChange getIdChange() {
-		if(!idChanges.isEmpty()){
-			IdChange change = idChanges.get(0);
-			idChanges.remove(change);
-			return change;
-		}
-		return null;
-	}
-
-	public void addIdOfChangedPoint(IdChange change) {
-		idChanges.add(change);
-	}
-
-	public Node getChangedNode() {
-		if(!changedNodes.isEmpty()){
-			Node node = changedNodes.get(0);
-			changedNodes.remove(node);
-			return node;
-		}
-		return null;
-	}
 	
 	public Node getNodeById(int id){
 		for (Node node : nodes) {			

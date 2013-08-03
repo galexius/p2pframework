@@ -70,7 +70,7 @@ public class GameManager {
 
 		private boolean gameStarted = false;
 		
-		public GameManager(MauMauApplication application){
+		public GameManager(){
 			getPlayCardRuleEnforcer().addInclusiveRule(new YourTurnRule(this));
 			getPlayCardRuleEnforcer().addExclusiveRule(new SameSuitRule(this));
 			getPlayCardRuleEnforcer().addExclusiveRule(new SameValueRule(this));

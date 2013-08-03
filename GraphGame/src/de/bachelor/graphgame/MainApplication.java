@@ -14,7 +14,7 @@ public class MainApplication extends Application {
 	public void onCreate() {
         super.onCreate();
         graph = new Graph(this);
-        graph.setupPoints();
+        graph.setupGraph();
         
 		PTPHelper.initHelper("GraphGame",this, GraphLobbyActivity.class);
 		PTPHelper.getInstance().addDataObserver(new DataObserver() {
@@ -43,12 +43,12 @@ public class MainApplication extends Application {
 
 	private void nodeOwnerChanged(String sentBy,String[] data) {
     	Node node = graph.getNodeFromXML(data[0]);
-	    graph.ChangeOwnerOfNode(node.getId(),node.getOwner(), sentBy);
+	    graph.changeOwnerOfNode(node.getId(),node.getOwner(), sentBy);
 	}
 
 	private void nodePositionChanged(String sentBy,String[] data) {
     	Node node = graph.getNodeFromXML(data[0]);
-	    graph.MoveNode(node.getId(), node.getX(), node.getY(), sentBy);	
+	    graph.moveNode(node.getId(), node.getX(), node.getY(), sentBy);	
 	}
 
 

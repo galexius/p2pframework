@@ -16,7 +16,7 @@ public class MauMauApplication extends Application {
 	@Override
 	public void onCreate(){
 		super.onCreate();	
-		gameManager = new GameManager(this);
+		gameManager = new GameManager();
 		gameManager.reset();
 		PTPHelper.initHelper("MauMau", this, MauMauLobbyView.class);
 		PTPHelper.getInstance().addDataObserver(new DataObserver() {			

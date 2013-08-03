@@ -56,7 +56,7 @@ public class DrawView extends View implements OnTouchListener, GraphObserver {
 		this.application = application;
 		setupColorMap();
 		graph = application.getGraph();
-		graph.setupPoints();
+		graph.setupGraph();
 		graph.addObserver(this);
         setFocusable(true);
         setFocusableInTouchMode(true);
@@ -157,14 +157,14 @@ public class DrawView extends View implements OnTouchListener, GraphObserver {
 						 if(!pointHit && (point.getOwner().equals(PTPHelper.getInstance().getUniqueID()) || point.getOwner().isEmpty())){
 							 pointHit = true;
 							 hitPoint = point;
-							 graph.ChangeOwnerOfNode(hitPoint.getId(), PTPHelper.getInstance().getUniqueID(), PTPHelper.getInstance().getUniqueID());
+							 graph.changeOwnerOfNode(hitPoint.getId(), PTPHelper.getInstance().getUniqueID(), PTPHelper.getInstance().getUniqueID());
 							 Log.d(TAG, "hit");	 
 						 }						 
 					 }
 				}	        	 
 	         }
 	         if(event.getAction() == MotionEvent.ACTION_UP && pointHit){
-	        	 graph.ChangeOwnerOfNode(hitPoint.getId(), "", PTPHelper.getInstance().getUniqueID());
+	        	 graph.changeOwnerOfNode(hitPoint.getId(), "", PTPHelper.getInstance().getUniqueID());
 	        	 pointHit = false;
 	        	 return false;
 	         }
@@ -172,7 +172,7 @@ public class DrawView extends View implements OnTouchListener, GraphObserver {
 	        	Node nodeMove = new Node();
 		        nodeMove.setX( event.getX()/displayWidth - hitPoint.getX());
 		        nodeMove.setY(event.getY()/displayHeight - hitPoint.getY());
-		        graph.MoveNode(hitPoint.getId(), nodeMove.getX(), nodeMove.getY(), PTPHelper.getInstance().getUniqueID());
+		        graph.moveNode(hitPoint.getId(), nodeMove.getX(), nodeMove.getY(), PTPHelper.getInstance().getUniqueID());
 		        invalidate();
 	         }
 		} catch (BusException e) {
