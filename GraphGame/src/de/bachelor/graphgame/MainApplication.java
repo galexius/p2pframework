@@ -3,7 +3,7 @@ package de.bachelor.graphgame;
 import android.annotation.SuppressLint;
 import android.app.Application;
 import de.ptpservice.DataObserver;
-import de.ptpservice.PTPHelper;
+import de.ptpservice.PTPManager;
 
 @SuppressLint("HandlerLeak")
 public class MainApplication extends Application {
@@ -16,8 +16,8 @@ public class MainApplication extends Application {
         graph = new Graph(this);
         graph.setupGraph();
         
-		PTPHelper.initHelper("GraphGame",this, GraphLobbyActivity.class);
-		PTPHelper.getInstance().addDataObserver(new DataObserver() {
+        PTPManager.initHelper("GraphGame",this, GraphLobbyActivity.class);
+        PTPManager.getInstance().addDataObserver(new DataObserver() {
 			
 			@Override
 			public void dataSentToAllPeers(String peersID, int messageType, String[] data) {

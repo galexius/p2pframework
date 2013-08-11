@@ -17,7 +17,7 @@ import de.bachelor.maumau.rules.RuleEnforcer;
 import de.bachelor.maumau.rules.SameSuitRule;
 import de.bachelor.maumau.rules.SameValueRule;
 import de.bachelor.maumau.rules.YourTurnRule;
-import de.ptpservice.PTPHelper;
+import de.ptpservice.PTPManager;
 import de.uniks.jism.xml.XMLIdMap;
 
 @TargetApi(Build.VERSION_CODES.GINGERBREAD)
@@ -106,7 +106,7 @@ public class GameManager {
 			cardsDrawnThisTurn = true;
 			int cardPosition = random.nextInt(notOwnedCards.size()-1);
 			Card card = notOwnedCards.get(cardPosition);
-			card.owner = PTPHelper.getInstance().getUniqueID();
+			card.owner = PTPManager.getInstance().getUniqueID();
 			sendCardOwnerChanged(card);
 			notifyObservers(DRAW_CARDS);
 			
@@ -122,7 +122,7 @@ public class GameManager {
 		
 		private void sendCardOwnerChanged(Card card) {
 			String xmlStringForCard = getXMLStringForCard(card);
-			PTPHelper.getInstance().sendDataToAllPeers(OWNER_CHANGED, new String[]{xmlStringForCard});
+			PTPManager.getInstance().sendDataToAllPeers(OWNER_CHANGED, new String[]{xmlStringForCard});
 		}
 
 		public synchronized void ChangeOwner(int cardId, String uniqueUserID){
@@ -146,15 +146,15 @@ public class GameManager {
 		public void startGameAsHost(){
 			setGameStarted(true);
 			cardsDrawnThisTurn = false;
-			setAndNotifyNextTurn(PTPHelper.getInstance().getUniqueID());
+			setAndNotifyNextTurn(PTPManager.getInstance().getUniqueID());
 		}
 		
 		private void drawCardsIfNeeded() {
-			if(isInitState && !PTPHelper.getInstance().isHost()){
+			if(isInitState && !PTPManager.getInstance().isHost()){
 				Set<String> keySet = joinedPlayers.keySet();
 				boolean allPlayersSetUp = true;
 				for (String key : keySet) {
-					if(key.equals(PTPHelper.getInstance().getUniqueID())) continue;
+					if(key.equals(PTPManager.getInstance().getUniqueID())) continue;
 					
 					int size = getCardsForPlayersId(key).size();
 					if(!(size == NUMBER_OF_CARDS_AT_START)){
@@ -181,7 +181,7 @@ public class GameManager {
 				playedCard.owner= "";
 			}
 			playedCard = card;
-			if(uniqueUserID.equals(PTPHelper.getInstance().getUniqueID())){
+			if(uniqueUserID.equals(PTPManager.getInstance().getUniqueID())){
 				cardPlayedThisTurn = true;
 				sendCardPlayed(card);
 				nextTurn();
@@ -192,7 +192,7 @@ public class GameManager {
 		}
 
 		private void sendCardPlayed(Card card) {
-			PTPHelper.getInstance().sendDataToAllPeers(CARD_PLAYED, new String[]{(card.id+"")});			
+			PTPManager.getInstance().sendDataToAllPeers(CARD_PLAYED, new String[]{(card.id+"")});			
 		}
 
 		private Card getCardById(int cardId) {
@@ -203,7 +203,7 @@ public class GameManager {
 		}
 
 		public List<Card> getOwnCards() {			
-			return getCardsForPlayersId(PTPHelper.getInstance().getUniqueID());			
+			return getCardsForPlayersId(PTPManager.getInstance().getUniqueID());			
 		}
 
 		public List<Card> getCardsForPlayersId(String uniqueID) {
@@ -283,7 +283,7 @@ public class GameManager {
 		}
 
 		public boolean isMyTurn() {
-			return PTPHelper.getInstance().getUniqueID().equals(currentPlayersID);
+			return PTPManager.getInstance().getUniqueID().equals(currentPlayersID);
 		}	
 		
 		public String getCurrentPlayersID(){
@@ -299,12 +299,12 @@ public class GameManager {
 			
 			cardsDrawnThisTurn = false;
 			cardPlayedThisTurn = false;
-			String nextPlayersID = getNextPlayersId(PTPHelper.getInstance().getUniqueID());
+			String nextPlayersID = getNextPlayersId(PTPManager.getInstance().getUniqueID());
 			setAndNotifyNextTurn(nextPlayersID);
 		}
 
 		private void updateSpecialCaseOnTurnsEnd() {
-			if( !lastCardPlayedBy.equals(PTPHelper.getInstance().getUniqueID()) && playedCard.value != 11){
+			if( !lastCardPlayedBy.equals(PTPManager.getInstance().getUniqueID()) && playedCard.value != 11){
 				specialCase = SpecialCases.DEFAULT;
 				return;
 			}
@@ -324,7 +324,7 @@ public class GameManager {
 		}
 
 		private void sendNextTurn() {
-			PTPHelper.getInstance().sendDataToAllPeers(NEXT_TURN, new String[]{(""+specialCase)});
+			PTPManager.getInstance().sendDataToAllPeers(NEXT_TURN, new String[]{(""+specialCase)});
 		}
 
 		public RuleEnforcer getPlayCardRuleEnforcer() {
@@ -389,8 +389,8 @@ public class GameManager {
 		}
 
 		public void notifyOthersAboutYourself() {			
-				HiIAm(PTPHelper.getInstance().getUniqueID(), PTPHelper.getInstance().getPlayerName());
-				PTPHelper.getInstance().sendDataToAllPeers(PLAYERS_STATE_CHANGED, new String[]{PTPHelper.getInstance().getPlayerName()});
+				HiIAm(PTPManager.getInstance().getUniqueID(), PTPManager.getInstance().getPlayerName());
+				PTPManager.getInstance().sendDataToAllPeers(PLAYERS_STATE_CHANGED, new String[]{PTPManager.getInstance().getPlayerName()});
 		}
 
 		public boolean isGameStarted() {

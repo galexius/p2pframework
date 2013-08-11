@@ -20,7 +20,7 @@ import android.widget.PopupWindow;
 import android.widget.Toast;
 import de.bachelor.maumau.GameManager.SpecialCases;
 import de.bachelor.maumau.rules.CardsDrawnEvent;
-import de.ptpservice.PTPHelper;
+import de.ptpservice.PTPManager;
 
 @SuppressWarnings("deprecation")
 public class GameActivity extends Activity implements GameManagerObserver {
@@ -53,7 +53,7 @@ public class GameActivity extends Activity implements GameManagerObserver {
 	  playedCardsLabel.setVisibility(View.INVISIBLE);
 	  application = (MauMauApplication) getApplication();
 	  gameManager = application.getGameManager();
-	  startButton.setVisibility(PTPHelper.getInstance().isHost() && !gameManager.isGameStarted() && gameManager.getJoinedPlayers().size() > 1 ? View.VISIBLE: View.GONE);
+	  startButton.setVisibility(PTPManager.getInstance().isHost() && !gameManager.isGameStarted() && gameManager.getJoinedPlayers().size() > 1 ? View.VISIBLE: View.GONE);
 	  gameManager.notifyOthersAboutYourself();
 	  gameManager.addObserver(this);
 	  	 
@@ -103,13 +103,13 @@ public class GameActivity extends Activity implements GameManagerObserver {
 	  playerListAdapter = new PlayerListAdapter(application, this, android.R.layout.test_list_item);
 	  listview.setAdapter(playerListAdapter);
 	  
-	  if(PTPHelper.getInstance().isHost()){		  
+	  if(PTPManager.getInstance().isHost()){		  
 		  getCards();
 	  }
 	}
 	
 	public void playCard(Card cardToPlay) {
-		gameManager.PlayCard(cardToPlay.id, PTPHelper.getInstance().getUniqueID());
+		gameManager.PlayCard(cardToPlay.id, PTPManager.getInstance().getUniqueID());
 		ownCardsAdapter.notifyDataSetChanged();
 		playedCardsAdapter.notifyDataSetChanged();
 		
@@ -133,9 +133,9 @@ public class GameActivity extends Activity implements GameManagerObserver {
 	  super.onBackPressed();
 	  gameManager.notifyOthersAboutYourself();
 	  gameManager.reset();
-	  PTPHelper.getInstance().leaveSession();
-	  PTPHelper.getInstance().disconnect();
-	  PTPHelper.getInstance().connectAndStartDiscover();
+	  PTPManager.getInstance().leaveSession();
+	  PTPManager.getInstance().disconnect();
+	  PTPManager.getInstance().connectAndStartDiscover();
 	}
 	  
 	
@@ -203,7 +203,7 @@ public class GameActivity extends Activity implements GameManagerObserver {
 					playerListAdapter.refresh();
 					playerListAdapter.notifyDataSetChanged();
 					boolean showStartGameButton = !gameManager.isGameStarted() && playerListAdapter.getCount() > 1;
-					startButton.setVisibility(showStartGameButton && PTPHelper.getInstance().isHost() ? View.VISIBLE : View.GONE);
+					startButton.setVisibility(showStartGameButton && PTPManager.getInstance().isHost() ? View.VISIBLE : View.GONE);
 					updateButtonsState();
 				}
 			});

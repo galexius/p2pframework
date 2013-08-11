@@ -3,7 +3,7 @@ package de.bachelor.pingtest;
 import android.annotation.SuppressLint;
 import android.app.Application;
 import de.ptpservice.DataObserver;
-import de.ptpservice.PTPHelper;
+import de.ptpservice.PTPManager;
 
 @SuppressLint("HandlerLeak")
 public class MainApplication extends Application {		
@@ -15,8 +15,8 @@ public class MainApplication extends Application {
         super.onCreate();
         pingData = new PingData();
         
-		PTPHelper.initHelper("Ping",this, PingLobby.class);
-		PTPHelper.getInstance().addDataObserver(new DataObserver() {
+		PTPManager.initHelper("Ping",this, PingLobby.class);
+		PTPManager.getInstance().addDataObserver(new DataObserver() {
 			
 			@Override
 			public void dataSentToAllPeers(String peersID, int messageType, String[] data) {	
@@ -31,11 +31,11 @@ public class MainApplication extends Application {
 	
 
 	private void ping(String peersID, String[] data) {
-		PTPHelper.getInstance().sendDataToAllPeers(PingData.PING_REPLY, data);
+		PTPManager.getInstance().sendDataToAllPeers(PingData.PING_REPLY, data);
 	}
 
 	private void pingReply(String peersID, String[] data) {
-		if(data[0] != null && data[1]!= null && data[1].equals(PTPHelper.getInstance().getUniqueID())){			
+		if(data[0] != null && data[1]!= null && data[1].equals(PTPManager.getInstance().getUniqueID())){			
 			long timeStampSent = Long.valueOf(data[0]);
 			long timeSpent = System.currentTimeMillis() - timeStampSent;
 			getPingData().addToPingTable(peersID, timeSpent);

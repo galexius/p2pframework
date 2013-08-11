@@ -18,7 +18,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 import de.p2pservice.R;
-import de.ptpservice.PTPHelper;
+import de.ptpservice.PTPManager;
 
 @TargetApi(Build.VERSION_CODES.GINGERBREAD)
 public abstract class LobbyActivity extends AbstractLobbyActivity {
@@ -35,18 +35,18 @@ public abstract class LobbyActivity extends AbstractLobbyActivity {
         super.onCreate(savedInstanceState);       
         this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.lobby_activity);       
-        PTPHelper.getInstance().addLobbyObserver(this);
+        PTPManager.getInstance().addLobbyObserver(this);
         createButtn = (Button) findViewById(R.id.create_button);
         refreshButton = (Button) findViewById(R.id.refresh_button);
         sessionList = (ListView) findViewById(R.id.join_session_list);
         setupListView();
-        updateUIState(PTPHelper.getInstance().getConnectionState());
-        PTPHelper.getInstance().connectAndStartDiscover();
+        updateUIState(PTPManager.getInstance().getConnectionState());
+        PTPManager.getInstance().connectAndStartDiscover();
     }
 	
 	@Override
 	protected void onDestroy() {
-		PTPHelper.getInstance().removeLobbyObserver(this);
+		PTPManager.getInstance().removeLobbyObserver(this);
 		super.onDestroy();
 	}
 
@@ -68,15 +68,15 @@ public abstract class LobbyActivity extends AbstractLobbyActivity {
 	    	Toast toast = Toast.makeText(context, text, duration);
 	    	toast.show();
     	}else{
-    		PTPHelper.getInstance().setPlayerName(playerName);
-    		PTPHelper.getInstance().hostStartSession(channelName);
-    		updateUIState(PTPHelper.SESSION_HOSTED);
+    		PTPManager.getInstance().setPlayerName(playerName);
+    		PTPManager.getInstance().hostStartSession(channelName);
+    		updateUIState(PTPManager.SESSION_HOSTED);
     	}
 
     }
     
     public void quit(View view){
-    	PTPHelper.getInstance().quit();
+    	PTPManager.getInstance().quit();
     }
     
     public void refresh(View view){
@@ -99,9 +99,9 @@ public abstract class LobbyActivity extends AbstractLobbyActivity {
 	    	    	toast.show();
 	        	}else{
 					String sessionName = sessionList.getItemAtPosition(position).toString();
-					PTPHelper.getInstance().setPlayerName(playerName);
-					PTPHelper.getInstance().joinSession(sessionName);
-					updateUIState(PTPHelper.SESSION_JOINED);
+					PTPManager.getInstance().setPlayerName(playerName);
+					PTPManager.getInstance().joinSession(sessionName);
+					updateUIState(PTPManager.SESSION_JOINED);
 	        	}
 			}
     	});
@@ -109,7 +109,7 @@ public abstract class LobbyActivity extends AbstractLobbyActivity {
     	
         sessionList.setAdapter(sessionListAdapter);
         
-		List<String> sessions = PTPHelper.getInstance().getFoundSessions();
+		List<String> sessions = PTPManager.getInstance().getFoundSessions();
         for (String session : sessions) {
         	sessionListAdapter.add(session);
         }
@@ -119,15 +119,15 @@ public abstract class LobbyActivity extends AbstractLobbyActivity {
     @Override
     public void connectionStateChanged(final int connectionState){
 		updateUIState(connectionState);
-		if(connectionState == PTPHelper.SESSION_HOSTED){
+		if(connectionState == PTPManager.SESSION_HOSTED){
 			Intent intent = new Intent(LobbyActivity.this, getHostSessionView());
 			LobbyActivity.this.startActivity(intent);
 		}
-		if(connectionState == PTPHelper.SESSION_JOINED){
+		if(connectionState == PTPManager.SESSION_JOINED){
 			Intent intent = new Intent(LobbyActivity.this, getJoinSessionView());
 			LobbyActivity.this.startActivity(intent);
 		}
-		if(connectionState == PTPHelper.SESSION_NAME_EXISTS){
+		if(connectionState == PTPManager.SESSION_NAME_EXISTS){
 			Context context = getApplicationContext();
 	    	CharSequence text = getResources().getText(R.string.game_exists);
 	    	int duration = Toast.LENGTH_SHORT;
@@ -137,7 +137,7 @@ public abstract class LobbyActivity extends AbstractLobbyActivity {
 		}
     }
 	private void updateUIState(int connectionState) {
-		boolean connected = connectionState == PTPHelper.CONNECTED || connectionState == PTPHelper.SESSION_CLOSED || connectionState == PTPHelper.SESSION_LEFT;
+		boolean connected = connectionState == PTPManager.CONNECTED || connectionState == PTPManager.SESSION_CLOSED || connectionState == PTPManager.SESSION_LEFT;
 		createButtn.setEnabled(connected);
 		refreshButton.setEnabled(connected);
 		sessionList.setEnabled(connected);		

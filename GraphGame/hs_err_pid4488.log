@@ -1,0 +1,82 @@
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  Internal Error (classFileParser.cpp:3174), pid=4488, tid=5108
+#  Error: ShouldNotReachHere()
+#
+# JRE version: 6.0_20-b02
+# Java VM: Java HotSpot(TM) 64-Bit Server VM (16.3-b01 mixed mode windows-amd64 )
+# If you would like to submit a bug report, please visit:
+#   http://java.sun.com/webapps/bugreport/crash.jsp
+#
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x000000000026b800):  JavaThread "Unknown thread" [_thread_in_vm, id=5108, stack(0x0000000002070000,0x0000000002170000)]
+
+Stack: [0x0000000002070000,0x0000000002170000]
+[error occurred during error reporting (printing stack bounds), id 0xc0000005]
+
+
+---------------  P R O C E S S  ---------------
+
+Java Threads: ( => current thread )
+
+Other Threads:
+
+=>0x000000000026b800 (exited) JavaThread "Unknown thread" [_thread_in_vm, id=5108, stack(0x0000000002070000,0x0000000002170000)]
+
+VM state:not at safepoint (not fully initialized)
+
+VM Mutex/Monitor currently owned by a thread: None
+
+Dynamic libraries:
+0x0000000000400000 - 0x000000000042e000 	C:\Program Files\java\jre\bin\javaw.exe
+0x0000000077ab0000 - 0x0000000077c59000 	C:\Windows\SYSTEM32\ntdll.dll
+0x0000000077890000 - 0x00000000779af000 	C:\Windows\system32\kernel32.dll
+0x000007fefda50000 - 0x000007fefdabb000 	C:\Windows\system32\KERNELBASE.dll
+0x00000000733d0000 - 0x0000000073458000 	C:\Program Files\Bitdefender\Bitdefender 2013\Active Virus Control\Avc3_00198_021\avcuf64.dll
+0x000007feff4e0000 - 0x000007feff5bb000 	C:\Windows\system32\ADVAPI32.dll
+0x000007feffb40000 - 0x000007feffbdf000 	C:\Windows\system32\msvcrt.dll
+0x000007feff3f0000 - 0x000007feff40f000 	C:\Windows\SYSTEM32\sechost.dll
+0x000007fefe2d0000 - 0x000007fefe3fd000 	C:\Windows\system32\RPCRT4.dll
+0x00000000779b0000 - 0x0000000077aaa000 	C:\Windows\system32\USER32.dll
+0x000007fefdcc0000 - 0x000007fefdd27000 	C:\Windows\system32\GDI32.dll
+0x000007feffb30000 - 0x000007feffb3e000 	C:\Windows\system32\LPK.dll
+0x000007feff410000 - 0x000007feff4d9000 	C:\Windows\system32\USP10.dll
+0x000007feffbe0000 - 0x000007feffc0e000 	C:\Windows\system32\IMM32.DLL
+0x000007feff7f0000 - 0x000007feff8f9000 	C:\Windows\system32\MSCTF.dll
+0x000000006d7f0000 - 0x000000006de95000 	C:\Program Files\java\jre\bin\server\jvm.dll
+0x000007fefcae0000 - 0x000007fefcb1b000 	C:\Windows\system32\WINMM.dll
+0x000000006d760000 - 0x000000006d76e000 	C:\Program Files\java\jre\bin\verify.dll
+0x000000006d3b0000 - 0x000000006d3d7000 	C:\Program Files\java\jre\bin\java.dll
+0x000000006d310000 - 0x000000006d31a000 	C:\Program Files\java\jre\bin\hpi.dll
+0x0000000077c70000 - 0x0000000077c77000 	C:\Windows\system32\PSAPI.DLL
+0x000000006d7b0000 - 0x000000006d7c2000 	C:\Program Files\java\jre\bin\zip.dll
+
+VM Arguments:
+jvm_args: -Dfile.encoding=Cp1252 -Xbootclasspath:G:\Android\sdk\platforms\android-17\android.jar 
+java_command: org.eclipse.jdt.internal.junit.runner.RemoteTestRunner -version 3 -port 51092 -testLoaderClass org.eclipse.jdt.internal.junit4.runner.JUnit4TestLoader -loaderpluginname org.eclipse.jdt.junit4.runtime -classNames de.bachelor.graphgame.test.GraphCalculatorTest
+Launcher Type: SUN_STANDARD
+
+Environment Variables:
+PATH=C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files (x86)\Common Files\Microsoft Shared\Windows Live;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\CMake 2.8\bin;C:\Program Files (x86)\Common Files\Autodesk Shared\;C:\Program Files\Common Files\Autodesk Shared\;D:\Studium\cppfg\delta3d_REL-2.7.0\ext\bin;C:\Program Files (x86)\GtkSharp\2.12\bin;C:\Program Files (x86)\MiKTeX 2.9\miktex\bin\;C:\Program Files\Common Files\Microsoft Shared\Windows Live;C:\MinGW\bin;D:\Downloads\Qt-4.4.3-dev-msvc2008e-rdh\Qt-4.4.3-dev-msvc2008e-rdh\bin
+USERNAME=alex
+OS=Windows_NT
+PROCESSOR_IDENTIFIER=Intel64 Family 6 Model 23 Stepping 6, GenuineIntel
+
+
+
+---------------  S Y S T E M  ---------------
+
+OS: Windows 7 Build 7601 Service Pack 1
+
+CPU:total 2 (2 cores per cpu, 1 threads per core) family 6 model 23 stepping 6, cmov, cx8, fxsr, mmx, sse, sse2, sse3, ssse3, sse4.1
+
+Memory: 4k page, physical 4193400k(1559032k free), swap 6947312k(3702560k free)
+
+vm_info: Java HotSpot(TM) 64-Bit Server VM (16.3-b01) for windows-amd64 JRE (1.6.0_20-b02), built on Apr 12 2010 13:44:19 by "java_re" with MS VC++ 8.0 (VS2005)
+
+time: Thu Aug 01 19:04:08 2013
+elapsed time: 0 seconds
+

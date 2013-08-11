@@ -3,7 +3,7 @@ package de.bachelor.maumau;
 import android.annotation.SuppressLint;
 import android.app.Application;
 import de.ptpservice.DataObserver;
-import de.ptpservice.PTPHelper;
+import de.ptpservice.PTPManager;
 import de.ptpservice.SessionJoinRule;
 import de.uniks.jism.xml.XMLIdMap;
 
@@ -18,8 +18,8 @@ public class MauMauApplication extends Application {
 		super.onCreate();	
 		gameManager = new GameManager();
 		gameManager.reset();
-		PTPHelper.initHelper("MauMau", this, MauMauLobbyView.class);
-		PTPHelper.getInstance().addDataObserver(new DataObserver() {			
+		PTPManager.initHelper("MauMau", this, MauMauLobbyView.class);
+		PTPManager.getInstance().addDataObserver(new DataObserver() {			
 			@Override
 			public void dataSentToAllPeers(String sentBy, int messageType, String[] data) {
 				switch (messageType) {
@@ -31,7 +31,7 @@ public class MauMauApplication extends Application {
 				};
 			}
 		});
-		PTPHelper.getInstance().addJoinRule(new SessionJoinRule() {			
+		PTPManager.getInstance().addJoinRule(new SessionJoinRule() {			
 			@Override
 			public boolean canJoin(String arg0) {
 				return !gameManager.isGameStarted() && gameManager.getJoinedPlayers().size() < 3;

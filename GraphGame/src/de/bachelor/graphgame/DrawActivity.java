@@ -1,11 +1,11 @@
 package de.bachelor.graphgame;
 
-import de.ptpservice.PTPHelper;
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
+import de.ptpservice.PTPManager;
 
 public class DrawActivity extends Activity {
     DrawView drawView;
@@ -30,8 +30,8 @@ public class DrawActivity extends Activity {
 	public void onBackPressed(){
 	  super.onBackPressed();
 	  application.getGraph().resetGraph();
-	  PTPHelper.getInstance().leaveSession();
-	  PTPHelper.getInstance().disconnect();
-	  PTPHelper.getInstance().connectAndStartDiscover();
+	  PTPManager.getInstance().leaveSession();
+	  PTPManager.getInstance().disconnect();
+	  PTPManager.getInstance().connectAndStartDiscover();
 	}
 }

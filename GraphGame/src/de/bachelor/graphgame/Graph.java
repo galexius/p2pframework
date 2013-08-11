@@ -13,7 +13,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.util.Log;
-import de.ptpservice.PTPHelper;
+import de.ptpservice.PTPManager;
 import de.uniks.jism.xml.XMLEntity;
 import de.uniks.jism.xml.XMLIdMap;
 
@@ -81,13 +81,13 @@ class Graph {
 				checkAndAdjust(point);
 			}
 		}
-		if(uniqueName.equals(PTPHelper.getInstance().getUniqueID())){
+		if(uniqueName.equals(PTPManager.getInstance().getUniqueID())){
 			Node changedNode = new Node(x,y,id);
 			
 			XMLIdMap map=new XMLIdMap();
 	    	map.withCreator(new NodeCreator());	
 	    	XMLEntity entity = map.encode(changedNode);
-			PTPHelper.getInstance().sendDataToAllPeers(NODE_POSITION_CHANGED, new String[]{entity.toString()});
+	    	PTPManager.getInstance().sendDataToAllPeers(NODE_POSITION_CHANGED, new String[]{entity.toString()});
 			return;
 		}
 		notifyObservers(GRAPH_CHANGED);
@@ -113,7 +113,7 @@ class Graph {
 		for (Node node : nodes) {
 			if(node.getId() == id){
 				node.setOwner(owner);
-				if(uniqueID.equals(PTPHelper.getInstance().getUniqueID())){
+				if(uniqueID.equals(PTPManager.getInstance().getUniqueID())){
 					Node nodeToChange = new Node();
 					nodeToChange.setid(id);
 					nodeToChange.setOwner(owner);
@@ -121,7 +121,7 @@ class Graph {
 					XMLIdMap map=new XMLIdMap();
 			    	map.withCreator(new NodeCreator());	
 			    	XMLEntity entity = map.encode(nodeToChange);
-					PTPHelper.getInstance().sendDataToAllPeers(NODE_OWNERSHIP_CHANGED, new String[]{entity.toString()});
+			    	PTPManager.getInstance().sendDataToAllPeers(NODE_OWNERSHIP_CHANGED, new String[]{entity.toString()});
 					return;
 				}
 				notifyObservers(GRAPH_CHANGED);

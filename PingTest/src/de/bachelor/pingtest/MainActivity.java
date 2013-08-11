@@ -8,7 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import de.ptpservice.PTPHelper;
+import de.ptpservice.PTPManager;
 
 public class MainActivity extends Activity implements PingObserver {
 
@@ -32,7 +32,7 @@ public class MainActivity extends Activity implements PingObserver {
 	public void sendPing(View view){
 		Log.i("MainActivity", "sendPing pressed");
 		long currentTime = System.currentTimeMillis();
-		PTPHelper.getInstance().sendDataToAllPeers(PingData.PING, new String[]{""+currentTime, PTPHelper.getInstance().getUniqueID()});
+		PTPManager.getInstance().sendDataToAllPeers(PingData.PING, new String[]{""+currentTime, PTPManager.getInstance().getUniqueID()});
 	}
 
 	
