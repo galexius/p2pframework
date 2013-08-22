@@ -7,8 +7,6 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.alljoyn.bus.BusException;
-
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
@@ -22,31 +20,48 @@ class Graph {
 	
 	public static final int NODE_POSITION_CHANGED = 1;
 	public static final int NODE_OWNERSHIP_CHANGED = 2;
-	public static final int GRAPH_CHANGED = 3;
+	public static final int PLAYER_JOINED = 3;
+	public static final int GRAPH_CHANGED = 4;
 	
 	private static final String TAG = "Graph";
-	ArrayList<Node> nodes = new ArrayList<Node>();
-    ArrayList<Edge> edges = new ArrayList<Edge>();
     private List<GraphObserver> mObservers = new ArrayList<GraphObserver>();
 	private Context context;
 	private Level currentLevel;
 	private XMLIdMap nodeXMLMap = null;
+	private boolean graphJustSetup = true;
     
     public Graph(Context context){
 		this.context = context;    	
     }   
     
+    public void setLevel(Level level){
+    	if(!graphJustSetup) return;
+    	currentLevel = level;
+    	notifyObservers(GRAPH_CHANGED);
+    }
+    
     public void setupGraph() {
-    	Log.d("Graph", "setupPoints()");
-    	String xmlAsString = getLevelXMLAsString();    	    	
+    	setLevel(getLevelFromXML(getLevelXMLAsString()));    	
+    	graphJustSetup = true;
+	}
+    
+    public String getLevelAsXML(){
     	XMLIdMap map=new XMLIdMap();
     	map.withCreator(new LevelCreator());
     	map.withCreator(new EdgeCreator());
     	map.withCreator(new NodeCreator());
-    	currentLevel = (Level) map.decode(xmlAsString);
-    	nodes = currentLevel.getAllNodes();
-    	edges = currentLevel.getAllEdges();
-	}
+    	XMLEntity xmlEntity = map.encode(currentLevel);
+    	Log.i(TAG, xmlEntity.toString());
+    	return xmlEntity.toString();
+    }
+    
+    public Level getLevelFromXML(String xml){
+    	XMLIdMap map=new XMLIdMap();
+    	map.withCreator(new LevelCreator());
+    	map.withCreator(new EdgeCreator());
+    	map.withCreator(new NodeCreator());
+    	return (Level) map.decode(xml);
+    }
     
     private String getLevelXMLAsString()
     {	
@@ -68,13 +83,15 @@ class Graph {
     
     public void resetGraph(){
     	mObservers.clear();
+    	graphJustSetup = true;
     	setupGraph();
     }
     
 	@TargetApi(Build.VERSION_CODES.GINGERBREAD)
 	public synchronized void moveNode(int id, double x, double y, String uniqueName)  {
+		graphJustSetup = false;
 		
-		for (Node point : nodes) {
+		for (Node point : currentLevel.getAllNodes()) {
 			if(point.getOwner().isEmpty() || point.getOwner().equals(uniqueName)){
 				point.setX(point.getX() + x);
 				point.setY(point.getY() + y);
@@ -99,18 +116,20 @@ class Graph {
 		if(point.getX() < 0.0d) point.setX(0.0d);
 		if(point.getY() < 0.0d) point.setY(0.0d);
 	}
+	
 
-	public ArrayList<Node> getAllNodes() throws BusException {
-		return nodes;
+
+	public ArrayList<Node> getAllNodes() {
+		return currentLevel.getAllNodes();
 	}
 
-	public ArrayList<Edge> getAllEdge() throws BusException {
-		return edges;
+	public ArrayList<Edge> getAllEdge()  {
+		return currentLevel.getAllEdges();
 		
 	}
 
 	public synchronized void changeOwnerOfNode(int id, String owner, String uniqueID) {
-		for (Node node : nodes) {
+		for (Node node : currentLevel.getAllNodes()) {
 			if(node.getId() == id){
 				node.setOwner(owner);
 				if(uniqueID.equals(PTPManager.getInstance().getUniqueID())){
@@ -153,7 +172,7 @@ class Graph {
 
 	
 	public Node getNodeById(int id){
-		for (Node node : nodes) {			
+		for (Node node : currentLevel.getAllNodes()) {			
 			if(node.getId() == id){
 				return node;
 			}
@@ -162,6 +181,9 @@ class Graph {
 	}
 	
 	public boolean isGraphFinished(){
+	    ArrayList<Edge> edges = currentLevel.getAllEdges();
+
+		
 		for(int i = 0;i < edges.size()-1; i++){
 			for( int j = i+1; j < edges.size(); j++){
 				Point point1 = new Point();
@@ -230,5 +252,13 @@ class Graph {
 		}
     	return (Node) nodeXMLMap.decode(dataAsString);		
 	}
+
+	public void playerLeft(String playerID) {
+		for (Node node : getAllNodes()) {
+			if(playerID.equals(node.getOwner())){
+				node.setOwner("");
+			}
+		}		
+	}	
 
 }

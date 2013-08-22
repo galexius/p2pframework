@@ -1,5 +1,7 @@
 package de.bachelor.maumau;
 
+import de.ptpservice.PTPManager;
+
 public class Card{
 
 	public final static String PROPERTY_VALUE = "value";
@@ -18,6 +20,15 @@ public class Card{
 	public String owner;
 	
 	public String getValueString(){
+		String[] data = null;
+		
+		
+		PTPManager.getInstance().connectAndStartDiscover();
+		PTPManager.getInstance().joinSession("game1");
+		
+		PTPManager.getInstance().sendDataToAllPeers(0, data);
+		
+		
 		switch(value) {
 			case 14: return "A";
 			case 11: return "J";
@@ -25,5 +36,9 @@ public class Card{
 			case 13: return "K";
 			default : return ""+value;
 		}
+		
+		
+		
+		
 	}
 }

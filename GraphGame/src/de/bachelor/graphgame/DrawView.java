@@ -1,7 +1,5 @@
 package de.bachelor.graphgame;
 
-import org.alljoyn.bus.BusException;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -94,7 +92,8 @@ public class DrawView extends View implements OnTouchListener, GraphObserver {
 
 	@Override
     public void onDraw(Canvas canvas) {
-		if(isFinished) return;		
+		if(isFinished) return;	
+		
 		if(PTPManager.getInstance().getSignalEmitter()==null){
 			canvas.drawText("Waiting for connection!", displayWidth/2, displayHeight/2, paint);
 			isWaitingForConnection = true;
@@ -104,23 +103,19 @@ public class DrawView extends View implements OnTouchListener, GraphObserver {
 		isWaitingForConnection = false;
 		Graph graph = application.getGraph();
 		
-		try {
-			int colorIndex = 0;
-			for (Edge edge : graph.getAllEdge()) {
-				paint.setColor(colorMap.get(colorIndex % colorMap.size()));
-				colorIndex++;
-				canvas.drawLine((float)graph.getNodeById(edge.getSrc()).getX()*displayWidth,(float) graph.getNodeById(edge.getSrc()).getY()*displayHeight,(float) graph.getNodeById(edge.getDest()).getX()*displayWidth,(float) graph.getNodeById(edge.getDest()).getY()*displayHeight, paint);
-			}		
-			for (Node point : graph.getAllNodes()) {
-				if(!point.getOwner().isEmpty() && !PTPManager.getInstance().getUniqueID().equals(point.getOwner())){				
-					canvas.drawBitmap(redButton,(float) (point.getX()*displayWidth)-offset,(float) (point.getY()*displayHeight)-offset, null);	
-				}else{
-					canvas.drawBitmap(blueButton,(float) (point.getX()*displayWidth)-offset,(float) (point.getY()*displayHeight)-offset, null);
-				}				
-				canvas.drawText(""+point.getId(),(float) point.getX()*displayWidth - offset/4,(float) point.getY()*displayHeight + offset/3, numbersPaint);
-			}
-		} catch (BusException e) {
-			e.printStackTrace();
+		int colorIndex = 0;
+		for (Edge edge : graph.getAllEdge()) {
+			paint.setColor(colorMap.get(colorIndex % colorMap.size()));
+			colorIndex++;
+			canvas.drawLine((float)graph.getNodeById(edge.getSrc()).getX()*displayWidth,(float) graph.getNodeById(edge.getSrc()).getY()*displayHeight,(float) graph.getNodeById(edge.getDest()).getX()*displayWidth,(float) graph.getNodeById(edge.getDest()).getY()*displayHeight, paint);
+		}		
+		for (Node point : graph.getAllNodes()) {
+			if(!point.getOwner().isEmpty() && !PTPManager.getInstance().getUniqueID().equals(point.getOwner())){				
+				canvas.drawBitmap(redButton,(float) (point.getX()*displayWidth)-offset,(float) (point.getY()*displayHeight)-offset, null);	
+			}else{
+				canvas.drawBitmap(blueButton,(float) (point.getX()*displayWidth)-offset,(float) (point.getY()*displayHeight)-offset, null);
+			}				
+			canvas.drawText(""+point.getId(),(float) point.getX()*displayWidth - offset/4,(float) point.getY()*displayHeight + offset/3, numbersPaint);
 		}
 		
 		if(graph.isGraphFinished()){
@@ -148,34 +143,31 @@ public class DrawView extends View implements OnTouchListener, GraphObserver {
 			timeStarted = System.currentTimeMillis();
 		}
 		Graph graph = application.getGraph();
-		try {
-	         if(event.getAction() == MotionEvent.ACTION_DOWN){
-				for (Node point : graph.getAllNodes()) {
-					 if(Math.abs(point.getX()*displayWidth - event.getX(0)) < TOUCH_SIZE && Math.abs(point.getY()* displayHeight - event.getY(0)) < TOUCH_SIZE){
-						 if(!pointHit && (point.getOwner().equals(PTPManager.getInstance().getUniqueID()) || point.getOwner().isEmpty())){
-							 pointHit = true;
-							 hitPoint = point;
-							 graph.changeOwnerOfNode(hitPoint.getId(), PTPManager.getInstance().getUniqueID(), PTPManager.getInstance().getUniqueID());
-							 Log.d(TAG, "hit");	 
-						 }						 
-					 }
-				}	        	 
-	         }
-	         if(event.getAction() == MotionEvent.ACTION_UP && pointHit){
-	        	 graph.changeOwnerOfNode(hitPoint.getId(), "", PTPManager.getInstance().getUniqueID());
-	        	 pointHit = false;
-	        	 return false;
-	         }
-	         if(pointHit && hitPoint != null){
-	        	Node nodeMove = new Node();
-		        nodeMove.setX( event.getX()/displayWidth - hitPoint.getX());
-		        nodeMove.setY(event.getY()/displayHeight - hitPoint.getY());
-		        graph.moveNode(hitPoint.getId(), nodeMove.getX(), nodeMove.getY(), PTPManager.getInstance().getUniqueID());
-		        invalidate();
-	         }
-		} catch (BusException e) {
-			e.printStackTrace();
-		}
+         if(event.getAction() == MotionEvent.ACTION_DOWN){
+			for (Node point : graph.getAllNodes()) {
+				 if(Math.abs(point.getX()*displayWidth - event.getX(0)) < TOUCH_SIZE && Math.abs(point.getY()* displayHeight - event.getY(0)) < TOUCH_SIZE){
+					 if(!pointHit && (point.getOwner().equals(PTPManager.getInstance().getUniqueID()) || point.getOwner().isEmpty())){
+						 pointHit = true;
+						 hitPoint = point;
+						 graph.changeOwnerOfNode(hitPoint.getId(), PTPManager.getInstance().getUniqueID(), PTPManager.getInstance().getUniqueID());
+						 Log.d(TAG, "hit");	 
+					 }						 
+				 }
+			}	        	 
+         }
+         if(event.getAction() == MotionEvent.ACTION_UP && pointHit){
+        	 graph.changeOwnerOfNode(hitPoint.getId(), "", PTPManager.getInstance().getUniqueID());
+        	 pointHit = false;
+        	 return false;
+         }
+         if(pointHit && hitPoint != null){
+        	Node nodeMove = new Node();
+	        nodeMove.setX( event.getX()/displayWidth - hitPoint.getX());
+	        nodeMove.setY(event.getY()/displayHeight - hitPoint.getY());
+	        graph.moveNode(hitPoint.getId(), nodeMove.getX(), nodeMove.getY(), PTPManager.getInstance().getUniqueID());
+	        invalidate();
+         }
+
         return true;
     }    
 

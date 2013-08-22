@@ -17,10 +17,10 @@ public class EdgeCreator implements XMLEntityCreator {
 	@Override
 	public Object getValue(Object arg0, String arg1) {
 		if(Edge.PROPERTY_DEST.equals(arg1)){
-			return ((Edge)arg0).getDest();
+			return ""+((Edge)arg0).getDest();
 		}
 		if(Edge.PROPERTY_SRC.equals(arg1)){
-			return ((Edge)arg0).getSrc();
+			return ""+((Edge)arg0).getSrc();
 		}
 		return null;
 	}

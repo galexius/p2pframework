@@ -158,7 +158,6 @@ public class PTPManager {
 						
 		}
     }
-
     
 	public final static int CONNECT_BUS = 0;
 	public final static int JOIN_SESSION = 1;
@@ -346,8 +345,12 @@ public class PTPManager {
 			Log.e(TAG, "SignalEmitter not set yet");
 			return;
 		}
-		PTPBusObjectInterface emitter = (PTPBusObjectInterface) signalEmitter;
-		emitter.SendDataToAllPeers(uniqueID, arg, data);
+		try{
+			PTPBusObjectInterface emitter = (PTPBusObjectInterface) signalEmitter;
+			emitter.SendDataToAllPeers(uniqueID, arg, data);
+		}catch(Exception e){
+			Log.e(TAG, "Emitter caused an exception");
+		}
 	}
 
 	

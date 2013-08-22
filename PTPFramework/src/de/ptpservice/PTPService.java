@@ -476,20 +476,17 @@ public class PTPService extends Service implements ServiceHelperObserver {
 			public void sessionJoined(short sessionPort, int sessionId,
 					String joiner) {
 
-				Log.i(TAG, "SessionPortListener.sessionJoined(" + sessionPort
-						+ ", " + sessionId + ", " + joiner + ")");
-				if (firstJoiner) {
-					firstJoiner = false;
-					hostSessionId = sessionId;
+			Log.i(TAG, "SessionPortListener.sessionJoined(" + sessionPort
+					+ ", " + sessionId + ", " + joiner + ")");
+				hostSessionId = sessionId;
 
-					SignalEmitter emitter = new SignalEmitter(PTPManager
-							.getInstance().getBusObject(), sessionId,
-							SignalEmitter.GlobalBroadcast.Off);
-					Object hostInterface = emitter.getInterface(PTPManager
-							.getInstance().getBusObjectInterfaceType());
-					PTPManager.getInstance().setSignalEmitter(hostInterface);
-					bus.setSessionListener(sessionId, new PTPSessionListener());
-				}
+				SignalEmitter emitter = new SignalEmitter(PTPManager
+						.getInstance().getBusObject(), sessionId,
+						SignalEmitter.GlobalBroadcast.Off);
+				Object hostInterface = emitter.getInterface(PTPManager
+						.getInstance().getBusObjectInterfaceType());
+				PTPManager.getInstance().setSignalEmitter(hostInterface);
+				bus.setSessionListener(sessionId, new PTPSessionListener());
 				PTPManager.getInstance().notifyMemberJoined(joiner);
 			}
 		};
@@ -503,7 +500,6 @@ public class PTPService extends Service implements ServiceHelperObserver {
 			return;
 		}
 		joinedToSelf = true;
-		firstJoiner = true;
 	}
 
 	public static enum UseChannelState {
@@ -580,7 +576,6 @@ public class PTPService extends Service implements ServiceHelperObserver {
 	int hostSessionId = -1;
 
 	boolean joinedToSelf = false;
-	boolean firstJoiner = false;
 
 	private BusListener busListener;
 	private SessionPortListener sessionPortListener;

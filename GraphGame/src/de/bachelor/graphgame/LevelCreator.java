@@ -6,7 +6,7 @@ public class LevelCreator implements XMLEntityCreator {
 
 	@Override
 	public String[] getProperties() {
-		return new String[]{Level.PROPERTY_ID};
+		return new String[]{Level.PROPERTY_ID,Level.PROPERTY_EDGE, Level.PROPERTY_NODE};
 	}
 
 	@Override
@@ -15,9 +15,15 @@ public class LevelCreator implements XMLEntityCreator {
 	}
 
 	@Override
-	public Object getValue(Object arg0, String arg1) {
-		if(Level.PROPERTY_ID.equals(arg1)){
-			return ((Level)arg0).getId();
+	public Object getValue(Object entity, String attribute) {
+		if(Level.PROPERTY_ID.equals(attribute)){
+			return ""+((Level)entity).getId();
+		}
+		if(Level.PROPERTY_EDGE.equals(attribute)){
+			return ((Level)entity).getAllEdges();
+		}
+		if(Level.PROPERTY_NODE.equals(attribute)){
+			return ((Level)entity).getAllNodes();
 		}
 		return null;
 	}
