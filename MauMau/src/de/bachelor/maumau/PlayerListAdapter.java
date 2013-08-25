@@ -1,6 +1,7 @@
 package de.bachelor.maumau;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Map;
 
 import android.content.Context;
@@ -26,7 +27,9 @@ final class PlayerListAdapter extends ArrayAdapter<String> {
 		playerList.clear();
 		Map<String, String> joinedPlayers = gameManager.getJoinedPlayers();
 		
-		for (String key : joinedPlayers.keySet()) {
+		ArrayList<String> keyList = new ArrayList<String>(joinedPlayers.keySet());
+		Collections.sort(keyList);
+		for (String key : keyList) {
 			String playerName = PTPManager.getInstance().getUniqueID().equals(key) ? "Me" : joinedPlayers.get(key);
 			int numberOfCards = gameManager.getCardsForPlayersId(key).size();
 			String currrentTurn = gameManager.getCurrentPlayersID().equals(key) ? "CurrentTurn" : "";

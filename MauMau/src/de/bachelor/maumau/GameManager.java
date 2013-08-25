@@ -1,6 +1,7 @@
 package de.bachelor.maumau;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -109,8 +110,10 @@ public class GameManager {
 			card.owner = PTPManager.getInstance().getUniqueID();
 			sendCardOwnerChanged(card);
 			notifyObservers(DRAW_CARDS);
-			
-			this.specialCase = SpecialCases.DEFAULT;
+		
+			if(this.specialCase < SpecialCases.SUIT_WISHED_CLUB){
+				this.specialCase = SpecialCases.DEFAULT;
+			}
 			return card;
 		}	
 		
@@ -125,14 +128,14 @@ public class GameManager {
 			PTPManager.getInstance().sendDataToAllPeers(OWNER_CHANGED, new String[]{xmlStringForCard});
 		}
 
-		public synchronized void ChangeOwner(int cardId, String uniqueUserID){
+		public void ChangeOwner(int cardId, String uniqueUserID){
 			Card cardById = getCardById(cardId);
 			cardById.owner = uniqueUserID;
 			drawCardsIfNeeded();
 			notifyObservers(PLAYERS_STATE_CHANGED);
 		}
 		
-		public synchronized void NextTurn(String previousID,int specialCase){
+		public void NextTurn(String previousID,int specialCase){
 			this.specialCase = specialCase;
 			if(playedCard!=null){
 				CardPlayedEvent cardPlayedEvent = new CardPlayedEvent(this.playedCard, playCardRuleEnforcer,this);
@@ -144,9 +147,10 @@ public class GameManager {
 		}
 		
 		public void startGameAsHost(){
+			
 			setGameStarted(true);
 			cardsDrawnThisTurn = false;
-			setAndNotifyNextTurn(PTPManager.getInstance().getUniqueID());
+			setAndNotifyNextTurn();
 		}
 		
 		private void drawCardsIfNeeded() {
@@ -172,7 +176,7 @@ public class GameManager {
 			}
 		}
 
-		public synchronized void PlayCard(int cardId, String uniqueUserID) {
+		public void PlayCard(int cardId, String uniqueUserID) {
 			Card card = getCardById(cardId);
 			this.setLastCardPlayedBy(uniqueUserID);
 			card.owner = PLAYED_CARD;
@@ -224,7 +228,7 @@ public class GameManager {
 			return playedCard;
 		}
 
-		public synchronized void HiIAm(String uniqueID,String playerName) {
+		public void HiIAm(String uniqueID,String playerName) {
 			Log.i(TAG, "HiIAm: " + uniqueID + " , " + playerName);			
 			if(joinedPlayers.get(uniqueID) == null ){
 				
@@ -247,7 +251,7 @@ public class GameManager {
 			}
 		}
 
-		public synchronized void ByeIWas(String uniqueID) {
+		public void ByeIWas(String uniqueID) {
 			if(joinedPlayers.get(uniqueID) !=null ){
 				joinedPlayers.remove(uniqueID);
 				releaseCardsForUserID(uniqueID);
@@ -299,8 +303,7 @@ public class GameManager {
 			
 			cardsDrawnThisTurn = false;
 			cardPlayedThisTurn = false;
-			String nextPlayersID = getNextPlayersId(PTPManager.getInstance().getUniqueID());
-			setAndNotifyNextTurn(nextPlayersID);
+			setAndNotifyNextTurn();
 		}
 
 		private void updateSpecialCaseOnTurnsEnd() {
@@ -317,8 +320,8 @@ public class GameManager {
 			}
 		}
 
-		private void setAndNotifyNextTurn(String uniqueID) {
-			currentPlayersID = uniqueID;
+		private void setAndNotifyNextTurn() {
+			currentPlayersID = getNextPlayersId(PTPManager.getInstance().getUniqueID());
 			notifyObservers(NEXT_TURN);
 			sendNextTurn();
 		}
@@ -353,19 +356,20 @@ public class GameManager {
 		
 		public String getNextPlayersId(String currentID){
 			Set<String> keySet = getJoinedPlayers().keySet();
-		 	ArrayList<String> arrayList = new ArrayList<String>(keySet);
+		 	ArrayList<String> playersIDList = new ArrayList<String>(keySet);
+		 	Collections.sort(playersIDList);
 		 	int myIdPosition = -1;
-		    for(int i = 0; i < arrayList.size(); i++){
-		    	if(arrayList.get(i).equals(currentID)) {
+		    for(int i = 0; i < playersIDList.size(); i++){
+		    	if(playersIDList.get(i).equals(currentID)) {
 		    		myIdPosition = i;
 		    		break;
 		    	}
 			}		    
-		    int playersIdPosition  = (myIdPosition + 1) % arrayList.size();
+		    int playersIdPosition  = (myIdPosition + 1) % playersIDList.size();
 		    if(playersIdPosition < 0){
-		    	playersIdPosition += arrayList.size();
+		    	playersIdPosition += playersIDList.size();
 		    }
-		    return arrayList.get(playersIdPosition);
+		    return playersIDList.get(playersIdPosition);
 			
 		}
 
@@ -379,6 +383,7 @@ public class GameManager {
 			joinedPlayers.clear();
 			playedCard = null;
 			gameStarted = false;
+			isInitState = true;
 			
 			playCardRuleEnforcer.removeAllExclusiveRules();
 			playCardRuleEnforcer.removeAllInclusiveRules();
@@ -391,6 +396,11 @@ public class GameManager {
 		public void notifyOthersAboutYourself() {			
 				HiIAm(PTPManager.getInstance().getUniqueID(), PTPManager.getInstance().getPlayerName());
 				PTPManager.getInstance().sendDataToAllPeers(PLAYERS_STATE_CHANGED, new String[]{PTPManager.getInstance().getPlayerName()});
+		}
+		
+		public void notifyOthersAboutYourselfLeaving() {			
+			ByeIWas(PTPManager.getInstance().getUniqueID());
+			PTPManager.getInstance().sendDataToAllPeers(PLAYERS_STATE_CHANGED, new String[]{PTPManager.getInstance().getPlayerName()});
 		}
 
 		public boolean isGameStarted() {

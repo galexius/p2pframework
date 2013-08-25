@@ -5,6 +5,7 @@ import android.app.Application;
 import de.ptpservice.DataObserver;
 import de.ptpservice.PTPManager;
 import de.ptpservice.SessionJoinRule;
+import de.ptpservice.SessionObserver;
 import de.uniks.jism.xml.XMLIdMap;
 
 
@@ -37,6 +38,23 @@ public class MauMauApplication extends Application {
 				return !gameManager.isGameStarted() && gameManager.getJoinedPlayers().size() < 3;
 			}
 		});
+		
+		PTPManager.getInstance().addSessionObserver(new SessionObserver() {
+			
+			@Override
+			public void sessionLost() {
+				
+			}
+			
+			@Override
+			public void memberLeft(String uniqueID) {
+				gameManager.ByeIWas(uniqueID);
+			}
+			
+			@Override
+			public void memberJoined(String arg0) {
+			}
+		});
 	}		
 
 
@@ -49,7 +67,7 @@ public class MauMauApplication extends Application {
 		if(gameManager.getJoinedPlayers().containsKey(sentBy) && data.length == 0){
 			gameManager.ByeIWas(sentBy);
 		}else{
-				gameManager.HiIAm(sentBy, data[0]);
+			gameManager.HiIAm(sentBy, data[0]);
 		}
 	}
 
